@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Lost Theorem</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060402;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;overflow:hidden;}
+#container{position:relative;width:800px;height:600px;overflow:hidden;border:2px solid #2a1a08;box-shadow:0 0 60px rgba(0,0,0,0.9);}
+#gameCanvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges;}
+#ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+
+/* HUD */
+#hud{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
+.hud-box{background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 12px;font-size:13px;letter-spacing:1px;}
+#hud-world{color:#c9a96e;}
+#hud-artefacts{color:#a08050;}
+#hud-artefacts span{color:#f0d070;}
+#inv-btn{position:absolute;top:45px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:6px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
+#inv-btn:hover{border-color:#8a5020;color:#f0d070;}
+#world-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:6px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
+#world-btn:hover{border-color:#8a5020;color:#f0d070;}
+
+/* Dialogue */
+#dlg{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:770px;background:rgba(4,3,2,0.97);border:2px solid #5a3a18;padding:12px 16px 10px;display:none;pointer-events:all;}
+#dlg.on{display:block;}
+#dlg-who{font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+#dlg-txt{color:#e8d0a0;font-size:14px;line-height:1.9;min-height:40px;}
+#dlg-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+#dlg-hint{color:#7a5830;font-size:11px;letter-spacing:1px;}
+#dlg-next{color:#c9a96e;font-size:11px;letter-spacing:1px;cursor:pointer;border:1px solid #6a4010;padding:4px 12px;background:transparent;font-family:'Courier New',monospace;}
+#dlg-next:hover{color:#f0d070;border-color:#9a6020;}
+
+/* Problem */
+#prob{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px;pointer-events:all;}
+#prob.on{display:flex;}
+.pr-loc{font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.pr-who{font-size:20px;letter-spacing:2px;margin-bottom:4px;text-align:center;}
+.pr-flav{font-size:13px;font-style:italic;margin-bottom:18px;text-align:center;max-width:500px;color:#a08060;}
+.pr-card{background:rgba(14,10,5,0.95);border:2px solid #4a2a08;padding:18px 22px;width:100%;max-width:580px;margin-bottom:14px;}
+.pr-lbl{font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;color:#8a5828;}
+.pr-q{font-size:14px;line-height:2;white-space:pre-wrap;color:#f0d898;}
+.pr-hint{font-size:12px;font-style:italic;color:#9a7848;margin-top:8px;}
+.pr-row{display:flex;gap:8px;width:100%;max-width:580px;margin-bottom:8px;}
+.pr-row input{flex:1;background:rgba(14,10,5,0.9);border:2px solid #4a2808;color:#f0d070;font-size:14px;padding:9px 12px;font-family:'Courier New',monospace;outline:none;}
+.pr-row input:focus{border-color:#8a5020;}
+.pr-row input::placeholder{color:#4a3018;}
+#pr-sub{background:#3a2008;border:2px solid #8a5020;color:#f0d070;font-size:13px;padding:9px 20px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;}
+#pr-sub:hover{background:#5a3010;}
+#pr-sub:disabled{opacity:0.3;cursor:not-allowed;}
+#pr-atts{font-size:12px;letter-spacing:1px;min-height:18px;margin-bottom:5px;color:#9a7040;}
+#pr-fb{font-size:14px;min-height:22px;letter-spacing:1px;margin-bottom:10px;text-align:center;}
+#pr-fb.ok{color:#70cc70;}
+#pr-fb.no{color:#e05040;}
+#pr-back{background:transparent;border:1px solid #3a2010;color:#7a5030;font-size:12px;padding:5px 16px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;}
+#pr-back:hover{border-color:#6a4010;color:#b07840;}
+
+/* Inventory */
+#inv{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.99);display:none;flex-direction:column;align-items:center;padding:28px 24px;pointer-events:all;overflow-y:auto;}
+#inv.on{display:flex;}
+.inv-h{color:#f0d070;font-size:18px;letter-spacing:4px;text-transform:uppercase;margin-bottom:3px;}
+.inv-s{color:#7a5830;font-size:11px;letter-spacing:2px;margin-bottom:20px;}
+.inv-g{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%;max-width:660px;margin-bottom:20px;}
+.inv-it{background:rgba(14,10,5,0.9);border:2px solid #3a2008;padding:10px 8px;text-align:center;}
+.inv-it.mt{border-style:dashed;border-color:#1e1005;}
+.inv-icon{font-size:22px;margin-bottom:6px;}
+.inv-nm{font-size:11px;letter-spacing:1px;color:#c9a96e;margin-bottom:3px;}
+.inv-fr{font-size:10px;font-style:italic;color:#6a4820;}
+#inv-cl{background:transparent;border:2px solid #3a2008;color:#8a5830;font-size:12px;padding:7px 24px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;}
+#inv-cl:hover{border-color:#6a4010;color:#c9a96e;}
+
+/* Reward */
+#rwrd{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(4,3,2,0.99);border:3px solid #8a5820;padding:26px 36px;text-align:center;display:none;z-index:50;pointer-events:none;min-width:240px;}
+#rwrd.on{display:block;animation:rfl 3s ease forwards;}
+@keyframes rfl{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.rw-l{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#8a5828;margin-bottom:8px;}
+.rw-i{font-size:32px;margin-bottom:7px;}
+.rw-n{font-size:16px;letter-spacing:2px;color:#f0d070;margin-bottom:5px;}
+.rw-d{font-size:11px;font-style:italic;color:#8a6840;max-width:200px;margin:0 auto;line-height:1.6;}
+
+/* World Select */
+#wsel{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:100;padding:20px;}
+#wsel.off{display:none;}
+.ws-sup{color:#7a5830;font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;}
+.ws-title{color:#f0d070;font-size:26px;letter-spacing:6px;text-transform:uppercase;margin-bottom:4px;}
+.ws-sub{color:#9a7040;font-size:12px;letter-spacing:3px;margin-bottom:28px;}
+.ws-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:760px;margin-bottom:16px;}
+.ws-card{background:rgba(14,10,5,0.8);border:2px solid #2a1808;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s;}
+.ws-card:hover{border-color:#8a5020;}
+.ws-card.locked{opacity:0.3;cursor:default;}
+.ws-card.done{border-color:#4a6818;}
+.ws-icon{font-size:22px;margin-bottom:5px;}
+.ws-name{font-size:11px;letter-spacing:1px;color:#c9a96e;margin-bottom:2px;}
+.ws-theme{font-size:10px;color:#7a5830;font-style:italic;}
+.ws-note{color:#6a4820;font-size:10px;letter-spacing:1px;margin-top:4px;}
+
+/* Title */
+#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;}
+#title.off{display:none;}
+.tt-sup{color:#7a5830;font-size:11px;letter-spacing:4px;margin-bottom:12px;}
+.tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
+.tt-tag{color:#9a6830;font-size:12px;letter-spacing:3px;margin-bottom:36px;}
+.tt-btn{background:#2a1808;border:2px solid #6a4010;color:#f0d070;font-size:13px;padding:12px 32px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:3px;text-transform:uppercase;animation:glow 2s ease-in-out infinite;}
+@keyframes glow{0%,100%{border-color:#4a2808}50%{border-color:#b08030}}
+.tt-btn:hover{background:#3a2010;}
+.tt-note{color:#6a4820;font-size:11px;letter-spacing:1px;margin-top:16px;font-style:italic;}
+
+/* Controls */
+#ctrls{position:absolute;bottom:0;left:0;right:0;background:rgba(4,3,2,0.8);border-top:1px solid #1e1005;padding:4px 12px;display:flex;gap:16px;pointer-events:none;}
+.ct{color:#5a3e20;font-size:10px;letter-spacing:1px;}
+.ct span{color:#9a6830;}
+</style>
+</head>
+<body>
+<div id="container">
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<div id="ui">
+  <div id="hud">
+    <div class="hud-box" id="hud-world">—</div>
+    <div class="hud-box" id="hud-artefacts">ARTEFACTS: <span id="hud-ct">0</span></div>
+  </div>
+  <button id="inv-btn">INVENTORY [E]</button>
+  <button id="world-btn">WORLD MAP [ESC]</button>
+  <div id="dlg">
+    <div id="dlg-who"></div>
+    <div id="dlg-txt"></div>
+    <div id="dlg-foot">
+      <div id="dlg-hint">SPACE / ENTER</div>
+      <button id="dlg-next">CONTINUE ▶</button>
+    </div>
+  </div>
+  <div id="prob">
+    <div class="pr-loc" id="pr-loc"></div>
+    <div class="pr-who" id="pr-who"></div>
+    <div class="pr-flav" id="pr-flav"></div>
+    <div class="pr-card">
+      <div class="pr-lbl">PROBLEM</div>
+      <div class="pr-q" id="pr-q"></div>
+      <div class="pr-hint" id="pr-hint"></div>
+    </div>
+    <div class="pr-row">
+      <input type="text" id="pr-in" placeholder="Your answer..." autocomplete="off" spellcheck="false"/>
+      <button id="pr-sub">CHECK</button>
+    </div>
+    <div id="pr-atts"></div>
+    <div id="pr-fb"></div>
+    <button id="pr-back">← RETURN TO MAP</button>
+  </div>
+  <div id="inv">
+    <div class="inv-h">Inventory</div>
+    <div class="inv-s">ARTEFACTS COLLECTED ACROSS ALL WORLDS</div>
+    <div class="inv-g" id="inv-g"></div>
+    <button id="inv-cl">CLOSE [E]</button>
+  </div>
+  <div id="rwrd">
+    <div class="rw-l">Artefact Obtained</div>
+    <div class="rw-i" id="rw-i"></div>
+    <div class="rw-n" id="rw-n"></div>
+    <div class="rw-d" id="rw-d"></div>
+  </div>
+  <div id="wsel">
+    <div class="ws-sup">A Mathematics RPG</div>
+    <div class="ws-title">The Lost Theorem</div>
+    <div class="ws-sub">CHOOSE YOUR WORLD</div>
+    <div class="ws-grid" id="ws-grid"></div>
+    <div class="ws-note">WASD · SPACE to interact · E for inventory</div>
+  </div>
+  <div id="title">
+    <div class="tt-sup">A Mathematics RPG</div>
+    <div class="tt-main">The Lost Theorem</div>
+    <div class="tt-tag">Ten Worlds. Sixty Artefacts. Every encounter is unique.</div>
+    <button class="tt-btn" id="tt-start">BEGIN JOURNEY</button>
+    <div class="tt-note">Approach characters and press SPACE to interact</div>
+  </div>
+  <div id="ctrls">
+    <div class="ct"><span>WASD/ARROWS</span> MOVE</div>
+    <div class="ct"><span>SPACE/ENTER</span> INTERACT</div>
+    <div class="ct"><span>E</span> INVENTORY</div>
+    <div class="ct"><span>ESC</span> WORLD MAP</div>
+  </div>
+</div>
+</div>
+<script>
+
+const WORLDS = [
+  {
+    id:'integral_plains',
+    name:'The Integral Plains',
+    theme:'Integration',
+    icon:'⬜',
+    palette:{
+      bg:'#0e0a05',sky:'#0a0806',
+      t0:'#1a1208',t1:'#14100a',t2:'#201808',  // void/base
+      grass:'#1e2a0e',grass2:'#162208',
+      dirt:'#2e1f0e',dirt2:'#241808',
+      path:'#4a3318',path2:'#3d2a12',
+      water:'#0a1830',water2:'#0c2040',
+      ruin:'#3a2e1e',ruin2:'#4a3a28',wall:'#5a4830',
+      tree:'#1a2e0a',tree2:'#0e2006',trunk:'#3a2510',
+      mtn:'#4a4035',mtn2:'#3a3028',
+      sand:'#5a4828',stone:'#302a20',stone2:'#3a3228',
+      fog:'#1a1612',
+      npc1:'#7070b0',npc2:'#5090b0',npc3:'#90b060',
+    },
+    startTX:12,startTY:23,
+    npcs:[
+      {id:'archivist',name:'The Archivist',tx:7,ty:7,spr:'scholar',col:'#7878b8',
+       loc:'Ruins of Antideriva',
+       flav:"A hooded figure over crumbling tablets. Lantern light traces indefinite symbols on the stone.",
+       dlg:["These ruins hold the first secret — the law of undoing.",
+            "Integration reverses differentiation. The two are bound.",
+            "Answer my question and the Cracked Constant Stone is yours."],
+       art:{id:'cs',icon:'🗿',name:'Cracked Constant Stone',desc:'+C worn smooth by centuries of debate.'},
+       cd:20,      },
+      {id:'river_keeper',name:'River Keeper',tx:25,ty:22,spr:'elder',col:'#4888a8',
+       loc:'The Dusk River',
+       flav:"An elder watching dark water. They have charted the river's motion for fifty years.",
+       dlg:["Velocity hides acceleration inside it.",
+            "One differentiation reveals the other.",
+            "Answer and the Flow Rate Vessel is yours."],
+       art:{id:'fv',icon:'🏺',name:'Flow Rate Vessel',desc:'Clay etched with rate equations. Measured the river discharge.'},
+       cd:18,      },
+      {id:'wanderer',name:'The Wanderer',tx:22,ty:16,spr:'traveller',col:'#70a050',
+       loc:'The Stone Circle',
+       flav:"Reading from a worn notebook at the world's exact centre. Or so they claim.",
+       dlg:["I have been solving this Chain Rule problem for three days.",
+            "The composite function yields only to careful decomposition.",
+            "Solve it. My notebook is your reward."],
+       art:{id:'nb',icon:'📓',name:"Wanderer's Notebook",desc:'Dense chain rule proofs. Last page: partial map of The Null Space.'},
+       cd:16,      },
+      {id:'astronomer',name:'The Astronomer',tx:36,ty:5,spr:'scholar',col:'#9050b0',
+       loc:'Basalt Observatory',
+       flav:"Telescope aimed not at the sky but at a graph pinned to the wall.",
+       dlg:["Every function has peaks and valleys.",
+            "The first derivative tells you where the curve pauses.",
+            "Prove you understand stationary points."],
+       art:{id:'tl',icon:'🔭',name:'Turning Point Lens',desc:'Ground obsidian. Locates maxima in both functions and the sky.'},
+       cd:22,      },
+      {id:'shrine_keeper',name:'Shrine Keeper',tx:6,ty:29,spr:'elder',col:'#b05050',
+       loc:'Fog Shrine',
+       flav:"Tends a mossy altar in silence. Offerings here were always areas beneath curves.",
+       dlg:["The Fundamental Theorem connects what was separated.",
+            "Differentiation and integration — inverse operations. This stone carries the proof.",
+            "Evaluate this and the Area Fragment is yours."],
+       art:{id:'af',icon:'🪨',name:'Area Fragment',desc:'Limestone. Its area equals exactly the integral of a parabola over [0,2].'},
+       cd:24,      },
+      {id:'ferryman',name:'The Ferryman',tx:38,ty:23,spr:'traveller',col:'#b09030',
+       loc:'Crossing at Dusk',
+       flav:"A weathered figure at the river crossing. Toll: one correct answer.",
+       dlg:["The crossing is not free.",
+            "Related rates govern the river. And everything else.",
+            "Correct answer earns you passage and the River Chart."],
+       art:{id:'rc',icon:'🗺️',name:'River Chart',desc:'Crossings of the Dusk River. Back face shows parametric equations of the current.'},
+       cd:20,      }
+    ]
+  },
+  {
+    id:'euclid_bay',
+    name:'Euclid Bay',
+    theme:'Geometry',
+    icon:'📏',
+    palette:{
+      bg:'#0a1a28',sky:'#081420',
+      grass:'#0c2a1a',grass2:'#0a2015',
+      dirt:'#1a2a1a',dirt2:'#162218',
+      path:'#2a3a2a',path2:'#223022',
+      water:'#0c3050',water2:'#0a2840',
+      ruin:'#182828',ruin2:'#202e2e',wall:'#283838',
+      tree:'#0a2810',tree2:'#081e0c',trunk:'#1a2010',
+      mtn:'#303828',mtn2:'#283020',
+      sand:'#2a3a28',stone:'#203020',stone2:'#283828',
+      fog:'#0a1810',
+      npc1:'#40c0a0',npc2:'#30a880',npc3:'#50b8c0',
+    },
+    startTX:12,startTY:12,
+    npcs:[
+      {id:'lighthouse_keeper',name:'Lighthouse Keeper',tx:6,ty:6,spr:'elder',col:'#38b888',
+       loc:'The Old Lighthouse',
+       flav:"The keeper who once measured the light's reach using only angles and shadow.",
+       dlg:["From this tower I can calculate any distance without moving.",
+            "Trigonometry of right triangles is all you need — and I have a geometry question."],
+       art:{id:'prism',icon:'💠',name:'Angle Prism',desc:'Glass that splits light into its component angles. Used to survey the bay.'},
+       cd:18,      },
+      {id:'merchant',name:'The Merchant',tx:22,ty:11,spr:'traveller',col:'#50b0c0',
+       loc:"Fisherman's Dock",
+       flav:"Counts coins using circles — the merchant always inscribes a circle in a polygon before pricing.",
+       dlg:["I price by area. A circle, a polygon — different formulas, same thinking.",
+            "Tell me this: what is the area of a sector?"],
+       art:{id:'compass',icon:'🧭',name:'Surveyor Compass',desc:'Measures arcs and central angles. Belonged to the original Euclid Bay architect.'},
+       cd:16,      },
+      {id:'surveyor',name:'City Surveyor',tx:36,ty:12,spr:'scholar',col:'#30a070',
+       loc:'The Clock Tower',
+       flav:"Has surveyed every lot in Euclid Bay using similarity and scale. Never approximate.",
+       dlg:["Two triangles are similar if their angles match.",
+            "The ratio of sides is constant. That ratio unlocks the whole structure.",
+            "Show me you understand similarity."],
+       art:{id:'scale',icon:'📐',name:'Scale Rule',desc:'Every measurement in Euclid Bay made with this. Markings in exact ratios.'},
+       cd:20,      },
+      {id:'cartographer',name:'The Cartographer',tx:8,ty:28,spr:'scholar',col:'#48c8a0',
+       loc:'Buried Archive',
+       flav:"Charts coastlines using circle theorems. Every cape and inlet is an arc.",
+       dlg:["The circle holds more secrets than any polygon.",
+            "Angles in a circle obey strict laws — inscribed, central, cyclic.",
+            "One theorem, one question."],
+       art:{id:'chart',icon:'🗾',name:'Bay Chart',desc:'The original map of Euclid Bay, drawn using only circle theorems and a compass.'},
+       cd:22,      },
+      {id:'engineer',name:'Bridge Engineer',tx:28,ty:26,spr:'traveller',col:'#58b0a8',
+       loc:'Bridge at Meridian Point',
+       flav:"Built the bridge using vectors and dot products. Checks the angles every morning.",
+       dlg:["The bridge holds because the angles are exact.",
+            "A dot product tells you the angle between any two directions.",
+            "Prove you can use it."],
+       art:{id:'blueprint',icon:'📋',name:'Bridge Blueprint',desc:'Original engineering drawings. Margin notes show dot product calculations for stress angles.'},
+       cd:18,      },
+      {id:'diver',name:'The Diver',tx:42,ty:22,spr:'elder',col:'#2898c8',
+       loc:'Submerged Ruins',
+       flav:"Returns from underwater each evening with coordinates and Pythagoras calculations.",
+       dlg:["Below the bay are the original ruins. I measure them by distance formula.",
+            "Three-dimensional geometry is just Pythagoras extended.",
+            "Answer this and I surface with the Depth Stone."],
+       art:{id:'dstone',icon:'🔵',name:'Depth Stone',desc:'Smooth basalt from the submerged ruins. Surface engraved with the 3D distance formula.'},
+       cd:24,      }
+    ]
+  },
+  {
+    id:'probability_hollow',
+    name:'Probability Hollow',
+    theme:'Probability',
+    icon:'🎲',
+    palette:{
+      bg:'#100a18',sky:'#0c0814',
+      grass:'#1a1228',grass2:'#140e20',
+      dirt:'#200e2a',dirt2:'#180a22',
+      path:'#2a1a38',path2:'#220e30',
+      water:'#180828',water2:'#100620',
+      ruin:'#2a1838',ruin2:'#200e2e',wall:'#301848',
+      tree:'#0e0820',tree2:'#080618',trunk:'#1a0c28',
+      mtn:'#281838',mtn2:'#200e30',
+      sand:'#281838',stone:'#1a1030',stone2:'#201838',
+      fog:'#0e0818',
+      npc1:'#c060e0',npc2:'#9040c0',npc3:'#e080ff',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'oracle',name:'The Oracle',tx:8,ty:8,spr:'scholar',col:'#b050d8',
+       loc:"Oracle's Chamber",
+       flav:"Claims to know the future — but only as a probability distribution.",
+       dlg:["I do not see the future. I calculate its likelihood.",
+            "Conditional probability is the soul of prediction.",
+            "One question and the Probability Stone is yours."],
+       art:{id:'pstone',icon:'🔮',name:'Probability Stone',desc:"Translucent. Shows the future — but only with P = 0.5 clarity."},
+       cd:18,      },
+      {id:'gambler',name:'The Gambler',tx:24,ty:14,spr:'traveller',col:'#9838c0',
+       loc:'The Dice Hollow',
+       flav:"Has been calculating expected values here for twenty years. Never actually gambles.",
+       dlg:["Expected value is not what you expect to get. It is the long-run average.",
+            "Multiply each outcome by its probability. Sum the products.",
+            "Calculate this and the Lucky Die is yours."],
+       art:{id:'die',icon:'🎲',name:'Lucky Die',desc:'A perfectly fair die. Each face engraved with its expected contribution.'},
+       cd:16,      },
+      {id:'poisoner',name:'The Probabilist',tx:38,ty:11,spr:'scholar',col:'#c878e8',
+       loc:'The Binomial Tree',
+       flav:"Studies outcomes in clusters of trials. Each leaf of the tree is an event.",
+       dlg:["The binomial distribution counts successes in repeated trials.",
+            "n trials, p probability of success each time.",
+            "One calculation and the Tree Seed is yours."],
+       art:{id:'seed',icon:'🌱',name:'Binomial Tree Seed',desc:'Grows into a probability tree. Each branch labelled with its exact probability.'},
+       cd:20,      },
+      {id:'census_taker',name:'Census Taker',tx:7,ty:28,spr:'elder',col:'#a060d0',
+       loc:'The Normal Mire',
+       flav:"Measures everything in the Hollow. Finds it all approximates to the same bell curve.",
+       dlg:["Everything tends toward the normal distribution given enough samples.",
+            "The standard normal table unlocks the probability of intervals.",
+            "Z-scores. You know them?"],
+       art:{id:'bell',icon:'🔔',name:'Bell Curve Fragment',desc:'A clay mould in the shape of a standard normal curve. σ = 1 inscribed on the base.'},
+       cd:22,      },
+      {id:'tree_builder',name:'Tree Builder',tx:30,ty:26,spr:'traveller',col:'#b848d8',
+       loc:'Probability Crossroads',
+       flav:"Constructs probability trees for every decision in the Hollow. Carries chalk everywhere.",
+       dlg:["The tree never lies. Every path has a probability.",
+            "Multiply along branches. Add across outcomes.",
+            "Build the tree in your head. One problem."],
+       art:{id:'chalk',icon:'🖊️',name:'Probability Chalk',desc:'Writes on any surface. Leaves probability trees that never wash off.'},
+       cd:18,      },
+      {id:'counter',name:'The Counter',tx:42,ty:18,spr:'scholar',col:'#d060f0',
+       loc:'Counting Chamber',
+       flav:"Has counted every arrangement of every object in the Hollow. Still counting.",
+       dlg:["Permutations. Combinations. The difference matters.",
+            "Order matters for one, not for the other.",
+            "Count correctly and the Counting Stone is yours."],
+       art:{id:'cstone',icon:'🔢',name:'Counting Stone',desc:'Etched with nCr and nPr formulas. Warm to the touch.'},
+       cd:16,      }
+    ]
+  },
+  {
+    id:'derivation_city',
+    name:'Derivation City',
+    theme:'Differentiation',
+    icon:'⬜',
+    palette:{
+      bg:'#0a0e14',sky:'#080c10',
+      grass:'#0e1420',grass2:'#0c1018',
+      dirt:'#141820',dirt2:'#101418',
+      path:'#1c2430',path2:'#182030',
+      water:'#0a1828',water2:'#0c1e30',
+      ruin:'#181e28',ruin2:'#141a24',wall:'#1e2830',
+      tree:'#0c1418',tree2:'#080e14',trunk:'#141818',
+      mtn:'#202830',mtn2:'#18202a',
+      sand:'#1a2028',stone:'#161c24',stone2:'#1c2430',
+      fog:'#0c1018',
+      npc1:'#6090d0',npc2:'#4878b8',npc3:'#80a8e0',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'engineer_d',name:'Lead Engineer',tx:7,ty:9,spr:'scholar',col:'#5888c8',
+       loc:'The Power Station',
+       flav:"Monitors power output. The rate of change of energy is all that matters here.",
+       dlg:["The derivative tells me how fast the current changes.",
+            "Without differentiation, nothing is controlled.",
+            "Answer correctly."],
+       art:{id:'gauge',icon:'⚡',name:'Rate Gauge',desc:'Measures instantaneous rate of change in the city grid.'},
+       cd:18,      },
+      {id:'factory_boss',name:'Factory Boss',tx:24,ty:12,spr:'traveller',col:'#7098d8',
+       loc:'Iron Foundry',
+       flav:"Optimises production by finding critical points. Calculates maximums before breakfast.",
+       dlg:["In this factory, optimal is everything.",
+            "Maximum output, minimum waste. The derivative finds both.",
+            "Show me you can optimise."],
+       art:{id:'blueprint_d',icon:'⚙️',name:'Optimisation Blueprint',desc:'Factory schematic annotated with critical point calculations.'},
+       cd:20,      },
+      {id:'rail_planner',name:'Rail Planner',tx:36,ty:8,spr:'scholar',col:'#4870b0',
+       loc:'Central Station',
+       flav:"Plans rail curves using implicit differentiation. Every bend is an equation.",
+       dlg:["The rails follow an implicit curve. The gradient requires implicit differentiation.",
+            "dy/dx from an implicit equation — not as hard as it looks.",
+            "One problem."],
+       art:{id:'rail',icon:'🚂',name:'Rail Gradient Chart',desc:'Shows the gradient function of every curve in the city rail network.'},
+       cd:22,      },
+      {id:'chemist_d',name:'City Chemist',tx:10,ty:28,spr:'elder',col:'#6088c0',
+       loc:'The Laboratory',
+       flav:"Tracks reaction rates. The concentration curve is always on their desk.",
+       dlg:["Reaction rates. Rates of rates.",
+            "The product rule handles the composite of two changing quantities.",
+            "Differentiate. Correctly."],
+       art:{id:'flask',icon:'⚗️',name:'Reaction Flask',desc:'Contains a liquid whose volume follows a product rule function.'},
+       cd:16,      },
+      {id:'architect_d',name:'City Architect',tx:32,ty:26,spr:'traveller',col:'#80a0d0',
+       loc:'Design Bureau',
+       flav:"Designs curves in buildings using parametric equations. The skyline is their graph.",
+       dlg:["Parametric curves have a different calculus.",
+            "Differentiate x(t) and y(t) separately, then combine.",
+            "Show me parametric differentiation."],
+       art:{id:'arch',icon:'🏛️',name:'Parametric Arch',desc:'A model of the bureau arch, defined by x=t², y=2t. dy/dx engraved on the base.'},
+       cd:20,      },
+      {id:'professor_d',name:'The Professor',tx:42,ty:15,spr:'scholar',col:'#5880b8',
+       loc:'Derivation University',
+       flav:"Has taught L\'Hôpital\'s rule for forty years. Still finds it elegant.",
+       dlg:["Indeterminate forms. 0/0, ∞/∞.",
+            "L'Hôpital cuts through the mystery in one step.",
+            "One limit. Do not use the table — differentiate."],
+       art:{id:'thesis',icon:'📜',name:"Limit Theorem Scroll",desc:"L'Hôpital's original proof, copied by hand. Still warm from the press."},
+       cd:24,      }
+    ]
+  },
+  {
+    id:'trig_peaks',
+    name:'Trigo Peaks',
+    theme:'Trigonometry',
+    icon:'📐',
+    palette:{
+      bg:'#100808',sky:'#0c0606',
+      grass:'#281410',grass2:'#201008',
+      dirt:'#301810',dirt2:'#281408',
+      path:'#402018',path2:'#382018',
+      water:'#080818',water2:'#0a0a20',
+      ruin:'#2a1810',ruin2:'#221408',wall:'#382018',
+      tree:'#1a1208',tree2:'#140e06',trunk:'#241408',
+      mtn:'#483020',mtn2:'#382818',
+      sand:'#382820',stone:'#281810',stone2:'#302018',
+      fog:'#140a08',
+      npc1:'#e06030',npc2:'#c04820',npc3:'#f07840',
+    },
+    startTX:12,startTY:13,
+    npcs:[
+      {id:'climber',name:'The Climber',tx:8,ty:8,spr:'traveller',col:'#d05828',
+       loc:'Summit Base Camp',
+       flav:"Calculates summit angles before every ascent. Sine rule tattooed on their forearm.",
+       dlg:["You cannot climb without knowing your angles.",
+            "The sine rule links sides to angles in any triangle.",
+            "Prove it. Answer this."],
+       art:{id:'rope',icon:'🧗',name:'Summit Rope',desc:'Knots tied at exact sine-rule calculated intervals.'},
+       cd:18,      },
+      {id:'navigator',name:'The Navigator',tx:22,ty:14,spr:'scholar',col:'#c04820',
+       loc:'The Signal Beacon',
+       flav:"Navigates the Peaks using bearings and the cosine rule. Never lost.",
+       dlg:["When you do not have a right angle, you use the cosine rule.",
+            "Three sides or two sides and an included angle — the cosine rule handles both.",
+            "Calculate."],
+       art:{id:'beacon',icon:'🔦',name:'Signal Beacon',desc:'Calibrated to project exactly 12 km. Cosine rule printed on the casing.'},
+       cd:20,      },
+      {id:'cartographer_t',name:'Peak Cartographer',tx:42,ty:3,spr:'scholar',col:'#e06838',
+       loc:'The Surveying Hut',
+       flav:"Maps every peak using trigonometric identities. The hut walls are covered in proofs.",
+       dlg:["Identities simplify what looks unsolvable.",
+            "The double angle formula is your friend.",
+            "Prove you know it."],
+       art:{id:'map_t',icon:'🗻',name:'Peak Survey Map',desc:'Every elevation calculated using double angle and compound angle identities.'},
+       cd:22,      },
+      {id:'seismologist',name:'Seismologist',tx:5,ty:28,spr:'elder',col:'#b84020',
+       loc:'The Observation Post',
+       flav:"Studies the periodic tremors using sine and cosine graphs. Everything is a wave.",
+       dlg:["The earth shakes in waves. Amplitude, period, phase shift.",
+            "Reading a trigonometric graph is as important as the formula.",
+            "One graph, one reading."],
+       art:{id:'seismo',icon:'📊',name:'Seismograph Roll',desc:'Records of the Trigo Peaks tremors. Each wave labelled with amplitude and period.'},
+       cd:16,      },
+      {id:'angle_smith',name:'The Angle Smith',tx:41,ty:26,spr:'traveller',col:'#d05030',
+       loc:'The Forge of Angles',
+       flav:"Forges tools with exact angular specifications. Uses general solutions to trig equations.",
+       dlg:["A trigonometric equation has infinitely many solutions.",
+            "The general solution captures all of them.",
+            "Write the general solution. Precisely."],
+       art:{id:'protractor',icon:'📐',name:'Infinite Protractor',desc:'Measures all angles, including those beyond 360°. Marked with general solution notation.'},
+       cd:20,      },
+      {id:'old_watchman',name:'Old Watchman',tx:42,ty:18,spr:'elder',col:'#f07040',
+       loc:'The Watchtower',
+       flav:"Has watched the sunrise from this tower every morning. The angle changes by the same formula each day.",
+       dlg:["From this tower I measure elevations and depressions.",
+            "Angles of elevation and depression — the simplest use of trigonometry.",
+            "Tell me the height of the next peak."],
+       art:{id:'spyglass',icon:'🔭',name:'Watchman\'s Spyglass',desc:'Calibrated for angles of elevation. The eyepiece reads in degrees and gradients.'},
+       cd:18,      }
+    ]
+  },
+  {
+    id:'algebra_aces',
+    name:'Algebra Aces',
+    theme:'Algebra',
+    icon:'🧮',
+    palette:{
+      bg:'#120d08',sky:'#0e0a06',
+      grass:'#1e1a0c',grass2:'#181408',
+      dirt:'#2a1e0e',dirt2:'#221808',
+      path:'#3a2c14',path2:'#302410',
+      water:'#0c1018',water2:'#0a0e16',
+      ruin:'#2e2010',ruin2:'#261808',wall:'#3c2c14',
+      tree:'#181408',tree2:'#100e06',trunk:'#201408',
+      mtn:'#3a2c1c',mtn2:'#302418',
+      sand:'#3a2c18',stone:'#281e0e',stone2:'#302618',
+      fog:'#14100a',
+      npc1:'#c0a020',npc2:'#a08018',npc3:'#d8b830',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'ruins_sage',name:'Ruins Sage',tx:7,ty:8,spr:'scholar',col:'#b89820',
+       loc:'The Ancient Pillars',
+       flav:"Has been solving polynomial equations in the dust since before the Wastes formed.",
+       dlg:["The roots of a polynomial are its truth.",
+            "Factor. Solve. Never guess.",
+            "One polynomial. Solve it completely."],
+       art:{id:'dust_tablet',icon:'📜',name:'Dust Tablet',desc:'Polynomial factorisation engraved in ancient notation. Still correct.'},
+       cd:18,      },
+      {id:'matrix_keeper',name:'Matrix Keeper',tx:25,ty:12,spr:'traveller',col:'#c8a828',
+       loc:'The Grid Fortress',
+       flav:"Keeps records using matrices. Claims matrices are the only true algebra.",
+       dlg:["Systems of equations collapse to matrices.",
+            "Gaussian elimination or inverse matrices — both work.",
+            "Solve this system."],
+       art:{id:'matrix_stone',icon:'🔳',name:'Matrix Stone',desc:'A 2×2 determinant carved in obsidian. The identity matrix on the reverse.'},
+       cd:20,      },
+      {id:'logarithm_hermit',name:'The Log Hermit',tx:36,ty:9,spr:'elder',col:'#d0b030',
+       loc:'Exponential Arch',
+       flav:"Turned every exponential problem into a logarithm years ago. Has not stopped since.",
+       dlg:["The logarithm is the exponential\'s shadow.",
+            "What the exponent hides, the logarithm reveals.",
+            "Solve this equation for x."],
+       art:{id:'log_stone',icon:'🪵',name:'Logarithm Stone',desc:'ln(e) = 1 carved on one face. log₁₀(10) = 1 on the other.'},
+       cd:16,      },
+      {id:'sequence_seer',name:'Sequence Seer',tx:10,ty:28,spr:'scholar',col:'#a87820',
+       loc:'The Pattern Fields',
+       flav:"Has found a pattern in every sequence ever written. Claims chaos does not exist.",
+       dlg:["Arithmetic sequences — constant difference.",
+            "Geometric sequences — constant ratio.",
+            "Know both to unlock the vault."],
+       art:{id:'sequence_tablet',icon:'🔢',name:'Sequence Tablet',desc:'First 100 terms of the most important sequences. Summation formulas on the back.'},
+       cd:22,      },
+      {id:'proof_writer',name:'Proof Writer',tx:30,ty:26,spr:'traveller',col:'#c09828',
+       loc:'The Proof Wall',
+       flav:"Has written 400 proofs on this wall. Still finding new ones.",
+       dlg:["Mathematical induction — the cleanest proof technique.",
+            "Base case. Inductive step. QED.",
+            "Show me you understand the structure."],
+       art:{id:'proof_scroll',icon:'📋',name:'Induction Scroll',desc:'A proof by induction that the sum of the first n integers equals n(n+1)/2. Every line justified.'},
+       cd:20,      },
+      {id:'function_keeper',name:'Function Keeper',tx:42,ty:18,spr:'scholar',col:'#e0c040',
+       loc:'Domain Archive',
+       flav:"Guards the archive of all functions. Obsessive about domain and range.",
+       dlg:["A function without a domain is incomplete.",
+            "Restrictions on the domain change everything.",
+            "State the domain. Precisely."],
+       art:{id:'domain_stone',icon:'🔲',name:'Domain Stone',desc:'A stone that only exists for certain values of x. Domain: x ∈ (−∞, ∞).'},
+       cd:16,      }
+    ]
+  },
+  {
+    id:'vector_wastelands',
+    name:'Vector Wastelands',
+    theme:'Vectors & Matrices',
+    icon:'⬜',
+    palette:{
+      bg:'#080c18',sky:'#060a14',
+      grass:'#0c1228',grass2:'#0a0e20',
+      dirt:'#101828',dirt2:'#0e1422',
+      path:'#161e34',path2:'#121830',
+      water:'#08101e',water2:'#060e1a',
+      ruin:'#101628',ruin2:'#0e1422',wall:'#141e30',
+      tree:'#080e18',tree2:'#060c14',trunk:'#0c1018',
+      mtn:'#141e2c',mtn2:'#101828',
+      sand:'#141c2c',stone:'#0e1426',stone2:'#101828',
+      fog:'#08101c',
+      npc1:'#4060e0',npc2:'#3050c8',npc3:'#5878f0',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'vector_master',name:'Vector Master',tx:8,ty:8,spr:'scholar',col:'#3858d8',
+       loc:'The Direction Hall',
+       flav:"Decomposes every force into components before breakfast. Taught vectors to a generation.",
+       dlg:["A vector has magnitude and direction. Both matter.",
+            "The dot product is its most powerful tool.",
+            "Prove you can use it."],
+       art:{id:'direction_stone',icon:'🧲',name:'Direction Stone',desc:'Points toward the greatest gradient. Engraved with the dot product formula.'},
+       cd:18,      },
+      {id:'linear_mapper',name:'Linear Mapper',tx:24,ty:12,spr:'traveller',col:'#5070e0',
+       loc:'The Transformation Lab',
+       flav:"Transforms shapes using matrices. Builds entire architectures from 2×2 matrices.",
+       dlg:["A matrix transformation is a function acting on vectors.",
+            "Rotation, reflection, scaling — all encoded in numbers.",
+            "Transform this vector."],
+       art:{id:'transform_glass',icon:'🔲',name:'Transformation Glass',desc:'A prism that applies a linear transformation to any image you look through.'},
+       cd:20,      },
+      {id:'determinant_keeper',name:'Determinant Keeper',tx:36,ty:8,spr:'elder',col:'#2848c8',
+       loc:'The Singular Point',
+       flav:"Knows whether every matrix is invertible. Can tell just by looking at the numbers.",
+       dlg:["The determinant is a number that summarises the whole matrix.",
+            "If it is zero, the matrix has no inverse.",
+            "Find the determinant. Then tell me if the inverse exists."],
+       art:{id:'det_stone',icon:'🔑',name:'Determinant Key',desc:'Opens only if det(M) ≠ 0. Currently locked.'},
+       cd:22,      },
+      {id:'projection_wizard',name:'Projection Wizard',tx:10,ty:28,spr:'scholar',col:'#6880f0',
+       loc:'The Projection Chamber',
+       flav:"Projects vectors onto subspaces. The chamber walls show all possible projections.",
+       dlg:["Projection. The shadow of one vector onto another.",
+            "The component formula gives you the exact projection vector.",
+            "Project precisely."],
+       art:{id:'proj_lens',icon:'📡',name:'Projection Lens',desc:'Projects any vector onto any subspace. The lens matrix is engraved on the frame.'},
+       cd:16,      },
+      {id:'eigen_priest',name:'Eigen Priest',tx:30,ty:26,spr:'elder',col:'#4060d0',
+       loc:'The Eigenvalue Temple',
+       flav:"Studies the directions that matrices leave unchanged. Claims they reveal the matrix\'s soul.",
+       dlg:["An eigenvector is unchanged in direction under transformation.",
+            "The eigenvalue tells you how much it scales.",
+            "Find them."],
+       art:{id:'eigen_crystal',icon:'💎',name:'Eigen Crystal',desc:'Its orientation does not change under the temple transformation. λ engraved on each face.'},
+       cd:24,      },
+      {id:'cross_product_guard',name:'Cross Guard',tx:42,ty:16,spr:'traveller',col:'#3050c0',
+       loc:'The Cross Tower',
+       flav:"Guards the border between two planes. Calculates normal vectors for every surface.",
+       dlg:["The cross product gives you a vector perpendicular to two others.",
+            "Normal vectors. Surface equations. All the same calculation.",
+            "Find the cross product."],
+       art:{id:'normal_shard',icon:'📌',name:'Normal Shard',desc:'Always points perpendicular to the surface it rests on. The cross product made physical.'},
+       cd:20,      }
+    ]
+  },
+  {
+    id:'exponential_depths',
+    name:'Exponential Depths',
+    theme:'Exponentials & Logs',
+    icon:'📈',
+    palette:{
+      bg:'#04080e',sky:'#03060c',
+      grass:'#081018',grass2:'#060c14',
+      dirt:'#0c1420',dirt2:'#0a1018',
+      path:'#101c2c',path2:'#0e1828',
+      water:'#040a14',water2:'#060c18',
+      ruin:'#0a1220',ruin2:'#081018',wall:'#0e1828',
+      tree:'#060c14',tree2:'#040a10',trunk:'#08100e',
+      mtn:'#0e1624',mtn2:'#0c1220',
+      sand:'#0e1828',stone:'#0a1018',stone2:'#0e1624',
+      fog:'#040810',
+      npc1:'#20d080',npc2:'#18b060',npc3:'#28e898',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'depth_diver',name:'Depth Diver',tx:8,ty:7,spr:'traveller',col:'#18c870',
+       loc:'The Abyssal Shelf',
+       flav:"Descends to exponential depths each dive. Claims the pressure follows e^x exactly.",
+       dlg:["Pressure doubles with every 10 metres. An exponential relationship.",
+            "Exponential growth and decay — the same function, different sign.",
+            "Solve this growth problem."],
+       art:{id:'pressure_gauge',icon:'🌊',name:'Pressure Gauge',desc:'Reads pressure in exponential units. Scale: P = P₀e^(kd).'},
+       cd:18,      },
+      {id:'chemist_e',name:'Decay Chemist',tx:24,ty:12,spr:'scholar',col:'#20d888',
+       loc:'The Decay Chamber',
+       flav:"Models radioactive decay with a logarithmic notebook. Never looks up from the equations.",
+       dlg:["Decay follows the same law as growth — just negative k.",
+            "The half-life formula is an application of logarithms.",
+            "Find the half-life."],
+       art:{id:'half_life_stone',icon:'☢️',name:'Half-Life Stone',desc:'Decays at exactly its own half-life. Currently at half its original mass.'},
+       cd:20,      },
+      {id:'log_fisherman',name:'Log Fisherman',tx:36,ty:9,spr:'elder',col:'#30e890',
+       loc:"The Logarithm Reef",
+       flav:"Measures depth in logarithms. Claims it is the only sensible scale.",
+       dlg:["The logarithm compresses the exponential into something manageable.",
+            "Laws of logarithms are your tools here.",
+            "Simplify. Exactly."],
+       art:{id:'reef_fragment',icon:'🪸',name:'Logarithm Reef Fragment',desc:'Coral that grows at a rate proportional to its size. Each ring is ln of the last.'},
+       cd:16,      },
+      {id:'sonar_keeper',name:'Sonar Keeper',tx:10,ty:28,spr:'scholar',col:'#18b868',
+       loc:'The Signal Trench',
+       flav:"Sends sonar signals and measures their exponential decay. Plots the return on log paper.",
+       dlg:["A graph on log-linear paper turns exponential curves into straight lines.",
+            "The gradient of that line gives you k. The intercept gives you the initial value.",
+            "Interpret this graph."],
+       art:{id:'sonar_log',icon:'📈',name:'Sonar Log Book',desc:'Decades of exponential decay measurements. Every curve linearised on the back page.'},
+       cd:22,      },
+      {id:'tide_watcher',name:'Tide Watcher',tx:30,ty:26,spr:'traveller',col:'#10c060',
+       loc:'The Tidal Vent',
+       flav:"Studies the tidal surge, which perfectly follows a transformed exponential function.",
+       dlg:["Transformations of exponential functions shift the entire curve.",
+            "Horizontal translation, vertical scaling — the basics must be precise.",
+            "Sketch and state."],
+       art:{id:'tide_stone',icon:'🌊',name:'Tidal Stone',desc:'Shows the transformed exponential graph of each tide for the past century.'},
+       cd:18,      },
+      {id:'carbon_keeper',name:'Carbon Keeper',tx:42,ty:16,spr:'scholar',col:'#28d878',
+       loc:'The Carbon Archive',
+       flav:"Dates every artefact in the Depths using carbon-14. Logarithms everywhere.",
+       dlg:["Carbon dating is pure applied logarithms.",
+            "The age of an object determined by the fraction of Carbon-14 remaining.",
+            "Calculate the age."],
+       art:{id:'carbon_shard',icon:'🦴',name:'Carbon Shard',desc:'A bone fragment. Age unknown. C-14 ratio: 0.65 of the original.'},
+       cd:24,      }
+    ]
+  },
+  {
+    id:'combinatorial_archives',
+    name:'The Archives',
+    theme:'Combinatorics',
+    icon:'🎰',
+    palette:{
+      bg:'#0c0a06',sky:'#080804',
+      grass:'#181408',grass2:'#141006',
+      dirt:'#201808',dirt2:'#1a1406',
+      path:'#2c2010',path2:'#261c0e',
+      water:'#080a0c',water2:'#0a0c10',
+      ruin:'#201808',ruin2:'#181206',wall:'#2a1c0c',
+      tree:'#100c04',tree2:'#0c0a04',trunk:'#181004',
+      mtn:'#282010',mtn2:'#201808',
+      sand:'#281e10',stone:'#1c1606',stone2:'#221a0a',
+      fog:'#0e0c08',
+      npc1:'#e0a020',npc2:'#c07818',npc3:'#f0c030',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'head_librarian',name:'Head Librarian',tx:8,ty:8,spr:'scholar',col:'#d09818',
+       loc:'The Great Library',
+       flav:"Has catalogued every arrangement of every book in the library. Still has not finished.",
+       dlg:["Counting arrangements — the librarian's eternal task.",
+            "With repetition or without: the formulas differ.",
+            "How many ways can these books be arranged?"],
+       art:{id:'index_card',icon:'📇',name:'Index Card',desc:'A single card from the infinite catalogue. Contains the arrangement number of every classic text.'},
+       cd:18,      },
+      {id:'archivist_c',name:'The Sub-Archivist',tx:24,ty:12,spr:'elder',col:'#c08820',
+       loc:'The Selection Vault',
+       flav:"Selects subsets from every set in the archive. The difference between permutation and combination is everything.",
+       dlg:["Order matters for arrangements. It does not for selections.",
+            "Combination — choose without regard to order.",
+            "Select carefully."],
+       art:{id:'selection_key',icon:'🗝️',name:'Selection Key',desc:'Opens the vault by entering C(n,r). Currently set to C(10,3) = 120.'},
+       cd:20,      },
+      {id:'pascal_scribe',name:"Pascal's Scribe",tx:36,ty:9,spr:'traveller',col:'#e0a828',
+       loc:"Pascal's Tower",
+       flav:"Copies Pascal's triangle each morning as meditation. Knows every entry by heart.",
+       dlg:["Pascal's triangle encodes the binomial coefficients.",
+            "The expansion of (a+b)ⁿ is all in that triangle.",
+            "Expand this binomial."],
+       art:{id:'pascals_page',icon:'🔺',name:"Pascal's Page",desc:'Row 6 of the triangle, hand-illuminated. Every entry verified three times.'},
+       cd:16,      },
+      {id:'pattern_finder',name:'Pattern Finder',tx:10,ty:28,spr:'scholar',col:'#c09020',
+       loc:'The Pattern Crypts',
+       flav:"Finds combinatorial patterns in sequences. Has never met a sequence without one.",
+       dlg:["Pigeonhole. Stars and bars. Inclusion-exclusion.",
+            "The inclusion-exclusion principle counts what the others miss.",
+            "Apply it here."],
+       art:{id:'pattern_stone',icon:'🧩',name:'Pattern Stone',desc:'The surface rearranges itself into the correct combinatorial formula whenever you look away.'},
+       cd:22,      },
+      {id:'stars_keeper',name:'Stars and Bars Keeper',tx:30,ty:26,spr:'traveller',col:'#d0a020',
+       loc:'The Distribution Hall',
+       flav:"Distributes books across shelves all day. Has memorised every distribution formula.",
+       dlg:["How many ways to distribute identical objects into distinct bins?",
+            "Stars and bars. The formula is elegant.",
+            "Distribute carefully."],
+       art:{id:'stars_tablet',icon:'⭐',name:'Stars & Bars Tablet',desc:'The combinatorial formula for distribution problems, engraved in gold.'},
+       cd:20,      },
+      {id:'derangement_master',name:'Derangement Master',tx:42,ty:16,spr:'scholar',col:'#f0b030',
+       loc:'The Displacement Annex',
+       flav:"Studies arrangements where nothing is in its original position. Finds them beautiful.",
+       dlg:["A derangement: no element in its original place.",
+            "The formula involves the number e, oddly enough.",
+            "Count the derangements."],
+       art:{id:'derange_card',icon:'🃏',name:'Derangement Card',desc:'A playing card that refuses to go back to its original position in any arrangement.'},
+       cd:18,      }
+    ]
+  },
+  {
+    id:'null_space',
+    name:'The Null Space',
+    theme:'Complex Numbers',
+    icon:'⬜',
+    palette:{
+      bg:'#080414',sky:'#060310',
+      grass:'#100820',grass2:'#0c0618',
+      dirt:'#140a24',dirt2:'#0e0618',
+      path:'#180e30',path2:'#140a28',
+      water:'#06041a',water2:'#08061e',
+      ruin:'#100828',ruin2:'#0c0620',wall:'#180e34',
+      tree:'#0a0618',tree2:'#060414',trunk:'#0e0820',
+      mtn:'#14082a',mtn2:'#100620',
+      sand:'#160a2c',stone:'#0c0620',stone2:'#10082a',
+      fog:'#060318',
+      npc1:'#d040f0',npc2:'#a828d0',npc3:'#e860ff',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'complex_guide',name:'The Complex Guide',tx:8,ty:8,spr:'scholar',col:'#c030e0',
+       loc:'The Imaginary Threshold',
+       flav:"Crossed into the Null Space by squaring −1. Has been here ever since.",
+       dlg:["Welcome to where i = √(−1) and the number line becomes a plane.",
+            "Addition, subtraction, multiplication — all extended to complex numbers.",
+            "One calculation."],
+       art:{id:'imaginary_stone',icon:'💜',name:'Imaginary Stone',desc:'Exists perpendicular to reality. Coordinate: (0, 1) on the Argand plane.'},
+       cd:18,      },
+      {id:'modulus_keeper',name:'Modulus Keeper',tx:24,ty:12,spr:'traveller',col:'#a020c0',
+       loc:'The Argand Observatory',
+       flav:"Plots every complex number on the Argand plane. The observatory contains them all.",
+       dlg:["The Argand plane gives geometry to numbers.",
+            "Modulus is distance from the origin. Argument is the angle.",
+            "Find both."],
+       art:{id:'argand_glass',icon:'🔵',name:'Argand Glass',desc:'Every complex number appears as a point when you look through it.'},
+       cd:20,      },
+      {id:'de_moivre',name:"De Moivre's Shadow",tx:36,ty:9,spr:'elder',col:'#d848e8',
+       loc:"De Moivre's Arch",
+       flav:"A shadow left behind by the theorem's author. Responds only to trigonometric form.",
+       dlg:["De Moivre's theorem extends complex multiplication to any power.",
+            "Convert to polar form. Apply the theorem. Convert back.",
+            "Apply it."],
+       art:{id:'polar_stone',icon:'🌀',name:'Polar Stone',desc:'Encodes any complex number in polar form. Rotates exactly arg(z) when spun.'},
+       cd:22,      },
+      {id:'roots_of_unity',name:'Unity Keeper',tx:10,ty:28,spr:'scholar',col:'#b030d0',
+       loc:'The Roots Chamber',
+       flav:"Tends the nth roots of unity. They orbit the origin on a perfect circle.",
+       dlg:["The nth roots of unity are equally spaced on the unit circle.",
+            "Argument increases by 2π/n each time.",
+            "Find the cube roots of unity."],
+       art:{id:'unity_gem',icon:'⚜️',name:'Unity Gem',desc:'One of the three cube roots of unity. The other two exist at angles 2π/3 and 4π/3.'},
+       cd:16,      },
+      {id:'conjugate_twin',name:'Conjugate Twin',tx:30,ty:26,spr:'traveller',col:'#e050f8',
+       loc:'The Reflection Line',
+       flav:"A perfect mirror image of someone no longer here. Knows only conjugates and moduli.",
+       dlg:["The conjugate reflects across the real axis.",
+            "Conjugates are essential for dividing complex numbers.",
+            "Divide."],
+       art:{id:'conjugate_mirror',icon:'🪞',name:'Conjugate Mirror',desc:'Shows you your complex conjugate. Im(z) reversed, Re(z) unchanged.'},
+       cd:18,      },
+      {id:'locus_keeper',name:'Locus Keeper',tx:42,ty:16,spr:'scholar',col:'#c038e0',
+       loc:'The Locus Fields',
+       flav:"Draws the locus of every complex number constraint. The fields are full of circles and lines.",
+       dlg:["A locus constraint on z defines a geometric shape.",
+            "|z − a| = r is a circle. |z − a| = |z − b| is a perpendicular bisector.",
+            "Identify this locus."],
+       art:{id:'locus_stone',icon:'⭕',name:'Locus Stone',desc:'Always moves to satisfy |z| = 1. Traces the unit circle continuously.'},
+       cd:24,      }
+    ]
+  },
+  {
+    id:'statistical_archipelago',
+    name:'Statistical Archipelago',
+    theme:'Statistics',
+    icon:'📊',
+    palette:{
+      bg:'#040c08',sky:'#030a06',
+      grass:'#081814',grass2:'#061210',
+      dirt:'#0c1e18',dirt2:'#0a1812',
+      path:'#101e1a',path2:'#0e1a16',
+      water:'#040e10',water2:'#06121a',
+      ruin:'#0a1814',ruin2:'#081410',wall:'#0e1c18',
+      tree:'#061210',tree2:'#040e0c',trunk:'#081008',
+      mtn:'#0e1a14',mtn2:'#0c1610',
+      sand:'#0e1c18',stone:'#0a1410',stone2:'#0e1a14',
+      fog:'#04100a',
+      npc1:'#20d0a0',npc2:'#18a880',npc3:'#28e8b8',
+    },
+    startTX:10,startTY:13,
+    npcs:[
+      {id:'data_collector',name:'Data Collector',tx:8,ty:8,spr:'scholar',col:'#18c890',
+       loc:'The Survey Cove',
+       flav:"Has collected data on everything in the Archipelago. Every dataset needs a summary.",
+       dlg:["Mean, median, mode — the basics, but you must be precise.",
+            "And standard deviation: the spread matters as much as the centre.",
+            "Calculate both."],
+       art:{id:'data_scroll',icon:'📊',name:'Data Scroll',desc:'The original dataset for the Archipelago census. Mean and SD annotated in red.'},
+       cd:16,      },
+      {id:'hypothesis_judge',name:'Hypothesis Judge',tx:24,ty:12,spr:'elder',col:'#20d8a8',
+       loc:'The Testing Court',
+       flav:"Presides over hypothesis tests. Has never made a Type I error. Claims.",
+       dlg:["A hypothesis test is a structured argument using probability.",
+            "State the hypotheses. Find the p-value. Compare to α.",
+            "Test this claim."],
+       art:{id:'pvalue_stone',icon:'⚖️',name:'p-Value Stone',desc:'Displays the exact p-value of any experiment. Currently showing 0.043.'},
+       cd:20,      },
+      {id:'regression_keeper',name:'Regression Keeper',tx:36,ty:9,spr:'traveller',col:'#28e8b0',
+       loc:'The Scatter Island',
+       flav:"Fits a line to every cloud of points. Has the least-squares formula memorised backwards.",
+       dlg:["A scatter plot hides a linear relationship if you know how to find it.",
+            "Least squares regression minimises the sum of squared residuals.",
+            "Interpret this regression line."],
+       art:{id:'regression_line',icon:'📉',name:'Regression Line',desc:'y = 2.3x + 4.1, r = 0.91. Fitted to data from the Scatter Island survey.'},
+       cd:22,      },
+      {id:'confidence_sage',name:'Confidence Sage',tx:10,ty:28,spr:'scholar',col:'#10b878',
+       loc:'The Interval Cliffs',
+       flav:"Builds confidence intervals around every estimate. Nothing is certain, but bounds can be precise.",
+       dlg:["A confidence interval does not say the parameter is definitely inside.",
+            "It says: if we repeated this many times, 95% of intervals would contain the true value.",
+            "Construct one."],
+       art:{id:'interval_stone',icon:'📏',name:'Interval Stone',desc:'Marked with ± 1.96σ/√n on each face. The 95% confidence interval formula made solid.'},
+       cd:24,      },
+      {id:'variance_smith',name:'Variance Smith',tx:30,ty:26,spr:'traveller',col:'#30e8b8',
+       loc:'The Spread Forge',
+       flav:"Forges measures of spread from raw data. Claims variance is the most underrated statistic.",
+       dlg:["Sample variance. Population variance. The denominator differs.",
+            "N for population. N−1 for sample. The distinction matters.",
+            "Calculate the sample variance."],
+       art:{id:'variance_rod',icon:'🔩',name:'Variance Rod',desc:'Its length is the standard deviation of the Spread Forge dataset. Currently 4.2 units.'},
+       cd:18,      },
+      {id:'outlier_watcher',name:'Outlier Watcher',tx:42,ty:16,spr:'scholar',col:'#18d098',
+       loc:'The Outlier Reef',
+       flav:"Searches for anomalies. Has found outliers that changed entire conclusions.",
+       dlg:["An outlier can shift the mean. The median resists it.",
+            "Box plots reveal outliers clearly. Interquartile range is the tool.",
+            "Find the outliers."],
+       art:{id:'outlier_stone',icon:'🎯',name:'Outlier Marker',desc:'A buoy placed at every outlier in the Archipelago dataset. Currently marking one value.'},
+       cd:20,      }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CENTRALISED QUESTION BANK
+// Each NPC id maps to an array of 3 problem variants.
+// openProb() picks one at random each time — keeps archetype drops consistent.
+// ═══════════════════════════════════════════════════════════════════════════════
+const QUESTION_BANK = {
+
+  // ── INTEGRAL PLAINS ─────────────────────────────────────────────────────────
+  archivist:[
+    {q:'Find the indefinite integral:\n\n∫ (3x² + 4x − 5) dx',
+     hint:'Power rule: ∫xⁿ dx = xⁿ⁺¹/(n+1) + C. Apply term by term.',
+     sample:'x³ + 2x² − 5x + C',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return(c.includes('x^3')||c.includes('x³'))&&(c.includes('2x^2')||c.includes('2x²'))&&c.includes('5x');}},
+    {q:'Find the indefinite integral:\n\n∫ (6x² − 2x + 7) dx',
+     hint:'Power rule applied term by term. Do not forget +C.',
+     sample:'2x³ − x² + 7x + C',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return(c.includes('2x^3')||c.includes('2x³'))&&(c.includes('x^2')||c.includes('x²'))&&c.includes('7x');}},
+    {q:'Find the indefinite integral:\n\n∫ (5x⁴ − 3x + 2) dx',
+     hint:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C. Constant rule: ∫k dx = kx + C.',
+     sample:'x⁵ − (3/2)x² + 2x + C',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return(c.includes('x^5')||c.includes('x⁵'))&&c.includes('2x');}}
+  ],
+
+  river_keeper:[
+    {q:'A particle moves with velocity:\nv(t) = 6t² − 4t + 1 m/s\n\nFind the acceleration at t = 2.',
+     hint:'a(t) = v\'(t). Differentiate then substitute t = 2.',
+     sample:'20 m/s²',
+     chk:(s)=>s.replace(/[^0-9\-]/g,'')==='20'},
+    {q:'A particle moves with velocity:\nv(t) = 4t³ − 6t m/s\n\nFind the acceleration at t = 1.',
+     hint:'a(t) = v\'(t) = 12t² − 6. Substitute t = 1.',
+     sample:'6 m/s²',
+     chk:(s)=>s.replace(/[^0-9\-]/g,'')==='6'},
+    {q:'A particle moves with velocity:\nv(t) = 10t − 3t² m/s\n\nFind the acceleration when v = 0.',
+     hint:'First find t when v=0: 10−3t=0 → t=10/3. Then a = v\'(t) = 10−6t.',
+     sample:'−10 m/s²',
+     chk:(s)=>{const c=s.replace(/[^0-9\-]/g,'');return c==='-10'||c==='10';}}
+  ],
+
+  wanderer:[
+    {q:'Differentiate using the chain rule:\n\ny = (3x² + 1)⁵',
+     hint:'Let u = 3x²+1. dy/dx = 5u⁴ · 6x = 30x(3x²+1)⁴',
+     sample:'30x(3x² + 1)⁴',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('30x')&&c.includes('(3x');}},
+    {q:'Differentiate using the chain rule:\n\ny = (2x³ − 5)⁴',
+     hint:'Let u = 2x³−5. dy/dx = 4u³ · 6x² = 24x²(2x³−5)³',
+     sample:'24x²(2x³ − 5)³',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('24x')&&c.includes('(2x');}},
+    {q:'Differentiate using the chain rule:\n\ny = sin(4x² + 1)',
+     hint:'dy/dx = cos(4x²+1) · 8x',
+     sample:'8x cos(4x² + 1)',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('8x')&&c.includes('cos');}}
+  ],
+
+  astronomer:[
+    {q:'Find the x-coordinates of the stationary points of:\n\nf(x) = x³ − 6x² + 9x + 2',
+     hint:"Set f'(x) = 0: 3x² − 12x + 9 = 0. Factorise.",
+     sample:'x = 1 and x = 3',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('1')&&c.includes('3');}},
+    {q:'Find the stationary points of:\n\nf(x) = x³ − 3x² − 9x + 5\n\nand classify each.',
+     hint:"f'(x) = 3x²−6x−9 = 3(x−3)(x+1) = 0 → x = 3 or x = −1.",
+     sample:'x = 3 (min), x = −1 (max)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3')&&c.includes('-1');}},
+    {q:'Find the x-coordinate of the turning point of:\n\nf(x) = 2x² − 8x + 3',
+     hint:"f'(x) = 4x − 8 = 0 → x = 2.",
+     sample:'x = 2',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='2'}
+  ],
+
+  shrine_keeper:[
+    {q:'Evaluate the definite integral:\n\n∫₁⁴ (2x + 3) dx',
+     hint:'Antiderivative: x² + 3x. Apply F(4) − F(1).',
+     sample:'24',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='24'},
+    {q:'Evaluate the definite integral:\n\n∫₀³ (x² + 2) dx',
+     hint:'Antiderivative: x³/3 + 2x. Apply F(3) − F(0).',
+     sample:'15',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='15'},
+    {q:'Evaluate the definite integral:\n\n∫₁² (4x³ − 1) dx',
+     hint:'Antiderivative: x⁴ − x. Apply F(2) − F(1).',
+     sample:'14',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='14'}
+  ],
+
+  ferryman:[
+    {q:'A ladder 5 m long leans against a wall.\nThe base slides away at 0.5 m/s.\n\nWhen the base is 3 m from the wall,\nhow fast is the top sliding down? (m/s)',
+     hint:'x² + y² = 25. Differentiate implicitly: 2x·dx/dt + 2y·dy/dt = 0. At x=3, y=4.',
+     sample:'0.375 m/s',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c==='0.375'||c==='375';}},
+    {q:'A spherical balloon is inflated at 10 cm³/s.\n\nFind the rate of change of radius\nwhen r = 5 cm.',
+     hint:'V = (4/3)πr³. dV/dt = 4πr²·dr/dt. Solve for dr/dt at r=5.',
+     sample:'1/(10π) cm/s ≈ 0.0318 cm/s',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('10π')||c.includes('10pi')||c.includes('0.031')||c.includes('0.032');}},
+    {q:'Water drains from a conical tank at 2 m³/min.\nThe radius equals the depth at all times.\n\nHow fast is the depth decreasing\nwhen the depth is 3 m?',
+     hint:'V = πr²h/3 = πh³/3. dV/dt = πh²·dh/dt. Solve at h=3.',
+     sample:'2/(9π) m/min ≈ 0.0707 m/min',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('9π')||c.includes('9pi')||c.includes('0.070')||c.includes('0.071');}}
+  ],
+
+  // ── DERIVATION CITY ──────────────────────────────────────────────────────────
+  engineer_d:[
+    {q:'Differentiate from first principles:\n\nf(x) = x² + 3x\n\nShow the limit definition and state f\'(x).',
+     hint:"f'(x) = lim[h→0] [f(x+h)−f(x)]/h. Expand (x+h)²+3(x+h), subtract f(x), divide by h, let h→0.",
+     sample:"f'(x) = 2x + 3",
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/f'?\(x\)=/,'').replace(/f'=/,'');return c.includes('2x+3')||c.includes('2x')&&c.includes('3');}},
+    {q:'Differentiate from first principles:\n\nf(x) = x² − 5x',
+     hint:"Use lim[h→0] [(x+h)²−5(x+h) − (x²−5x)]/h. Simplify.",
+     sample:"f'(x) = 2x − 5",
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2x')&&c.includes('5');}},
+    {q:'Differentiate from first principles:\n\nf(x) = 3x²',
+     hint:"f'(x) = lim[h→0] [3(x+h)² − 3x²]/h = lim[h→0] (6x + 3h) = 6x.",
+     sample:"f'(x) = 6x",
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('6x');}}
+  ],
+
+  factory_boss:[
+    {q:'A farmer has 200 m of fencing to enclose\na rectangular paddock against a straight wall.\n(The wall forms one side — no fencing needed there.)\n\nFind the maximum area.',
+     hint:'Let width = x. Then length = 200−2x. A = x(200−2x). Differentiate, set A\'=0.',
+     sample:'5000 m²',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='5000'},
+    {q:'A box with a square base and no lid\nis made from 300 cm² of cardboard.\n\nFind the dimensions that maximise the volume.',
+     hint:'V = x²h. Surface: x² + 4xh = 300. Express h in terms of x, substitute, differentiate.',
+     sample:'x = 10 cm, h = 5 cm',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('10')&&c.includes('5');}},
+    {q:'The profit P = −x² + 80x − 1200\nwhere x is units sold.\n\nFind the number of units that maximises profit\nand state the maximum profit.',
+     hint:"P' = −2x + 80 = 0 → x = 40. P(40) = −1600+3200−1200.",
+     sample:'x = 40, P = 400',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('40')&&c.includes('400');}}
+  ],
+
+  rail_planner:[
+    {q:'Find dy/dx for the curve:\n\nx² + 3xy + y² = 7\n\n(Leave your answer in terms of x and y.)',
+     hint:'Differentiate implicitly: 2x + 3y + 3x(dy/dx) + 2y(dy/dx) = 0. Collect dy/dx terms.',
+     sample:'dy/dx = −(2x+3y)/(3x+2y)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return(c.includes('2x+3y')||c.includes('3y+2x'))&&(c.includes('3x+2y')||c.includes('2y+3x'));}},
+    {q:'Find dy/dx for:\n\nx³ + y³ = 6xy',
+     hint:'3x² + 3y²(dy/dx) = 6y + 6x(dy/dx). Collect dy/dx.',
+     sample:'dy/dx = (2y − x²)/(y² − 2x)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('2y')&&c.includes('x^2')||c.includes('2y')&&c.includes('x²');}},
+    {q:'Find dy/dx for:\n\nsin(x) + cos(y) = 1',
+     hint:'cos(x) − sin(y)·(dy/dx) = 0.',
+     sample:'dy/dx = cos(x)/sin(y)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('cos')&&c.includes('sin');}}
+  ],
+
+  chemist_d:[
+    {q:'Differentiate:\n\ny = x³ · eˣ',
+     hint:'Product rule: (uv)\' = u\'v + uv\'. u = x³, v = eˣ.',
+     sample:"y' = x²eˣ(x + 3)",
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return(c.includes('3x^2')||c.includes('3x²'))&&c.includes('e^x')||c.includes('x^2')&&c.includes('e^x')&&c.includes('x+3');}},
+    {q:'Differentiate:\n\ny = x² · sin(x)',
+     hint:'Product rule: u = x², v = sin(x). u\' = 2x, v\' = cos(x).',
+     sample:"y' = 2x sin(x) + x² cos(x)",
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('2x')&&c.includes('sin')&&c.includes('cos');}},
+    {q:'Differentiate:\n\ny = eˣ · ln(x)',
+     hint:'Product rule: u = eˣ, v = ln x. u\' = eˣ, v\' = 1/x.',
+     sample:"y' = eˣ(ln x + 1/x)",
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('e^x')||c.includes('eˣ')&&c.includes('ln');}}
+  ],
+
+  architect_d:[
+    {q:'A curve is defined parametrically:\nx = t², y = t³ − 3t\n\nFind dy/dx in terms of t.',
+     hint:'dy/dx = (dy/dt)/(dx/dt). dy/dt = 3t²−3, dx/dt = 2t.',
+     sample:'(3t²−3)/(2t)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return(c.includes('3t^2-3')||c.includes('3t²-3'))&&c.includes('2t');}},
+    {q:'A curve is given parametrically:\nx = 2t, y = t² + 1\n\nFind dy/dx and d²y/dx².',
+     hint:'dy/dx = 2t/2 = t. d²y/dx² = (d/dt)(dy/dx)/(dx/dt) = 1/2.',
+     sample:'dy/dx = t, d²y/dx² = 1/2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('t')&&(c.includes('1/2')||c.includes('0.5'));}},
+    {q:'A curve is defined by:\nx = cos(t), y = sin(t)\n\nFind dy/dx.',
+     hint:'dy/dt = cos t, dx/dt = −sin t. dy/dx = −cos(t)/sin(t).',
+     sample:'dy/dx = −cos(t)/sin(t) = −cot(t)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('cos')&&c.includes('sin')||c.includes('cot');}}
+  ],
+
+  professor_d:[
+    {q:"Evaluate the limit:\n\nlim (x→0)  sin(3x) / x",
+     hint:"L'Hôpital or use lim(x→0) sin(ax)/x = a.",
+     sample:'3',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='3'},
+    {q:"Evaluate using L'Hôpital's rule:\n\nlim (x→0)  (eˣ − 1) / x",
+     hint:"Differentiate numerator and denominator: eˣ/1 → 1 as x→0.",
+     sample:'1',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='1'},
+    {q:"Evaluate using L'Hôpital's rule:\n\nlim (x→∞)  x / eˣ",
+     hint:"Apply L'Hôpital: 1/eˣ → 0.",
+     sample:'0',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='0'}
+  ],
+
+  // ── TRIGO PEAKS ──────────────────────────────────────────────────────────────
+  climber:[
+    {q:'In triangle ABC:\n∠A = 40°, ∠B = 70°, a = 15 cm\n\nFind side b.\nRound to 2 decimal places.',
+     hint:'Sine rule: b = 15 × sin(70°)/sin(40°).',
+     sample:'21.94 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('21.9')||c.startsWith('21.94');}},
+    {q:'In triangle PQR:\n∠P = 55°, ∠Q = 65°, p = 20 cm\n\nFind side q.\nRound to 2 decimal places.',
+     hint:'Sine rule: q = 20 × sin(65°)/sin(55°).',
+     sample:'22.13 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('22.1');}},
+    {q:'In triangle XYZ:\n∠X = 30°, x = 8 cm, y = 12 cm\n\nFind ∠Y.\nRound to 1 decimal place.',
+     hint:'sin Y / y = sin X / x. sin Y = 12 sin(30°)/8 = 0.75. ∠Y = 48.6°.',
+     sample:'∠Y = 48.6°',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('48.6');}}
+  ],
+
+  navigator:[
+    {q:'In triangle ABC:\na = 7 cm, b = 10 cm, C = 60°\n\nFind side c.\nLeave as exact value or round to 2 d.p.',
+     hint:'c² = a² + b² − 2ab·cos(C) = 49 + 100 − 70.',
+     sample:'√79 ≈ 8.89 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9.√]/g,'');return c.includes('79')||c.startsWith('8.8')||c.startsWith('8.9');}},
+    {q:'In triangle DEF:\nd = 5 cm, e = 8 cm, F = 45°\n\nFind side f.\nRound to 2 decimal places.',
+     hint:'f² = 25 + 64 − 2(5)(8)cos(45°) = 89 − 40√2.',
+     sample:'5.69 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('5.6')||c.startsWith('5.7');}},
+    {q:'A triangle has sides a = 6, b = 8, c = 10.\n\nFind angle C.\nGive your answer in degrees.',
+     hint:'cos C = (a²+b²−c²)/(2ab) = (36+64−100)/96 = 0. C = 90°.',
+     sample:'90°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='90'}
+  ],
+
+  cartographer_t:[
+    {q:'Prove that sin(2x) = 2sin(x)cos(x),\nthen find the exact value of sin(120°).',
+     hint:'sin(2x)=sin(x+x)=2sinxcosx. For 120°: let x=60°.',
+     sample:'√3/2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√3/2')||c.includes('sqrt(3)/2')||c.includes('0.866');}},
+    {q:'Use the double angle formula to simplify:\n\ncos(2x) = 1 − 2sin²(x)\n\nThen find the exact value of cos(120°).',
+     hint:'cos(2×60°)=1−2sin²(60°)=1−2(3/4)=−1/2.',
+     sample:'−1/2',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-1/2')||c.includes('-0.5');}},
+    {q:'Expand sin(A + B) and use it to find\nthe exact value of sin(75°).',
+     hint:'sin(45°+30°)=sin45cos30+cos45sin30=(√2/2)(√3/2)+(√2/2)(1/2)=√6/4+√2/4.',
+     sample:'(√6 + √2)/4',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√6')&&c.includes('√2')||c.includes('0.965')||c.includes('0.966');}}
+  ],
+
+  seismologist:[
+    {q:'A function is given by:\nf(x) = 3 sin(2x − π/4)\n\nState the amplitude, period, and phase shift.',
+     hint:'Amplitude=3. Period=2π/2=π. Phase shift=(π/4)/2=π/8 right.',
+     sample:'Amplitude 3, Period π, Phase shift π/8 right',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('3')&&c.includes('π')&&c.includes('π/8')||c.includes('3')&&c.includes('pi');}},
+    {q:'Write the equation of a sine function with:\nAmplitude = 4, Period = π, Phase shift = π/6 left.',
+     hint:'y = A sin(Bx + C). B = 2π/Period = 2. Phase left means C = Bπ/6 = π/3.',
+     sample:'y = 4 sin(2x + π/3)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('4')&&c.includes('2x')&&(c.includes('π/3')||c.includes('pi/3'));}},
+    {q:'For the function f(x) = 2 cos(3x):\n\nState the amplitude, period and\nsketch key values at x = 0, π/6, π/3.',
+     hint:'Amplitude=2. Period=2π/3. At x=0: 2. At x=π/6: 0. At x=π/3: −2.',
+     sample:'Amplitude 2, Period 2π/3; values: 2, 0, −2',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('2')&&(c.includes('2π/3')||c.includes('2pi/3'));}}
+  ],
+
+  angle_smith:[
+    {q:'Find the general solution of:\n\nsin(x) = √3/2',
+     hint:'Principal value: x = π/3. General solution: x = nπ + (−1)ⁿ(π/3).',
+     sample:'x = nπ + (−1)ⁿ(π/3), n ∈ ℤ',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return(c.includes('π/3')||c.includes('pi/3'))&&(c.includes('nπ')||c.includes('npi'));}},
+    {q:'Find the general solution of:\n\ncos(x) = 1/2',
+     hint:'Principal value: x = π/3. General solution: x = 2nπ ± π/3.',
+     sample:'x = 2nπ ± π/3, n ∈ ℤ',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return(c.includes('π/3')||c.includes('pi/3'))&&(c.includes('2nπ')||c.includes('2npi'));}},
+    {q:'Find all solutions of:\n\n2sin²(x) − sin(x) − 1 = 0\n\nfor x ∈ [0°, 360°].',
+     hint:'Factor: (2sin x + 1)(sin x − 1) = 0. sin x = −1/2 or sin x = 1.',
+     sample:'x = 30°, 150°, 210°, 270° ... check: x = 90°, 210°, 330°',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('90')&&(c.includes('210')||c.includes('330'));}}
+  ],
+
+  old_watchman:[
+    {q:"From a point 80 m from the base of a building,\nthe angle of elevation to the top is 38°.\n\nFind the height of the building.\nRound to 2 decimal places.",
+     hint:'tan(38°) = height/80. Height = 80 × tan(38°) ≈ 80 × 0.7813.',
+     sample:'62.50 m',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('62.5')||c.startsWith('62.4')||c.startsWith('62.6');}},
+    {q:"From the top of a 50 m cliff,\nthe angle of depression to a boat is 25°.\n\nHow far is the boat from the base of the cliff?\nRound to 2 decimal places.",
+     hint:'tan(25°) = 50/d. d = 50/tan(25°) ≈ 50/0.4663.',
+     sample:'107.23 m',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('107.2')||c.startsWith('107.3');}},
+    {q:"Two observers A and B are 100 m apart.\nThey both observe a tower.\nAngle of elevation from A = 40°, from B = 50°.\nA and B are on the same side.\n\nFind the height of the tower (to 2 d.p.).",
+     hint:'Let h = height, d = distance from B. h = d·tan 50°, h = (d+100)·tan 40°. Solve simultaneously.',
+     sample:'≈ 263.01 m',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('263')||c.startsWith('262')||c.startsWith('264');}}
+  ],
+
+  // ── EUCLID BAY ───────────────────────────────────────────────────────────────
+  lighthouse_keeper:[
+    {q:"A right triangle has hypotenuse 13 cm and one leg 5 cm.\n\nFind the area of the triangle.",
+     hint:'Other leg: b² = 13²−5² = 144, b = 12. Area = ½ × 5 × 12.',
+     sample:'30 cm²',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='30'},
+    {q:"A right triangle has legs of 9 cm and 40 cm.\n\nFind the hypotenuse and the perimeter.",
+     hint:'c = √(81+1600) = √1681 = 41. Perimeter = 9+40+41.',
+     sample:'Hypotenuse 41 cm, Perimeter 90 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9]/g,'');return c.includes('41')&&c.includes('90');}},
+    {q:"In a right-angled triangle,\nthe hypotenuse is 25 cm and one angle is 30°.\n\nFind the length of the side opposite the 30° angle.",
+     hint:'opp = 25 × sin(30°) = 25 × 0.5.',
+     sample:'12.5 cm',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.includes('12.5');}}
+  ],
+
+  merchant:[
+    {q:'A sector has radius 8 cm and central angle 135°.\n\nFind the arc length in terms of π.',
+     hint:'Arc length = (135/360) × 2π × 8 = 6π.',
+     sample:'6π cm',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('6π')||c.includes('6pi');}},
+    {q:'A sector has radius 6 cm and central angle 2 radians.\n\nFind the area of the sector.',
+     hint:'Area = ½r²θ = ½ × 36 × 2 = 36 cm².',
+     sample:'36 cm²',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='36'},
+    {q:'A circle has circumference 20π cm.\n\nFind the area of the circle.',
+     hint:'Circumference = 2πr = 20π → r = 10. Area = π × 100.',
+     sample:'100π cm²',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('100π')||c.includes('100pi');}}
+  ],
+
+  surveyor:[
+    {q:'Two similar triangles have corresponding sides in ratio 3:5.\n\nIf the area of the smaller triangle is 27 cm²,\nfind the area of the larger triangle.',
+     hint:'Area ratio = (3:5)² = 9:25. Larger area = 27 × 25/9.',
+     sample:'75 cm²',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='75'},
+    {q:'Two similar cones have heights 4 cm and 6 cm.\n\nIf the volume of the smaller cone is 48 cm³,\nfind the volume of the larger cone.',
+     hint:'Volume ratio = (4:6)³ = 64:216. Larger = 48 × 216/64.',
+     sample:'162 cm³',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='162'},
+    {q:'A photograph is scaled up from 10 cm × 15 cm\nto 25 cm × 37.5 cm.\n\nWhat is the scale factor, and\nby what factor does the area increase?',
+     hint:'Scale factor = 25/10 = 2.5. Area factor = 2.5² = 6.25.',
+     sample:'Scale factor 2.5, area factor 6.25',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2.5')&&c.includes('6.25');}}
+  ],
+
+  cartographer:[
+    {q:'A cyclic quadrilateral ABCD is inscribed in a circle.\n∠DAB = 112°.\n\nFind ∠BCD.',
+     hint:'Opposite angles of a cyclic quadrilateral are supplementary.',
+     sample:'68°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='68'},
+    {q:'An inscribed angle in a circle subtends an arc of 140°.\n\nFind the inscribed angle.',
+     hint:'Inscribed angle = ½ × arc = ½ × 140°.',
+     sample:'70°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='70'},
+    {q:'A tangent and a chord meet at a point on a circle.\nThe chord subtends an arc of 110° on the far side.\n\nFind the angle between the tangent and the chord.',
+     hint:'Tangent-chord angle = ½ × intercepted arc = 55°.',
+     sample:'55°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='55'}
+  ],
+
+  engineer:[
+    {q:'Vectors a = (3, 4) and b = (1, 2).\n\nFind the angle between a and b to the nearest degree.',
+     hint:'cos θ = (a·b)/(|a||b|). a·b=11, |a|=5, |b|=√5.',
+     sample:'11°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='11'},
+    {q:'Find the angle between vectors\nu = (1, 0) and v = (1, 1).\nGive your answer in degrees.',
+     hint:'cos θ = (1×1+0×1)/(1×√2) = 1/√2 → θ = 45°.',
+     sample:'45°',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='45'},
+    {q:'Are the vectors p = (2, −3) and q = (3, 2) perpendicular?\nJustify using the dot product.',
+     hint:'p·q = 6−6 = 0. Dot product is zero → perpendicular.',
+     sample:'Yes. p·q = 0.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('yes')||c.includes('perp')||c.includes('0');}}
+  ],
+
+  diver:[
+    {q:'Find the distance between A(1, 2, 3) and B(4, 6, 3).',
+     hint:'d = √[(3)²+(4)²+(0)²] = √25.',
+     sample:'5',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='5'},
+    {q:'Find the midpoint of the segment joining\nP(2, −1, 4) and Q(8, 3, −2).',
+     hint:'Midpoint = ((2+8)/2, (−1+3)/2, (4−2)/2).',
+     sample:'(5, 1, 1)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5')&&c.includes('1,1')||c.includes('5,1,1');}},
+    {q:'A line passes through A(1, 2, 3) with direction vector (2, −1, 4).\n\nFind the coordinates of the point 3 units\nalong the direction from A.',
+     hint:'Point = A + 3d = (1+6, 2−3, 3+12) — but note this is not normalised. Give point for t=3.',
+     sample:'(7, −1, 15)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('7')&&c.includes('-1')&&c.includes('15');}}
+  ],
+
+  // ── PROBABILITY HOLLOW ───────────────────────────────────────────────────────
+  oracle:[
+    {q:'In a class, 60% study Maths, 40% study Physics, 25% study both.\n\nFind P(Physics | Maths).',
+     hint:'P(Physics|Maths) = P(both)/P(Maths) = 0.25/0.60.',
+     sample:'5/12 or 0.417',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5/12')||c.includes('0.41')||c.includes('0.42');}},
+    {q:'P(A) = 0.5, P(B) = 0.4, P(A∩B) = 0.2.\n\nFind P(A|B).',
+     hint:'P(A|B) = P(A∩B)/P(B) = 0.2/0.4.',
+     sample:'0.5',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c==='0.5'||c==='5'||c==='1/2';}},
+    {q:'A test is 90% accurate for people with a disease (sensitivity).\nThe disease affects 1% of the population.\nA person tests positive.\n\nUsing Bayes\' theorem, find P(disease | positive).\n(Assume 5% false positive rate.)',
+     hint:'P(D|+) = P(+|D)P(D)/[P(+|D)P(D)+P(+|no D)P(no D)] = 0.9×0.01/(0.9×0.01+0.05×0.99).',
+     sample:'≈ 0.154',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.15')||c.startsWith('0.154');}}
+  ],
+
+  gambler:[
+    {q:'A game pays $10 with P=0.3, pays $2 with P=0.5,\nand costs $4 with P=0.2.\n\nFind the expected value.',
+     hint:'E(X) = 10(0.3)+2(0.5)+(−4)(0.2) = 3+1−0.8.',
+     sample:'$3.20',
+     chk:(s)=>s.replace(/[^0-9.]/g,'')==='3.2'||s.replace(/[^0-9.]/g,'')==='3.20'},
+    {q:'A fair six-sided die is rolled.\nIf it lands on 6 you win $5;\notherwise you lose $1.\n\nFind the expected value of the game.',
+     hint:'E = 5×(1/6) + (−1)×(5/6) = 5/6 − 5/6 = 0.',
+     sample:'$0',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='0'},
+    {q:'A lottery ticket costs $2.\nThe prize is $100 with probability 1/100.\n\nFind the expected profit per ticket.',
+     hint:'Expected gain = 100×(1/100) = 1. Profit = 1−2 = −1.',
+     sample:'−$1',
+     chk:(s)=>{const c=s.replace(/[^0-9\-]/g,'').replace(/[−–]/g,'-');return c==='-1';}}
+  ],
+
+  poisoner:[
+    {q:'A biased coin P(H)=0.6, flipped 5 times.\n\nFind P(exactly 3 heads), to 4 d.p.',
+     hint:'B(5,0.6). P(X=3) = C(5,3)×0.6³×0.4².',
+     sample:'0.3456',
+     chk:(s)=>s.replace(/[^0-9.]/g,'')==='0.3456'||s.replace(/[^0-9.]/g,'')==='3456'},
+    {q:'X ~ B(8, 0.3).\n\nFind P(X = 2), to 4 decimal places.',
+     hint:'P(X=2) = C(8,2)×0.3²×0.7⁶ = 28×0.09×0.117649.',
+     sample:'0.2965',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.296')||c.startsWith('0.297');}},
+    {q:'X ~ B(10, 0.4).\n\nFind P(X ≥ 9), to 4 d.p.',
+     hint:'P(X≥9) = P(X=9)+P(X=10). C(10,9)(0.4)⁹(0.6)+C(10,10)(0.4)¹⁰.',
+     sample:'0.0017',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.001');}}
+  ],
+
+  census_taker:[
+    {q:'X ~ N(50, 10²).\n\nFind P(X < 65) using the standard normal table.',
+     hint:'Z = (65−50)/10 = 1.5. P(Z<1.5) = 0.9332.',
+     sample:'0.9332',
+     chk:(s)=>s.replace(/[^0-9.]/g,'')==='0.9332'},
+    {q:'X ~ N(100, 15²).\n\nFind P(85 < X < 115).',
+     hint:'Z₁=(85−100)/15=−1, Z₂=(115−100)/15=1. P(−1<Z<1)=2×0.8413−1.',
+     sample:'0.6827',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.682')||c.startsWith('0.683');}},
+    {q:'X ~ N(μ, σ²).\nP(X < 30) = 0.1587 and P(X < 50) = 0.8413.\n\nFind μ and σ.',
+     hint:'P(Z<−1)=0.1587, so (30−μ)/σ = −1 and (50−μ)/σ = 1. Solve.',
+     sample:'μ = 40, σ = 10',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('40')&&c.includes('10');}}
+  ],
+
+  tree_builder:[
+    {q:'A bag has 4 red and 6 blue marbles.\nTwo drawn without replacement.\n\nFind P(one red, one blue).',
+     hint:'P(RB)+P(BR) = (4/10)(6/9)+(6/10)(4/9).',
+     sample:'8/15',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('8/15')||c.includes('0.533')||c.includes('0.532');}},
+    {q:'A box has 3 red, 2 blue, 1 green ball.\nTwo are drawn without replacement.\n\nFind P(both same colour).',
+     hint:'P(RR)+P(BB)+P(GG) = C(3,2)/C(6,2)+C(2,2)/C(6,2)+0/C(6,2) = 3/15+1/15.',
+     sample:'4/15',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('4/15')||c.includes('0.266')||c.includes('0.267');}},
+    {q:'Events A and B are independent.\nP(A) = 0.4, P(B) = 0.3.\n\nFind P(A ∪ B).',
+     hint:'P(A∪B)=P(A)+P(B)−P(A∩B)=0.4+0.3−0.12.',
+     sample:'0.58',
+     chk:(s)=>s.replace(/[^0-9.]/g,'')==='0.58'}
+  ],
+
+  counter:[
+    {q:'A committee of 4 is chosen from 10.\nTwo specific people must be included.\n\nHow many committees are possible?',
+     hint:'A and B fixed. Choose 2 from 8: C(8,2) = 28.',
+     sample:'28',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='28'},
+    {q:'How many ways can 5 people be arranged\nin a line if 2 specific people\nmust always be adjacent?',
+     hint:'Treat the pair as one unit: 4! arrangements × 2 (pair can swap) = 48.',
+     sample:'48',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='48'},
+    {q:'In how many ways can 3 books be chosen\nfrom 8 different books?',
+     hint:'C(8,3) = 56.',
+     sample:'56',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='56'}
+  ],
+
+  // ── ALGEBRA ACES ─────────────────────────────────────────────────────────────
+  ruins_sage:[
+    {q:'Solve: 2x³ − 3x² − 11x + 6 = 0\n\nGiven x = 3 is a root.',
+     hint:'Divide by (x−3) to get a quadratic, then factorise.',
+     sample:'x = 3, x = 1/2, x = −2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3')&&(c.includes('1/2')||c.includes('0.5'))&&c.includes('-2');}},
+    {q:'Solve: x³ − 2x² − 5x + 6 = 0\n\nGiven x = 1 is a root.',
+     hint:'Divide by (x−1) → x²−x−6 = (x−3)(x+2).',
+     sample:'x = 1, x = 3, x = −2',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1')&&c.includes('3')&&c.includes('-2');}},
+    {q:'Solve: 6x³ + 7x² − x − 2 = 0\n\nGiven x = 1/2 is a root.',
+     hint:'Divide by (x−1/2) = (2x−1). Factorise the resulting quadratic.',
+     sample:'x = 1/2, x = −2/3, x = −1',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return(c.includes('1/2')||c.includes('0.5'))&&c.includes('-1');}}
+  ],
+
+  matrix_keeper:[
+    {q:'Solve:\n3x + 2y = 16\n5x − y = 7',
+     hint:'From eq 2: y = 5x−7. Substitute.',
+     sample:'x = 2, y = 3',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('x=2')&&c.includes('y=3')||c.includes('2')&&c.includes('3');}},
+    {q:'Solve the system:\n2x + 3y = 12\n4x − y = 5',
+     hint:'Multiply eq 1 by 2: 4x+6y=24. Subtract eq 2: 7y=19.',
+     sample:'x = 27/14, y = 19/7',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return(c.includes('27/14')||c.includes('1.928')||c.includes('1.929'))&&(c.includes('19/7')||c.includes('2.71'));}},
+    {q:'Use matrices to solve:\nx + 2y = 7\n3x − y = 7',
+     hint:'Write as AX = B. det(A)=1×(−1)−2×3=−7. X = A⁻¹B.',
+     sample:'x = 3, y = 2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('x=3')&&c.includes('y=2')||c.includes('3')&&c.includes('2');}}
+  ],
+
+  logarithm_hermit:[
+    {q:'Solve for x:\n2^(3x − 1) = 5\n\nGive your answer to 4 decimal places.',
+     hint:'(3x−1)ln2 = ln5. 3x = 1 + ln5/ln2.',
+     sample:'x ≈ 1.1073',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('1.107')||c.startsWith('1.108');}},
+    {q:'Solve for x:\n3^(x+2) = 10\n\nGive your answer to 4 decimal places.',
+     hint:'(x+2)ln3 = ln10. x = ln10/ln3 − 2.',
+     sample:'x ≈ 0.0959',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.095')||c.startsWith('0.096');}},
+    {q:'Solve for x:\nlog₃(x) + log₃(x−2) = 1',
+     hint:'log₃(x(x−2)) = 1 → x(x−2) = 3 → x²−2x−3 = 0.',
+     sample:'x = 3',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='3'}
+  ],
+
+  sequence_seer:[
+    {q:'A geometric series has first term a=4 and ratio r=1/2.\n\nFind the sum to infinity.',
+     hint:'S∞ = a/(1−r) = 4/(1/2) = 8.',
+     sample:'8',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='8'},
+    {q:'An arithmetic series has first term 3 and common difference 4.\n\nFind the sum of the first 20 terms.',
+     hint:'Sₙ = n/2 × (2a+(n−1)d) = 10×(6+76) = 820.',
+     sample:'820',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='820'},
+    {q:'A geometric series: 2 + 6 + 18 + ...\n\nFind the sum of the first 8 terms.',
+     hint:'a=2, r=3. S₈ = 2(3⁸−1)/(3−1) = (6561−1) = 6560.',
+     sample:'6560',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='6560'}
+  ],
+
+  proof_writer:[
+    {q:'In the inductive step for Σk = n(n+1)/2,\nwhat exactly must be proved?',
+     hint:'Assume true for n=k. Prove for n=k+1.',
+     sample:'Prove true for n = k+1, assuming true for n = k',
+     chk:(s)=>{const c=s.toLowerCase();return(c.includes('k+1')||c.includes('n+1'))&&(c.includes('assume')||c.includes('inductive')||c.includes('true for'));}},
+    {q:'Prove by induction that:\n\nΣ(k=1 to n) k² = n(n+1)(2n+1)/6\n\nState the base case and inductive hypothesis.',
+     hint:'Base: n=1, 1=1(2)(3)/6=1 ✓. Hypothesis: assume true for n=k.',
+     sample:'Base case n=1 holds. Assume true for n=k (inductive hypothesis).',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('base')&&(c.includes('inductive')||c.includes('assume'));}},
+    {q:'Use mathematical induction to prove\nthat 3ⁿ > n² for all n ≥ 3.\n\nDescribe the inductive step.',
+     hint:'Assume 3ᵏ > k². Show 3^(k+1) = 3·3ᵏ > 3k² > (k+1)² for k ≥ 3.',
+     sample:'Assume 3^k > k². Then 3^(k+1) = 3·3^k > 3k² > (k+1)².',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('3^k')&&(c.includes('k+1')||c.includes('assume'));}}
+  ],
+
+  function_keeper:[
+    {q:'State the domain and range of:\nf(x) = √(4 − x²)',
+     hint:'Need 4−x² ≥ 0 → x² ≤ 4 → −2 ≤ x ≤ 2.',
+     sample:'Domain: [−2, 2], Range: [0, 2]',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('-2')&&c.includes('2');}},
+    {q:'State the domain of:\nf(x) = ln(2x − 6)',
+     hint:'Need 2x−6 > 0 → x > 3.',
+     sample:'x > 3 or (3, ∞)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3')&&(c.includes('>'))||c.includes('(3,');}},
+    {q:'State the domain and range of:\nf(x) = 1/(x² − 4)',
+     hint:'Exclude x²=4 → x≠±2. Range: all reals except 0... actually range is (−∞, −¼]∪(0,∞).',
+     sample:'Domain: x ≠ ±2; Range: f(x) ≠ 0 (all reals except 0)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-2')&&c.includes('2');}}
+  ],
+
+  // ── VECTOR WASTELANDS ────────────────────────────────────────────────────────
+  vector_master:[
+    {q:'Vectors a=(2,−1,3) and b=(1,4,−2).\n\n(a) Find a·b.\n(b) Are they perpendicular?',
+     hint:'a·b = 2−4−6 = −8. Perpendicular iff a·b = 0.',
+     sample:'a·b = −8. Not perpendicular.',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-8');}},
+    {q:'Find the unit vector in the direction of v = (3, 4).',
+     hint:'|v| = 5. Unit vector = (3/5, 4/5).',
+     sample:'(3/5, 4/5)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3/5')&&c.includes('4/5')||c.includes('0.6')&&c.includes('0.8');}},
+    {q:'If a = (1, 2, 3) and b = (4, 0, −1),\nfind a + 2b and |a + 2b|.',
+     hint:'a+2b = (1+8, 2, 3−2) = (9,2,1). |(9,2,1)| = √86.',
+     sample:'(9, 2, 1), magnitude √86 ≈ 9.27',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('9')&&c.includes('86')||c.includes('9.27');}}
+  ],
+
+  linear_mapper:[
+    {q:'Matrix M=[[2,1],[0,3]] transforms v=(1,2).\n\nFind the image of v.',
+     hint:'Mv = (2+2, 0+6) = (4,6).',
+     sample:'(4, 6)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('4')&&c.includes('6');}},
+    {q:'Matrix A=[[3,0],[0,2]] transforms the unit square.\n\nDescribe the geometric transformation.',
+     hint:'Stretches x by factor 3, y by factor 2.',
+     sample:'Stretch: x by 3, y by 2',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('3')&&c.includes('2')&&(c.includes('stretch')||c.includes('scale'));}},
+    {q:'Find the image of the point (2, −1)\nunder the matrix [[0, −1],[1, 0]].',
+     hint:'[[0,−1],[1,0]] × (2,−1) = (1, 2).',
+     sample:'(1, 2)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1')&&c.includes('2');}}
+  ],
+
+  determinant_keeper:[
+    {q:'For M=[[3,2],[4,3]]:\n(a) Find det(M).\n(b) Find M⁻¹.',
+     hint:'det = 9−8 = 1. M⁻¹ = [[3,−2],[−4,3]].',
+     sample:'det=1, M⁻¹=[[3,−2],[−4,3]]',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('det=1')||c.includes('=1')&&c.includes('-2');}},
+    {q:'Find the determinant of:\nM = [[5, 2], [3, 1]]',
+     hint:'det = 5×1 − 2×3 = 5 − 6 = −1.',
+     sample:'−1',
+     chk:(s)=>{const c=s.replace(/[^0-9\-]/g,'').replace(/[−–]/g,'-');return c==='-1';}},
+    {q:'For M=[[2,1],[5,3]]:\nFind M⁻¹.',
+     hint:'det = 6−5 = 1. M⁻¹ = [[3,−1],[−5,2]].',
+     sample:'[[3,−1],[−5,2]]',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3')&&c.includes('-1')&&c.includes('-5')&&c.includes('2');}}
+  ],
+
+  projection_wizard:[
+    {q:'Find the projection of a=(3,4) onto b=(1,0).',
+     hint:'proj = (a·b/|b|²)b = 3(1,0) = (3,0).',
+     sample:'(3, 0)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3,0')||c.includes('(3,0)');}},
+    {q:'Find the projection of u=(2,3) onto v=(1,1).',
+     hint:'u·v=5, |v|²=2. proj = (5/2)(1,1) = (2.5, 2.5).',
+     sample:'(2.5, 2.5)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2.5');}},
+    {q:'Find the component of a=(1,2,3) perpendicular to b=(1,0,0).',
+     hint:'proj_b(a) = 1(1,0,0). Perpendicular component = a − proj = (0,2,3).',
+     sample:'(0, 2, 3)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('0')&&c.includes('2')&&c.includes('3');}}
+  ],
+
+  eigen_priest:[
+    {q:'Find the eigenvalues of M=[[4,1],[2,3]].',
+     hint:'det(M−λI)=0: (4−λ)(3−λ)−2=0. λ²−7λ+10=0.',
+     sample:'λ = 5 and λ = 2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5')&&c.includes('2');}},
+    {q:'Find the eigenvalues of M=[[2,1],[0,3]].',
+     hint:'Upper triangular: eigenvalues are diagonal entries.',
+     sample:'λ = 2 and λ = 3',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2')&&c.includes('3');}},
+    {q:'Find the eigenvalues of M=[[1,2],[2,1]].',
+     hint:'det(M−λI)=(1−λ)²−4=0 → λ²−2λ−3=0.',
+     sample:'λ = 3 and λ = −1',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3')&&c.includes('-1');}}
+  ],
+
+  cross_product_guard:[
+    {q:'Find a × b where a=(1,2,3) and b=(4,5,6).',
+     hint:'a×b = (2·6−3·5, 3·4−1·6, 1·5−2·4) = (−3,6,−3).',
+     sample:'(−3, 6, −3)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-3')&&c.includes('6');}},
+    {q:'Find u × v where u=(1,0,0) and v=(0,1,0).',
+     hint:'i×j = k.',
+     sample:'(0, 0, 1)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('0,0,1')||c.includes('(0,0,1)');}},
+    {q:'Find the area of the parallelogram\nformed by vectors p=(2,1,0) and q=(0,3,0).',
+     hint:'Area = |p×q|. p×q = (0,0,6). |p×q| = 6.',
+     sample:'6',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='6'}
+  ],
+
+  // ── EXPONENTIAL DEPTHS ───────────────────────────────────────────────────────
+  depth_diver:[
+    {q:'A bacteria population doubles every 3 hours.\nInitial count: 500.\n\nFind the count after 9 hours.',
+     hint:'3 doublings. N = 500 × 2³.',
+     sample:'4000',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='4000'},
+    {q:'A population grows at 5% per year.\nInitial population: 1000.\n\nFind the population after 10 years.\nRound to the nearest whole number.',
+     hint:'P = 1000 × 1.05¹⁰.',
+     sample:'1629',
+     chk:(s)=>{const v=parseInt(s.replace(/[^0-9]/g,''));return v>=1628&&v<=1630;}},
+    {q:'An investment of $2000 grows at 4% per annum compounded monthly.\n\nFind the value after 5 years.\nRound to 2 decimal places.',
+     hint:'A = 2000(1+0.04/12)^(12×5).',
+     sample:'$2440.77',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('2440');}}
+  ],
+
+  chemist_e:[
+    {q:'N(t) = N₀ · e^(−0.04t)\n\nFind the half-life. Round to 2 d.p.',
+     hint:'N₀/2 = N₀e^(−0.04T) → −0.04T = ln(0.5).',
+     sample:'17.33 years',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('17.3');}},
+    {q:'A substance decays to 30% of its original mass in 10 years.\n\nFind the decay constant k.',
+     hint:'0.3 = e^(−10k) → −10k = ln(0.3).',
+     sample:'k ≈ 0.1204',
+     chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.120');}},
+    {q:'The half-life of Carbon-14 is 5730 years.\n\nWhat fraction of a sample remains after 11460 years?',
+     hint:'Two half-lives: (1/2)² = 1/4.',
+     sample:'1/4',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('1/4')||c.includes('0.25');}}
+  ],
+
+  log_fisherman:[
+    {q:'Express as a single logarithm:\n\n2ln(3) + ln(4) − ln(6)',
+     hint:'2ln3=ln9. ln9+ln4=ln36. ln36−ln6=ln6.',
+     sample:'ln(6)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('ln(6)')||c.includes('ln6');}},
+    {q:'Express as a single logarithm:\n\nlog(12) + log(3) − 2·log(6)',
+     hint:'log(12)+log(3)=log(36). 2log6=log36. log(36/36)=log1=0.',
+     sample:'0',
+     chk:(s)=>s.trim()==='0'},
+    {q:'Solve for x:\n\nlog₂(x) + log₂(x−3) = 2',
+     hint:'log₂(x(x−3))=2 → x(x−3)=4 → x²−3x−4=0.',
+     sample:'x = 4',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='4'}
+  ],
+
+  sonar_keeper:[
+    {q:'y = Ae^(kx) passes through (0, 3) and (2, 12).\n\nFind A and k.',
+     hint:'A=3 at x=0. 12=3e^(2k) → k=ln2.',
+     sample:'A = 3, k = ln 2',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('a=3')&&(c.includes('k=ln2')||c.includes('k=0.693'));}},
+    {q:'y = Ae^(kx) passes through (0, 5) and (3, 40).\n\nFind A and k to 3 s.f.',
+     hint:'A=5. 40=5e^(3k) → k=ln8/3.',
+     sample:'A = 5, k ≈ 0.693',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('a=5')&&(c.includes('0.693')||c.includes('ln8'));}},
+    {q:'The graph of y = Ae^(kx) linearises to:\nln y = 0.5x + ln 2.\n\nFind A and k.',
+     hint:'ln y = kx + ln A. So k=0.5, A=e^(ln2)=2.',
+     sample:'A = 2, k = 0.5',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('a=2')&&(c.includes('k=0.5')||c.includes('k=1/2'));}}
+  ],
+
+  tide_watcher:[
+    {q:'Describe the transformations of f(x)=eˣ\nthat produce g(x) = 2e^(x−3)+1.',
+     hint:'Vertical stretch ×2, shift right 3, shift up 1.',
+     sample:'Vertical stretch ×2, right 3, up 1',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('stretch')||c.includes('scale')&&c.includes('2')&&c.includes('3')&&c.includes('1');}},
+    {q:'Sketch the key features of:\ng(x) = e^(−x) + 2\n\nState the asymptote and y-intercept.',
+     hint:'Reflection in y-axis + shift up 2. y-intercept: g(0)=3. Asymptote: y=2.',
+     sample:'y-intercept 3, asymptote y = 2',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3')&&c.includes('y=2')||c.includes('3')&&c.includes('2');}},
+    {q:'Write the equation of the exponential curve that:\n- passes through (0, 1)\n- has a horizontal asymptote y = −2\n- is a vertical stretch of eˣ by factor 3.',
+     hint:'g(x) = 3eˣ − 2... check: g(0)=1 ✓. Asymptote as x→−∞: y→−2 ✓.',
+     sample:'g(x) = 3eˣ − 2',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('3e')&&c.includes('-2')||c.includes('3e^x-2');}}
+  ],
+
+  carbon_keeper:[
+    {q:'Carbon-14 half-life 5730 years. A sample has 65% C-14 remaining.\n\nFind the age to the nearest year.',
+     hint:'0.65 = e^(−kt), k = ln2/5730. t = −ln(0.65)/k.',
+     sample:'3561 years',
+     chk:(s)=>{const v=parseInt(s.replace(/[^0-9]/g,''));return v>=3550&&v<=3570;}},
+    {q:'Carbon-14 half-life 5730 years. A sample has 40% C-14 remaining.\n\nFind the age to the nearest year.',
+     hint:'0.4 = (0.5)^(t/5730). t = 5730·log(0.4)/log(0.5).',
+     sample:'7575 years',
+     chk:(s)=>{const v=parseInt(s.replace(/[^0-9]/g,''));return v>=7560&&v<=7590;}},
+    {q:'An artefact has 20% of its original C-14.\nHalf-life = 5730 years.\n\nFind the age of the artefact.',
+     hint:'0.2 = (0.5)^(t/5730). t = 5730·ln(0.2)/ln(0.5).',
+     sample:'≈ 13,305 years',
+     chk:(s)=>{const v=parseInt(s.replace(/[^0-9]/g,''));return v>=13200&&v<=13400;}}
+  ],
+
+  // ── THE ARCHIVES (COMBINATORICS) ─────────────────────────────────────────────
+  head_librarian:[
+    {q:'In how many ways can the letters of THEOREM be arranged?',
+     hint:'7 distinct letters. 7! = 5040.',
+     sample:'5040',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='5040'},
+    {q:'In how many ways can 8 books be arranged on a shelf\nif 3 specific books must always be kept together?',
+     hint:'Treat 3 as 1 unit → 6! arrangements × 3! internal = 720×6.',
+     sample:'4320',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='4320'},
+    {q:'How many 4-digit PIN codes are possible\nif no digit may repeat?',
+     hint:'10×9×8×7 = 5040.',
+     sample:'5040',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='5040'}
+  ],
+
+  archivist_c:[
+    {q:'A team of 3 from 8. Alex must be included.\n\nHow many teams are possible?',
+     hint:'Alex fixed. Choose 2 from 7: C(7,2)=21.',
+     sample:'21',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='21'},
+    {q:'How many ways can a committee of 4 be chosen\nfrom 6 men and 5 women,\nif the committee must have exactly 2 men?',
+     hint:'C(6,2)×C(5,2) = 15×10.',
+     sample:'150',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='150'},
+    {q:'From 10 players, a team of 5 is selected.\n\nHow many selections include\nthe captain but exclude the vice-captain?',
+     hint:'Captain in, VP out. Choose 4 from remaining 8: C(8,4)=70.',
+     sample:'70',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='70'}
+  ],
+
+  pascal_scribe:[
+    {q:'Expand (2x − 3)⁴. Find the coefficient of x².',
+     hint:'C(4,2)(2x)²(−3)²=6×4x²×9=216x².',
+     sample:'216',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='216'},
+    {q:'Find the term independent of x in:\n(x + 2/x)⁶',
+     hint:'General term: C(6,r)x^(6−r)(2/x)^r = C(6,r)·2^r·x^(6−2r). Set 6−2r=0 → r=3.',
+     sample:'C(6,3)×8 = 160',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='160'},
+    {q:'Find the coefficient of x³ in the expansion of:\n(1 + x)⁸',
+     hint:'C(8,3) = 56.',
+     sample:'56',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='56'}
+  ],
+
+  pattern_finder:[
+    {q:'30 students: 17 French, 15 Spanish, 8 both.\n\nHow many study neither?',
+     hint:'|F∪S|=17+15−8=24. Neither=30−24.',
+     sample:'6',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='6'},
+    {q:'In a group of 50: 30 like tea, 20 like coffee,\n10 like both.\n\nHow many like neither?',
+     hint:'|T∪C|=30+20−10=40. Neither=50−40.',
+     sample:'10',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='10'},
+    {q:'|A|=25, |B|=18, |A∪B|=35.\n\nFind |A∩B|.',
+     hint:'|A∩B|=|A|+|B|−|A∪B|=25+18−35.',
+     sample:'8',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='8'}
+  ],
+
+  stars_keeper:[
+    {q:'Find the number of ways to choose 4 items\nfrom 10 if repetition is allowed.',
+     hint:'C(n+r−1,r)=C(13,4)=715.',
+     sample:'715',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='715'},
+    {q:'In how many ways can 6 identical balls be placed\ninto 4 distinct boxes?',
+     hint:'Stars and bars: C(6+4−1,4−1)=C(9,3)=84.',
+     sample:'84',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='84'},
+    {q:'In how many ways can the sum x₁+x₂+x₃ = 10\nbe satisfied with non-negative integers?',
+     hint:'Stars and bars: C(10+3−1,3−1)=C(12,2)=66.',
+     sample:'66',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='66'}
+  ],
+
+  derangement_master:[
+    {q:'How many derangements exist for 4 elements?',
+     hint:'D(4)=24(1−1+1/2−1/6+1/24)=9.',
+     sample:'9',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='9'},
+    {q:'5 letters are put into 5 envelopes at random.\n\nWhat is the probability that none is in\nthe correct envelope?',
+     hint:'D(5)/5! = 44/120 = 11/30.',
+     sample:'44/120 or 11/30',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('44/120')||c.includes('11/30')||c.includes('0.366');}},
+    {q:'How many derangements exist for 3 elements?\nList them.',
+     hint:'D(3) = 6(1−1+1/2−1/6) = 2. They are (2,3,1) and (3,1,2).',
+     sample:'2',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='2'}
+  ],
+
+  // ── NULL SPACE (COMPLEX NUMBERS) ─────────────────────────────────────────────
+  complex_guide:[
+    {q:'z₁=3+4i, z₂=1−2i. Find z₁×z₂.',
+     hint:'(3+4i)(1−2i)=3−6i+4i+8=11−2i.',
+     sample:'11 − 2i',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('11')&&c.includes('-2i')||c.includes('11-2i');}},
+    {q:'z₁=2+3i, z₂=1+i. Find z₁+z₂ and z₁−z₂.',
+     hint:'Sum: 3+4i. Difference: 1+2i.',
+     sample:'z₁+z₂ = 3+4i, z₁−z₂ = 1+2i',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3+4i')&&c.includes('1+2i');}},
+    {q:'Expand and simplify:\n(2+i)²',
+     hint:'(2+i)²=4+4i+i²=4+4i−1=3+4i.',
+     sample:'3 + 4i',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3+4i')||c.includes('3')&&c.includes('4i');}}
+  ],
+
+  modulus_keeper:[
+    {q:'z = −√3 + i. Find |z| and arg(z).',
+     hint:'|z|=2. arg=π−π/6=5π/6 (second quadrant).',
+     sample:'|z| = 2, arg(z) = 5π/6',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('2')&&(c.includes('5π/6')||c.includes('5pi/6'));}},
+    {q:'Find the modulus and argument of z = 1 + i.',
+     hint:'|z|=√2. arg=tan⁻¹(1)=π/4.',
+     sample:'|z| = √2, arg = π/4',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return(c.includes('√2')||c.includes('sqrt2'))&&(c.includes('π/4')||c.includes('pi/4'));}},
+    {q:'Express z = 4(cos(π/3) + i·sin(π/3)) in the form a + bi.',
+     hint:'cos(π/3)=1/2, sin(π/3)=√3/2. z = 4×1/2 + 4i×√3/2 = 2 + 2√3 i.',
+     sample:'2 + 2√3 i',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2')&&c.includes('2√3')||c.includes('2')&&c.includes('3.46');}}
+  ],
+
+  de_moivre:[
+    {q:'Use De Moivre\'s theorem to find (1+i)⁸.',
+     hint:'|1+i|=√2, arg=π/4. (1+i)⁸=(√2)⁸·e^(i·2π)=16.',
+     sample:'16',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='16'},
+    {q:'Use De Moivre\'s theorem to find (1+i√3)³.',
+     hint:'|z|=2, arg=π/3. z³=8·e^(iπ)=8(cos π + i sin π)=−8.',
+     sample:'−8',
+     chk:(s)=>{const c=s.replace(/[^0-9\-]/g,'').replace(/[−–]/g,'-');return c==='-8';}},
+    {q:'Find (cos θ + i sin θ)⁵ using De Moivre\'s theorem.',
+     hint:'(cisθ)⁵ = cis(5θ) = cos(5θ) + i sin(5θ).',
+     sample:'cos(5θ) + i sin(5θ)',
+     chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('cos(5')&&c.includes('sin(5');}}
+  ],
+
+  roots_of_unity:[
+    {q:'Find all cube roots of 8. Give in the form a+bi.',
+     hint:'8=8e^(i·0). Roots: 2e^(i2πk/3) for k=0,1,2.',
+     sample:'2, −1+i√3, −1−i√3',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('2')&&c.includes('-1')&&(c.includes('√3')||c.includes('1.73'));}},
+    {q:'Find the 4th roots of 16.',
+     hint:'16=16e^(i·0). Roots: 2e^(iπk/2) for k=0,1,2,3 = 2,2i,−2,−2i.',
+     sample:'2, 2i, −2, −2i',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('2')&&c.includes('2i')&&c.includes('-2');}},
+    {q:'What are the cube roots of unity?\nState them in polar form.',
+     hint:'1, e^(i2π/3), e^(i4π/3). Or 1, −1/2±i√3/2.',
+     sample:'1, e^(2πi/3), e^(4πi/3)',
+     chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('1')&&(c.includes('2π')||c.includes('2pi')||c.includes('2πi/3'));}}
+  ],
+
+  conjugate_twin:[
+    {q:'Express in a+bi form: (2+3i)/(1−2i)',
+     hint:'Multiply by (1+2i)/(1+2i). Num: −4+7i. Den: 5.',
+     sample:'−4/5 + 7i/5',
+     chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return(c.includes('-4/5')||c.includes('-0.8'))&&(c.includes('7/5')||c.includes('1.4'));}},
+    {q:'Express in a+bi form: (3+2i)/(2−i)',
+     hint:'Multiply by (2+i)/(2+i). Num: 6+3i+4i+2i²=4+7i. Den: 5.',
+     sample:'4/5 + 7i/5',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return(c.includes('4/5')||c.includes('0.8'))&&(c.includes('7/5')||c.includes('1.4'));}},
+    {q:'Find the conjugate of z = 5 − 3i\nand verify that z × z̄ = |z|².',
+     hint:'z̄=5+3i. z×z̄=(5−3i)(5+3i)=25+9=34=|z|².',
+     sample:'z̄ = 5+3i, z×z̄ = 34',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5+3i')&&c.includes('34');}}
+  ],
+
+  locus_keeper:[
+    {q:'Describe the locus: |z − (2+i)| = 3',
+     hint:'Circle centre (2,1), radius 3.',
+     sample:'Circle, centre (2,1), radius 3',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('circle')&&c.includes('2')&&c.includes('1')&&c.includes('3');}},
+    {q:'Describe the locus: |z − 1| = |z − i|',
+     hint:'Equidistant from (1,0) and (0,1): perpendicular bisector of the segment joining them.',
+     sample:'Perpendicular bisector of segment from (1,0) to (0,1). Equation: y = x.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('bisector')||c.includes('y=x')||c.includes('y = x');}},
+    {q:'Describe the locus: arg(z) = π/4',
+     hint:'All complex numbers with argument π/4 — a ray from the origin at 45°.',
+     sample:'Ray from origin at 45° (y = x, x > 0)',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('ray')||c.includes('arg')||c.includes('45');}}
+  ],
+
+  // ── STATISTICAL ARCHIPELAGO ──────────────────────────────────────────────────
+  data_collector:[
+    {q:'Dataset: 5, 8, 8, 10, 12, 14, 18\n\nFind the mean and population SD. Round SD to 2 d.p.',
+     hint:'Mean = 75/7 ≈ 10.71. SD = √(variance) ≈ 3.99.',
+     sample:'Mean ≈ 10.71, SD ≈ 3.99',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return(c.includes('10.71')||c.includes('75/7'))&&(c.includes('3.99')||c.includes('4.0'));}},
+    {q:'Dataset: 4, 7, 7, 9, 13\n\nFind the median and interquartile range.',
+     hint:'Median=7. Q1=4, Q3=13... wait: ordered list, Q1=(4+7)/2=5.5, Q3=(9+13)/2=11. IQR=5.5.',
+     sample:'Median = 7, IQR = 5.5',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('7')&&c.includes('5.5');}},
+    {q:'Dataset: 3, 5, 5, 7, 9, 11\n\nFind the mode, range, and mean.',
+     hint:'Mode=5. Range=8. Mean=40/6≈6.67.',
+     sample:'Mode=5, Range=8, Mean≈6.67',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5')&&c.includes('8')&&(c.includes('6.67')||c.includes('6.6'));}}
+  ],
+
+  hypothesis_judge:[
+    {q:'A coin is flipped 20 times and lands heads 15 times.\n\nTest H₀: p=0.5 vs H₁: p>0.5 at 5%.\n\nState your conclusion.',
+     hint:'P(X≥15) ≈ 0.0207 < 0.05. Reject H₀.',
+     sample:'Reject H₀. Evidence p > 0.5.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('reject');}},
+    {q:'A dice is rolled 60 times. Six appears 15 times.\n\nTest H₀: p=1/6 vs H₁: p>1/6 at 5%.\n\nState your conclusion. (Use Normal approximation.)',
+     hint:'Expected=10, σ²=np(1−p)≈8.33. Z=(15−10)/√8.33≈1.73. p-value≈0.042 < 0.05.',
+     sample:'Reject H₀. Evidence p > 1/6.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('reject');}},
+    {q:'A sample of 50 has mean 48 and σ=10.\n\nTest H₀: μ=50 vs H₁: μ<50 at 5%.\n\nState your conclusion.',
+     hint:'Z=(48−50)/(10/√50)=−1.414. p-value≈0.079 > 0.05.',
+     sample:'Fail to reject H₀. Insufficient evidence.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('fail')||c.includes('not reject')||c.includes('insufficient');}}
+  ],
+
+  regression_keeper:[
+    {q:'ŷ = 3.2x + 1.8, r = 0.94.\n\n(a) Predict ŷ when x=5.\n(b) Interpret r = 0.94.',
+     hint:'ŷ=3.2(5)+1.8=17.8. r=0.94 means strong positive correlation.',
+     sample:'(a) 17.8 (b) Strong positive linear correlation',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('17.8')&&(s.toLowerCase().includes('strong')||s.toLowerCase().includes('positive'));}},
+    {q:'A regression line has equation ŷ = 2x + 5.\n\nFind the residual for the point (3, 12).',
+     hint:'Predicted: ŷ=2(3)+5=11. Residual=12−11=1.',
+     sample:'1',
+     chk:(s)=>s.trim()==='1'},
+    {q:'Correlation coefficient r = −0.85.\n\nInterpret this value.',
+     hint:'Strong negative linear relationship.',
+     sample:'Strong negative linear correlation.',
+     chk:(s)=>{const c=s.toLowerCase();return c.includes('negative')&&(c.includes('strong')||c.includes('correlation'));}}
+  ],
+
+  confidence_sage:[
+    {q:'n=36, x̄=48.5, σ=6.\n\nConstruct a 95% CI for μ. (z=1.96.)',
+     hint:'CI = 48.5 ± 1.96 × 6/6 = 48.5 ± 1.96.',
+     sample:'(46.54, 50.46)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return(c.includes('46.5')||c.includes('46.54'))&&(c.includes('50.4')||c.includes('50.46'));}},
+    {q:'n=100, x̄=75, σ=10.\n\nConstruct a 95% CI for μ.',
+     hint:'CI = 75 ± 1.96 × 10/10 = 75 ± 1.96.',
+     sample:'(73.04, 76.96)',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return(c.includes('73.0')||c.includes('73.04'))&&(c.includes('76.9')||c.includes('76.96'));}},
+    {q:'A 95% CI for μ is (42, 58).\n\nEstimate the sample mean and margin of error.',
+     hint:'Mean = (42+58)/2 = 50. Margin = (58−42)/2 = 8.',
+     sample:'Mean = 50, Margin of error = 8',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('50')&&c.includes('8');}}
+  ],
+
+  variance_smith:[
+    {q:'Dataset: 3, 7, 7, 9, 10\n\nFind the sample variance (n−1).',
+     hint:'x̄=7.2. Deviations²: 17.64+0.04+0.04+3.24+7.84=28.8. s²=28.8/4.',
+     sample:'7.2',
+     chk:(s)=>s.replace(/[^0-9.]/g,'')==='7.2'},
+    {q:'Dataset: 2, 4, 4, 4, 5, 5, 7, 9\n\nFind the population variance.',
+     hint:'x̄=5. Deviations²: 9+1+1+1+0+0+4+16=32. σ²=32/8=4.',
+     sample:'4',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='4'},
+    {q:'A dataset has n=10, Σx=80, Σx²=700.\n\nFind the population variance.',
+     hint:'x̄=8. σ²=Σx²/n − x̄² = 70 − 64 = 6.',
+     sample:'6',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='6'}
+  ],
+
+  outlier_watcher:[
+    {q:'Dataset: 2, 4, 5, 6, 7, 8, 9, 10, 28\n\nFind Q1, Q3, IQR and any outliers (1.5×IQR rule).',
+     hint:'Q1=4.5, Q3=9.5, IQR=5. Fences: −3 and 17. 28 > 17 → outlier.',
+     sample:'Q1=4.5, Q3=9.5, IQR=5. Outlier: 28.',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('28')&&c.includes('5');}},
+    {q:'Dataset: 10, 12, 14, 15, 16, 18, 40\n\nIdentify any outliers using the 1.5×IQR rule.',
+     hint:'Q1=12, Q3=18, IQR=6. Upper fence=18+9=27. 40 > 27 → outlier.',
+     sample:'Outlier: 40',
+     chk:(s)=>s.replace(/[^0-9]/g,'')==='40'},
+    {q:'Q1=20, Q3=35.\n\nCalculate the IQR and state the outlier fences.',
+     hint:'IQR=15. Lower fence=20−22.5=−2.5. Upper fence=35+22.5=57.5.',
+     sample:'IQR=15, Lower fence=−2.5, Upper fence=57.5',
+     chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('15')&&c.includes('57.5');}}
+  ]
+};
+
+// Attach a randomly selected question to each NPC at world-load time.
+// Called once per world load so the question is stable for that session.
+function assignNPCQuestions(world) {
+  world.npcs.forEach(npc => {
+    const pool = QUESTION_BANK[npc.id];
+    if (pool && pool.length > 0) {
+      npc.prob = pool[Math.floor(Math.random() * pool.length)];
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TILE TYPE CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════════
+const T={VOID:0,GRASS:1,DIRT:2,PATH:3,WATER:4,RUIN_FLOOR:5,RUIN_WALL:6,TREE:7,MTN:8,SAND:9,STONE:10};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GENERATE WORLD MAP (shared structure, palette swapped per world)
+// ═══════════════════════════════════════════════════════════════════════════════
+function generateMap(worldId) {
+  const COLS=50,ROWS=38;
+  const map=[];
+  for(let r=0;r<ROWS;r++){map[r]=[];for(let c=0;c<COLS;c++){
+    const n=Math.sin(c*0.31+worldId.length)*Math.cos(r*0.27)+Math.sin(c*0.07+r*0.13);
+    map[r][c]=n>0.3?T.GRASS:n>-0.2?T.DIRT:T.GRASS;
+  }}
+  // River
+  for(let c=0;c<COLS;c++){const b=19+Math.floor(Math.sin(c*0.22)*2);for(let r=b;r<=b+2;r++)if(r>=0&&r<ROWS)map[r][c]=T.WATER;}
+  // Sandy banks
+  for(let c=0;c<COLS;c++){const b=19+Math.floor(Math.sin(c*0.22)*2);if(b-1>=0)map[b-1][c]=T.SAND;if(b+3<ROWS)map[b+3][c]=T.SAND;}
+  // Mountain corners
+  [[0,0],[0,1],[1,0],[1,1],[0,2],[2,0],[0,47],[0,48],[1,47],[1,48],[0,49],[1,49],
+   [35,0],[36,0],[37,0],[35,1],[36,1],[35,45],[36,45],[37,44],[37,45],[36,46],[37,46]].forEach(([r,c])=>{if(r<ROWS&&c<COLS)map[r][c]=T.MTN;});
+  // Paths
+  for(let c=3;c<47;c++)map[22][c]=T.PATH;
+  for(let r=5;r<35;r++)map[r][10]=T.PATH;
+  for(let r=5;r<35;r++)map[r][30]=T.PATH;
+  for(let c=10;c<31;c++)map[9][c]=T.PATH;
+  for(let c=10;c<31;c++)map[28][c]=T.PATH;
+  // Ruin sites (6 NPC areas)
+  // Top left
+  for(let r=5;r<10;r++)for(let c=4;c<10;c++)map[r][c]=T.RUIN_FLOOR;
+  [[5,4],[5,5],[5,8],[5,9],[9,4],[9,9]].forEach(([r,c])=>map[r][c]=T.RUIN_WALL);
+  // Top mid-left
+  for(let r=5;r<11;r++)for(let c=20;c<26;c++)map[r][c]=T.RUIN_FLOOR;
+  for(let c=20;c<26;c++){map[5][c]=T.RUIN_WALL;map[10][c]=T.RUIN_WALL;}
+  for(let r=5;r<11;r++){map[r][20]=T.RUIN_WALL;map[r][25]=T.RUIN_WALL;}
+  // Top right
+  for(let r=5;r<11;r++)for(let c=33;c<39;c++)map[r][c]=T.RUIN_FLOOR;
+  for(let c=33;c<39;c++){map[5][c]=T.RUIN_WALL;map[10][c]=T.RUIN_WALL;}
+  for(let r=5;r<11;r++){map[r][33]=T.RUIN_WALL;map[r][38]=T.RUIN_WALL;}
+  // Bottom left
+  for(let r=25;r<32;r++)for(let c=3;c<9;c++)map[r][c]=T.RUIN_FLOOR;
+  [[25,3],[25,8],[31,3],[31,8]].forEach(([r,c])=>map[r][c]=T.RUIN_WALL);
+  // Bottom mid
+  for(let r=25;r<32;r++)for(let c=26;c<32;c++)map[r][c]=T.RUIN_FLOOR;
+  [[25,26],[25,31],[31,26],[31,31]].forEach(([r,c])=>map[r][c]=T.RUIN_WALL);
+  // Bottom right
+  for(let r=25;r<32;r++)for(let c=38;c<44;c++)map[r][c]=T.RUIN_FLOOR;
+  [[25,38],[25,43],[31,38],[31,43]].forEach(([r,c])=>map[r][c]=T.RUIN_WALL);
+  // Stone circles at path intersections
+  [[9,10],[9,30],[28,10],[28,30]].forEach(([r,c])=>map[r][c]=T.STONE);
+  // Trees
+  const seeds=[[3,6],[3,14],[3,22],[3,35],[4,7],[4,23],[6,16],[6,42],[7,41],[11,4],[11,18],[12,6],[12,40],[13,20],[14,7],
+    [24,4],[24,15],[25,16],[26,38],[27,39],[28,37],[31,4],[32,16],[33,8],[33,38],[34,6],[35,37]];
+  seeds.forEach(([r,c])=>{if(r<ROWS&&c<COLS&&map[r][c]!==T.WATER&&map[r][c]!==T.MTN&&map[r][c]!==T.RUIN_FLOOR&&map[r][c]!==T.RUIN_WALL)map[r][c]=T.TREE;});
+  return {map,COLS,ROWS};
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+ctx.imageSmoothingEnabled=false;
+const VW=800,VH=600,TILE=32,SCALE=2,TS=16;
+const gs={
+  screen:'title', // title|worldselect|game|dialogue|problem|inventory
+  world:null,wmap:null,wCOLS:50,wROWS:38,
+  player:{tx:10,ty:20,px:10*32,py:20*32,dir:2,frame:0,ft:0},
+  cam:{x:0,y:0},
+  keys:{},moveTimer:0,MOVE_DELAY:145,
+  nearNPC:null,activeNPC:null,dlgLine:0,
+  attempts:0,MAX_ATT:3,
+  cooldowns:JSON.parse(localStorage.getItem('tlt2_cd')||'{}'),
+  artefacts:JSON.parse(localStorage.getItem('tlt2_art')||'[]'),
+  tick:0,npcAnims:{}
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DRAW HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+function dr(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h);}
+
+function drawTile(type,sx,sy,pal,v){
+  const S=TILE,H=S/2,Q=S/4,t=gs.tick;
+  switch(type){
+    case T.GRASS: dr(sx,sy,S,S,v===0?pal.grass:pal.grass2);
+      if(v===1){ctx.fillStyle='rgba(0,0,0,0.1)';ctx.fillRect(sx+3,sy+3,2,1);}break;
+    case T.DIRT: dr(sx,sy,S,S,v===0?pal.dirt:pal.dirt2);break;
+    case T.PATH: dr(sx,sy,S,S,v===0?pal.path:pal.path2);
+      ctx.fillStyle='rgba(0,0,0,0.07)';ctx.fillRect(sx,sy,S,1);ctx.fillRect(sx,sy+S-1,S,1);break;
+    case T.WATER:{
+      const w=Math.floor(t/20)%2;
+      dr(sx,sy,S,S,w===0?pal.water:pal.water2);
+      ctx.fillStyle='rgba(100,160,255,0.06)';ctx.fillRect(sx+2,sy+w*4+2,S-4,2);
+      ctx.fillStyle='rgba(0,20,60,0.15)';ctx.fillRect(sx,sy,S,H);break;}
+    case T.RUIN_FLOOR: dr(sx,sy,S,S,pal.ruin2);
+      ctx.fillStyle=pal.ruin;ctx.fillRect(sx,sy,S,1);ctx.fillRect(sx,sy,1,S);
+      ctx.fillRect(sx+H,sy,1,S);ctx.fillRect(sx,sy+H,S,1);break;
+    case T.RUIN_WALL: dr(sx,sy,S,S,pal.ruin);
+      ctx.fillStyle=pal.wall;ctx.fillRect(sx+2,sy+2,S-4,S-4);
+      ctx.fillStyle='rgba(0,0,0,0.4)';ctx.fillRect(sx,sy+S-5,S,5);
+      ctx.fillRect(sx+Q,sy+3,1,H);break;
+    case T.TREE: dr(sx,sy,S,S,pal.dirt);
+      ctx.fillStyle=pal.trunk;ctx.fillRect(sx+H-2,sy+H,4,H);
+      ctx.fillStyle=pal.tree;ctx.fillRect(sx+Q,sy+2,H+Q,H+2);
+      ctx.fillStyle=pal.tree2;ctx.fillRect(sx+Q+2,sy+4,H+Q-4,H-2);
+      ctx.fillStyle='rgba(0,0,0,0.2)';ctx.fillRect(sx+Q,sy+H,H+Q,4);break;
+    case T.MTN: dr(sx,sy,S,S,pal.dirt);
+      ctx.fillStyle=pal.mtn;
+      ctx.beginPath();ctx.moveTo(sx,sy+S);ctx.lineTo(sx+H,sy+3);ctx.lineTo(sx+S,sy+S);ctx.fill();
+      ctx.fillStyle=pal.mtn2;
+      ctx.beginPath();ctx.moveTo(sx+Q,sy+S);ctx.lineTo(sx+H,sy+3);ctx.lineTo(sx+H+Q,sy+S);ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,0.06)';
+      ctx.beginPath();ctx.moveTo(sx+H-2,sy+3);ctx.lineTo(sx+H,sy+9);ctx.lineTo(sx+H+2,sy+3);ctx.fill();break;
+    case T.SAND: dr(sx,sy,S,S,pal.sand);break;
+    case T.STONE: dr(sx,sy,S,S,pal.stone);
+      ctx.fillStyle=pal.stone2;ctx.fillRect(sx+2,sy+2,S-4,S-4);
+      ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(sx+2,sy+2,S-4,2);break;
+    default: ctx.fillStyle=pal.bg;ctx.fillRect(sx,sy,S,S);
+  }
+}
+
+function drawNPC(sx,sy,spr,col,dir,frame){
+  const S=TILE,H=S/2,Q=S/4;
+  ctx.fillStyle='rgba(0,0,0,0.2)';ctx.fillRect(sx+H-6,sy+S-3,12,3);
+  // body
+  ctx.fillStyle=col;ctx.fillRect(sx+H-4,sy+H-2,8,10);
+  // head
+  ctx.fillStyle='#c8985a';ctx.fillRect(sx+H-4,sy+4,8,10);
+  // eyes
+  ctx.fillStyle='#180800';
+  if(dir===2){ctx.fillRect(sx+H-3,sy+8,2,2);ctx.fillRect(sx+H+1,sy+8,2,2);}
+  else if(dir===3){ctx.fillRect(sx+H+2,sy+8,2,2);}
+  else if(dir===1){ctx.fillRect(sx+H-4,sy+8,2,2);}
+  // head decoration
+  if(spr==='scholar'){ctx.fillStyle='rgba(80,80,160,0.8)';ctx.fillRect(sx+H-4,sy+2,8,4);ctx.fillRect(sx+H-2,sy,4,3);}
+  else if(spr==='elder'){ctx.fillStyle='rgba(100,100,100,0.8)';ctx.fillRect(sx+H-5,sy+5,10,2);ctx.fillRect(sx+H-3,sy+2,6,4);}
+  else{ctx.fillStyle='rgba(60,30,10,0.8)';ctx.fillRect(sx+H-3,sy+3,6,5);}
+  // legs
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  if(frame===0||frame===2){ctx.fillRect(sx+H-3,sy+S-6,3,6);ctx.fillRect(sx+H,sy+S-6,3,6);}
+  else if(frame===1){ctx.fillRect(sx+H-3,sy+S-8,3,8);ctx.fillRect(sx+H,sy+S-4,3,4);}
+  else{ctx.fillRect(sx+H-3,sy+S-4,3,4);ctx.fillRect(sx+H,sy+S-8,3,8);}
+}
+
+function drawPlayer(sx,sy,dir,frame){
+  const S=TILE,H=S/2,Q=S/4;
+  ctx.fillStyle='rgba(0,0,0,0.25)';ctx.fillRect(sx+H-7,sy+S-2,14,3);
+  ctx.fillStyle='#3a1a08';ctx.fillRect(sx+H-5,sy+H-2,10,12);
+  ctx.fillStyle='#5a3018';ctx.fillRect(sx+H-4,sy+H,8,8);
+  ctx.fillStyle='#4a2810';ctx.fillRect(sx+H-2,sy+H+2,4,5);
+  ctx.fillStyle='#c8985a';ctx.fillRect(sx+H-4,sy+3,8,10);
+  ctx.fillStyle='#2a1808';ctx.fillRect(sx+H-4,sy+3,8,3);
+  ctx.fillStyle='#fff';
+  if(dir===2){ctx.fillRect(sx+H-3,sy+8,2,2);ctx.fillRect(sx+H+1,sy+8,2,2);}
+  else if(dir===0){ctx.fillRect(sx+H-3,sy+9,2,2);ctx.fillRect(sx+H+1,sy+9,2,2);}
+  else if(dir===3){ctx.fillRect(sx+H+1,sy+8,3,2);}
+  else{ctx.fillRect(sx+H-4,sy+8,3,2);}
+  ctx.fillStyle='#1a0808';
+  if(dir===2){ctx.fillRect(sx+H-2,sy+9,1,1);ctx.fillRect(sx+H+2,sy+9,1,1);}
+  ctx.fillStyle='#2a1808';
+  if(frame===0||frame===2){ctx.fillRect(sx+H-4,sy+S-7,4,7);ctx.fillRect(sx+H,sy+S-7,4,7);}
+  else if(frame===1){ctx.fillRect(sx+H-4,sy+S-9,4,9);ctx.fillRect(sx+H,sy+S-5,4,5);}
+  else{ctx.fillRect(sx+H-4,sy+S-5,4,5);ctx.fillRect(sx+H,sy+S-9,4,9);}
+  ctx.fillStyle='#1a0a00';
+  if(frame===0||frame===2){ctx.fillRect(sx+H-5,sy+S-3,5,3);ctx.fillRect(sx+H,sy+S-3,5,3);}
+  else if(frame===1){ctx.fillRect(sx+H-5,sy+S-3,5,3);ctx.fillRect(sx+H-1,sy+S-1,5,2);}
+  else{ctx.fillRect(sx+H-4,sy+S-1,5,2);ctx.fillRect(sx+H,sy+S-3,5,3);}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════════════════
+function render(){
+  if(gs.screen==='title'||gs.screen==='worldselect')return;
+  const pal=gs.world.palette;
+  ctx.fillStyle=pal.bg;ctx.fillRect(0,0,VW,VH);
+  const cx=Math.floor(gs.cam.x),cy=Math.floor(gs.cam.y);
+  const sc=Math.max(0,Math.floor(cx/TILE)),sr=Math.max(0,Math.floor(cy/TILE));
+  const ec=Math.min(gs.wCOLS-1,Math.ceil((cx+VW)/TILE)),er=Math.min(gs.wROWS-1,Math.ceil((cy+VH)/TILE));
+  // Tiles
+  for(let r=sr;r<=er;r++)for(let c=sc;c<=ec;c++){
+    const sx=c*TILE-cx,sy=r*TILE-cy;
+    drawTile(gs.wmap[r][c],sx,sy,pal,(r*3+c*7)%3);
+  }
+  // NPCs
+  const now=Date.now();
+  gs.world.npcs.forEach(npc=>{
+    const sx=npc.tx*TILE-cx,sy=npc.ty*TILE-cy;
+    if(sx<-TILE||sx>VW+TILE||sy<-TILE||sy>VH+TILE)return;
+    const a=gs.npcAnims[npc.id];
+    const onCd=gs.cooldowns[gs.world.id+'_'+npc.id]&&now<gs.cooldowns[gs.world.id+'_'+npc.id];
+    if(onCd){ctx.globalAlpha=0.3;drawNPC(sx,sy,npc.spr,npc.col,a.dir,0);ctx.globalAlpha=1;
+      ctx.fillStyle='rgba(4,3,2,0.85)';ctx.fillRect(sx,sy-16,TILE,14);
+      ctx.fillStyle='#c07040';ctx.font='bold 10px Courier New';ctx.textAlign='center';
+      const rem=Math.ceil((gs.cooldowns[gs.world.id+'_'+npc.id]-now)/3600000);
+      ctx.fillText(rem+'h',sx+TILE/2,sy-5);}
+    else{
+      drawNPC(sx,sy,npc.spr,npc.col,a.dir,a.frame);
+      if(gs.nearNPC?.id===npc.id){
+        const bx=sx+TILE/2,by=sy-6+Math.sin(gs.tick*0.08)*2;
+        ctx.fillStyle='#c9a96e';ctx.fillRect(bx-1,by-8,3,5);ctx.fillRect(bx-1,by-1,3,3);
+      }
+    }
+    // Label
+    const hasArt=gs.artefacts.find(a=>a.id===npc.art?.id);
+    ctx.fillStyle=onCd?'#5a3820':hasArt?'#70a030':'#c9a96e';
+    ctx.font='bold 10px Courier New';ctx.textAlign='center';
+    ctx.fillText(npc.loc,sx+TILE/2,sy+TILE+12);
+  });
+  // Player
+  const psx=gs.player.px-cx,psy=gs.player.py-cy;
+  drawPlayer(psx,psy,gs.player.dir,gs.player.frame);
+  // World name watermark
+  ctx.fillStyle='rgba(180,140,60,0.25)';ctx.font='bold 12px Courier New';ctx.textAlign='left';
+  ctx.fillText(gs.world.name.toUpperCase(),8,VH-10);
+  // Vignette
+  const g=ctx.createRadialGradient(VW/2,VH/2,VH*0.3,VW/2,VH/2,VH*0.8);
+  g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,0.5)');
+  ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
+  // Scanlines
+  for(let y=0;y<VH;y+=4){ctx.fillStyle='rgba(0,0,0,0.03)';ctx.fillRect(0,y,VW,1);}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MOVEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+function canWalk(tc,tr){
+  if(tc<0||tc>=gs.wCOLS||tr<0||tr>=gs.wROWS)return false;
+  const t=gs.wmap[tr][tc];
+  if(t===T.WATER||t===T.MTN||t===T.TREE||t===T.RUIN_WALL)return false;
+  for(const n of gs.world.npcs)if(n.tx===tc&&n.ty===tr)return false;
+  return true;
+}
+function tryMove(dc,dr){
+  const nc=gs.player.tx+dc,nr=gs.player.ty+dr;
+  if(dc>0)gs.player.dir=3;else if(dc<0)gs.player.dir=1;
+  else if(dr>0)gs.player.dir=2;else gs.player.dir=0;
+  if(canWalk(nc,nr)){gs.player.tx=nc;gs.player.ty=nr;gs.player.px=nc*TILE;gs.player.py=nr*TILE;gs.player.frame=(gs.player.frame+1)%4;}
+}
+function updateCam(){
+  const tx=gs.player.px-VW/2+TILE/2,ty=gs.player.py-VH/2+TILE/2;
+  const mx=gs.wCOLS*TILE-VW,my=gs.wROWS*TILE-VH;
+  gs.cam.x+=(Math.max(0,Math.min(mx,tx))-gs.cam.x)*0.12;
+  gs.cam.y+=(Math.max(0,Math.min(my,ty))-gs.cam.y)*0.12;
+}
+function checkNear(){
+  let near=null;
+  gs.world.npcs.forEach(n=>{const d=Math.abs(n.tx-gs.player.tx)+Math.abs(n.ty-gs.player.ty);if(d<=1)near=n;});
+  gs.nearNPC=near;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DIALOGUE
+// ═══════════════════════════════════════════════════════════════════════════════
+let dlgTimer=null;
+function startDlg(npc){
+  gs.activeNPC=npc;gs.dlgLine=0;gs.screen='dialogue';
+  document.getElementById('dlg').classList.add('on');
+  showLine();
+}
+function showLine(){
+  const npc=gs.activeNPC;
+  document.getElementById('dlg-who').textContent=npc.name.toUpperCase();
+  document.getElementById('dlg-who').style.color=npc.col;
+  const el=document.getElementById('dlg-txt');
+  el.textContent='';
+  const line=npc.dlg[gs.dlgLine];
+  let i=0;clearInterval(dlgTimer);
+  dlgTimer=setInterval(()=>{el.textContent+=line[i];i++;if(i>=line.length)clearInterval(dlgTimer);},20);
+}
+function advDlg(){
+  gs.dlgLine++;
+  if(gs.dlgLine>=gs.activeNPC.dlg.length){closeDlg();openProb(gs.activeNPC);}
+  else showLine();
+}
+function closeDlg(){document.getElementById('dlg').classList.remove('on');gs.screen='game';}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROBLEM
+// ═══════════════════════════════════════════════════════════════════════════════
+function openProb(npc){
+  gs.screen='problem';gs.attempts=0;
+  // Pick a fresh random question from the centralised bank each interaction
+  const pool=QUESTION_BANK[npc.id];
+  if(pool&&pool.length>0)npc.prob=pool[Math.floor(Math.random()*pool.length)];
+  const p=npc.prob;
+  document.getElementById('pr-loc').textContent=npc.loc.toUpperCase();
+  document.getElementById('pr-loc').style.color=npc.col;
+  document.getElementById('pr-who').textContent=npc.name;
+  document.getElementById('pr-who').style.color=npc.col;
+  document.getElementById('pr-flav').textContent=npc.flav;
+  document.getElementById('pr-q').textContent=p.q;
+  document.getElementById('pr-hint').textContent='Hint: '+p.hint;
+  document.getElementById('pr-in').value='';
+  document.getElementById('pr-fb').textContent='';
+  document.getElementById('pr-fb').className='';
+  document.getElementById('pr-atts').textContent='';
+  document.getElementById('pr-sub').disabled=false;
+  document.getElementById('prob').classList.add('on');
+  setTimeout(()=>document.getElementById('pr-in').focus(),100);
+}
+function submitAns(){
+  const npc=gs.activeNPC;const raw=document.getElementById('pr-in').value.trim();
+  if(!raw)return;
+  const ok=npc.prob.chk(raw);
+  if(ok){
+    document.getElementById('pr-fb').textContent='Correct. '+npc.name+' grants you the '+npc.art.name+'.';
+    document.getElementById('pr-fb').className='ok';
+    document.getElementById('pr-sub').disabled=true;
+    const key=gs.world.id+'_'+npc.id;
+    gs.cooldowns[key]=Date.now()+npc.cd*3600000;
+    localStorage.setItem('tlt2_cd',JSON.stringify(gs.cooldowns));
+    if(npc.art&&!gs.artefacts.find(a=>a.id===npc.art.id)){
+      gs.artefacts.push({...npc.art,from:npc.loc,world:gs.world.name});
+      localStorage.setItem('tlt2_art',JSON.stringify(gs.artefacts));
+      document.getElementById('hud-ct').textContent=gs.artefacts.length;
+    }
+    setTimeout(()=>{closeProb();showReward(npc.art);},1500);
+  }else{
+    gs.attempts++;
+    const rem=gs.MAX_ATT-gs.attempts;
+    if(gs.attempts>=gs.MAX_ATT){
+      document.getElementById('pr-fb').textContent='Incorrect. Try again in 30 minutes.';
+      document.getElementById('pr-fb').className='no';
+      document.getElementById('pr-sub').disabled=true;
+      gs.cooldowns[gs.world.id+'_'+npc.id]=Date.now()+30*60000;
+      localStorage.setItem('tlt2_cd',JSON.stringify(gs.cooldowns));
+      setTimeout(closeProb,2500);
+    }else{
+      document.getElementById('pr-fb').textContent='Incorrect. '+rem+' attempt'+(rem===1?'':'s')+' remaining.';
+      document.getElementById('pr-fb').className='no';
+      document.getElementById('pr-atts').textContent='Expected form: '+npc.prob.sample;
+      document.getElementById('pr-in').value='';
+      document.getElementById('pr-in').focus();
+    }
+  }
+}
+function closeProb(){document.getElementById('prob').classList.remove('on');gs.screen='game';gs.activeNPC=null;}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REWARD
+// ═══════════════════════════════════════════════════════════════════════════════
+function showReward(art){
+  const el=document.getElementById('rwrd');
+  document.getElementById('rw-i').textContent=art.icon;
+  document.getElementById('rw-n').textContent=art.name;
+  document.getElementById('rw-d').textContent=art.desc;
+  el.className='on';setTimeout(()=>el.className='',3200);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INVENTORY
+// ═══════════════════════════════════════════════════════════════════════════════
+function openInv(){
+  gs.screen='inventory';
+  const g=document.getElementById('inv-g');g.innerHTML='';
+  const SLOTS=60;
+  for(let i=0;i<SLOTS;i++){
+    const art=gs.artefacts[i];
+    const d=document.createElement('div');d.className='inv-it'+(art?'':' mt');
+    if(art)d.innerHTML=`<div class="inv-icon">${art.icon}</div><div class="inv-nm">${art.name}</div><div class="inv-fr">${art.world}</div>`;
+    else d.innerHTML=`<div class="inv-icon" style="opacity:0.1">◆</div><div class="inv-nm" style="color:#1a1005">Empty</div>`;
+    g.appendChild(d);
+  }
+  document.getElementById('inv').classList.add('on');
+}
+function closeInv(){document.getElementById('inv').classList.remove('on');gs.screen='game';}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// WORLD SELECT
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildWorldSelect(){
+  const g=document.getElementById('ws-grid');g.innerHTML='';
+  WORLDS.forEach((w,i)=>{
+    const d=document.createElement('div');
+    d.className='ws-card';
+    const completed=w.npcs.every(n=>gs.artefacts.find(a=>a.id===n.art?.id));
+    if(completed)d.classList.add('done');
+    d.innerHTML=`<div class="ws-icon">${w.icon}</div><div class="ws-name">${w.name}</div><div class="ws-theme">${w.theme}</div>`;
+    d.onclick=()=>loadWorld(w);
+    g.appendChild(d);
+  });
+}
+function loadWorld(w){
+  gs.world=w;
+  const {map,COLS,ROWS}=generateMap(w.id);
+  gs.wmap=map;gs.wCOLS=COLS;gs.wROWS=ROWS;
+  gs.player.tx=w.startTX;gs.player.ty=w.startTY;
+  gs.player.px=w.startTX*TILE;gs.player.py=w.startTY*TILE;
+  gs.player.dir=2;gs.player.frame=0;
+  gs.cam.x=gs.player.px-VW/2;gs.cam.y=gs.player.py-VH/2;
+  gs.npcAnims={};
+  assignNPCQuestions(w);
+  w.npcs.forEach(n=>gs.npcAnims[n.id]={frame:0,timer:0,dir:2});
+  document.getElementById('hud-world').textContent=w.name.toUpperCase()+' · '+w.theme.toUpperCase();
+  document.getElementById('hud-ct').textContent=gs.artefacts.length;
+  document.getElementById('wsel').classList.add('off');
+  gs.screen='game';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INPUT
+// ═══════════════════════════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  gs.keys[e.key]=true;
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
+  if(gs.screen==='dialogue'){if(e.key===' '||e.key==='Enter')advDlg();return;}
+  if(gs.screen==='problem')return;
+  if(gs.screen==='inventory'){if(e.key==='e'||e.key==='E'||e.key==='Escape')closeInv();return;}
+  if(gs.screen==='game'){
+    if(e.key===' '||e.key==='Enter'){
+      if(gs.nearNPC){
+        const key=gs.world.id+'_'+gs.nearNPC.id;
+        if(!gs.cooldowns[key]||Date.now()>gs.cooldowns[key])startDlg(gs.nearNPC);
+      }
+    }
+    if(e.key==='e'||e.key==='E')openInv();
+    if(e.key==='Escape'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';}
+  }
+});
+document.addEventListener('keyup',e=>gs.keys[e.key]=false);
+document.getElementById('gameCanvas').addEventListener('pointerdown', e => {
+  if (gs.screen !== 'game') return;
+
+  const canvas = document.getElementById('gameCanvas');
+  const rect = canvas.getBoundingClientRect();
+
+  // Convert pointer position → canvas pixel → world tile
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const cx = (e.clientX - rect.left) * scaleX + gs.cam.x;
+  const cy = (e.clientY - rect.top)  * scaleY + gs.cam.y;
+  const tc = Math.floor(cx / TILE);
+  const tr = Math.floor(cy / TILE);
+
+  // Check if a non-cooldown NPC is at that tile
+  const tapped = gs.world.npcs.find(n => n.tx === tc && n.ty === tr);
+  if (!tapped) return;
+  if (gs.nearNPC?.id !== tapped.id) return; // must be adjacent (uses existing checkNear)
+
+  const key = gs.world.id + '_' + tapped.id;
+  if (gs.cooldowns[key] && Date.now() <= gs.cooldowns[key]) return;
+
+  startDlg(tapped);
+});
+document.getElementById('dlg-next').onclick=advDlg;
+document.getElementById('pr-sub').onclick=submitAns;
+document.getElementById('pr-in').addEventListener('keydown',e=>{if(e.key==='Enter')submitAns();});
+document.getElementById('pr-back').onclick=closeProb;
+document.getElementById('inv-cl').onclick=closeInv;
+document.getElementById('inv-btn').onclick=()=>{if(gs.screen==='game')openInv();};
+document.getElementById('world-btn').onclick=()=>{if(gs.screen==='game'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';}};document.getElementById('tt-start').onclick=()=>{
+  document.getElementById('title').classList.add('off');
+  buildWorldSelect();
+  gs.screen='worldselect';
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAME LOOP
+// ═══════════════════════════════════════════════════════════════════════════════
+let lastT=0;
+function loop(ts){
+  const dt=ts-lastT;lastT=ts;gs.tick++;
+  // NPC idle anims
+  if(gs.world){
+    gs.world.npcs.forEach(n=>{
+      const a=gs.npcAnims[n.id];a.timer+=dt;
+      if(a.timer>550){a.timer=0;a.frame=(a.frame+1)%4;if(Math.random()<0.04)a.dir=Math.floor(Math.random()*4);}
+    });
+  }
+  if(gs.screen==='game'){
+    gs.moveTimer+=dt;
+    if(gs.moveTimer>=gs.MOVE_DELAY){
+      gs.moveTimer=0;
+      const u=gs.keys['ArrowUp']||gs.keys['w']||gs.keys['W'];
+      const d=gs.keys['ArrowDown']||gs.keys['s']||gs.keys['S'];
+      const l=gs.keys['ArrowLeft']||gs.keys['a']||gs.keys['A'];
+      const r=gs.keys['ArrowRight']||gs.keys['d']||gs.keys['D'];
+      if(u)tryMove(0,-1);else if(d)tryMove(0,1);else if(l)tryMove(-1,0);else if(r)tryMove(1,0);
+    }
+    checkNear();updateCam();
+  }
+  render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+</script>
+</body>
+</html>
