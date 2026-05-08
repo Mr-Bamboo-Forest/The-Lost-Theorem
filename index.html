@@ -2,13 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>The Lost Theorem</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#060402;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Courier New',monospace;overflow:hidden;}
-#container{position:relative;width:800px;height:600px;overflow:hidden;border:2px solid #2a1a08;box-shadow:0 0 60px rgba(0,0,0,0.9);}
-#gameCanvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges;}
+body{background:#060402;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;font-family:'Courier New',monospace;overflow:auto;}
+#container{position:relative;width:min(800px,100vw);height:min(600px,calc(100vw * 0.75));overflow:hidden;border:2px solid #2a1a08;box-shadow:0 0 60px rgba(0,0,0,0.9);}
+#gameCanvas{display:block;width:100%;height:100%;max-height:100vh;object-fit:contain;image-rendering:pixelated;image-rendering:crisp-edges;}
+@media(max-width:900px) and (orientation:landscape){
+  body{align-items:center;justify-content:center;padding:0;width:100vw;height:100vh;}
+  #container{width:100vw;height:100vh;border:none;display:flex;align-items:center;justify-content:center;}
+  #gameCanvas{width:auto;height:100%;max-width:100%;max-height:100%;object-fit:contain;}
+}
+
+/* Rotate-to-landscape prompt */
+#rotate-prompt{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#060402;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+@media(max-width:900px) and (orientation:portrait){
+  #rotate-prompt{display:flex;}
+}
+#rotate-icon{font-size:64px;animation:rotpulse 1.5s ease-in-out infinite;}
+@keyframes rotpulse{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
+#rotate-msg{color:#c9a96e;font-size:14px;letter-spacing:3px;text-transform:uppercase;font-family:'Courier New',monospace;}
+#rotate-sub{color:#6a4820;font-size:11px;letter-spacing:1px;font-family:'Courier New',monospace;font-style:italic;}
 #ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
 
 /* HUD */
@@ -17,13 +34,13 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #hud-world{color:#c9a96e;}
 #hud-artefacts{color:#a08050;}
 #hud-artefacts span{color:#f0d070;}
-#inv-btn{position:absolute;top:45px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:6px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
+#inv-btn{position:absolute;top:45px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
 #inv-btn:hover{border-color:#8a5020;color:#f0d070;}
-#world-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:6px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
+#world-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 14px;color:#c9a96e;font-size:13px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
 #world-btn:hover{border-color:#8a5020;color:#f0d070;}
 
 /* Dialogue */
-#dlg{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:770px;background:rgba(4,3,2,0.97);border:2px solid #5a3a18;padding:12px 16px 10px;display:none;pointer-events:all;}
+#dlg{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:min(770px,calc(100% - 16px));background:rgba(4,3,2,0.97);border:2px solid #5a3a18;padding:12px 16px 10px;display:none;pointer-events:all;}
 #dlg.on{display:block;}
 #dlg-who{font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
 #dlg-txt{color:#e8d0a0;font-size:14px;line-height:1.9;min-height:40px;}
@@ -33,7 +50,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #dlg-next:hover{color:#f0d070;border-color:#9a6020;}
 
 /* Problem */
-#prob{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px;pointer-events:all;}
+#prob{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px;padding-top:40px;pointer-events:all;overflow-y:auto;}
 #prob.on{display:flex;}
 .pr-loc{font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
 .pr-who{font-size:20px;letter-spacing:2px;margin-bottom:4px;text-align:center;}
@@ -85,7 +102,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 .ws-sup{color:#7a5830;font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;}
 .ws-title{color:#f0d070;font-size:26px;letter-spacing:6px;text-transform:uppercase;margin-bottom:4px;}
 .ws-sub{color:#9a7040;font-size:12px;letter-spacing:3px;margin-bottom:28px;}
-.ws-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:760px;margin-bottom:16px;}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;width:100%;max-width:760px;margin-bottom:16px;}
 .ws-card{background:rgba(14,10,5,0.8);border:2px solid #2a1808;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s;}
 .ws-card:hover{border-color:#8a5020;}
 .ws-card.locked{opacity:0.3;cursor:default;}
@@ -96,7 +113,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 .ws-note{color:#6a4820;font-size:10px;letter-spacing:1px;margin-top:4px;}
 
 /* Title */
-#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;}
+#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;overflow-y:auto;}
 #title.off{display:none;}
 .tt-sup{color:#7a5830;font-size:11px;letter-spacing:4px;margin-bottom:12px;}
 .tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
@@ -105,14 +122,50 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 @keyframes glow{0%,100%{border-color:#4a2808}50%{border-color:#b08030}}
 .tt-btn:hover{background:#3a2010;}
 .tt-note{color:#6a4820;font-size:11px;letter-spacing:1px;margin-top:16px;font-style:italic;}
+#fs-btn{position:absolute;top:8px;right:180px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:6px 10px;color:#c9a96e;font-size:13px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
+#fs-btn:hover{border-color:#8a5020;color:#f0d070;}
 
 /* Controls */
 #ctrls{position:absolute;bottom:0;left:0;right:0;background:rgba(4,3,2,0.8);border-top:1px solid #1e1005;padding:4px 12px;display:flex;gap:16px;pointer-events:none;}
 .ct{color:#5a3e20;font-size:10px;letter-spacing:1px;}
 .ct span{color:#9a6830;}
+
+/* Joystick toggle button */
+#joy-toggle{position:absolute;bottom:0;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 12px;color:#c9a96e;font-size:11px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;display:none;z-index:30;}
+#joy-toggle:hover{border-color:#8a5020;color:#f0d070;}
+
+/* Virtual joystick overlay */
+#joy-overlay{position:absolute;bottom:0;left:0;right:0;height:200px;pointer-events:none;display:none;z-index:20;}
+#joy-overlay.on{display:block;}
+
+/* Joystick zone */
+#joy-zone{position:absolute;bottom:20px;left:20px;width:160px;height:160px;pointer-events:all;}
+#joy-base{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;background:rgba(6,4,2,0.75);border:2px solid #4a3010;}
+#joy-stick{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(74,48,16,0.9);border:2px solid #c9a96e;top:50%;left:50%;transform:translate(-50%,-50%);transition:none;}
+
+/* Interact button (mobile) */
+#joy-interact{position:absolute;bottom:30px;right:24px;width:70px;height:70px;border-radius:50%;background:rgba(6,4,2,0.85);border:2px solid #6a4010;color:#f0d070;font-size:11px;letter-spacing:1px;display:flex;align-items:center;justify-content:center;pointer-events:all;font-family:'Courier New',monospace;cursor:pointer;user-select:none;-webkit-user-select:none;}
+#joy-interact:active{background:rgba(58,32,8,0.9);border-color:#c9a96e;}
+
+/* Inventory mobile button */
+#joy-inv{position:absolute;bottom:110px;right:28px;width:52px;height:52px;border-radius:50%;background:rgba(6,4,2,0.85);border:2px solid #3a2008;color:#c9a96e;font-size:10px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:center;pointer-events:all;font-family:'Courier New',monospace;cursor:pointer;user-select:none;-webkit-user-select:none;text-align:center;line-height:1.2;}
+#joy-inv:active{border-color:#8a5020;}
+
+@media(max-width:900px) and (orientation:landscape){
+  #joy-toggle{display:block;}
+  #ctrls{display:none;}
+  #inv-btn{font-size:11px;padding:5px 10px;}
+  #world-btn{font-size:11px;padding:5px 10px;}
+  .hud-box{font-size:11px;padding:4px 8px;}
+}
 </style>
 </head>
 <body>
+<div id="rotate-prompt">
+  <div id="rotate-icon">📱</div>
+  <div id="rotate-msg">Rotate Your Device</div>
+  <div id="rotate-sub">This game requires landscape orientation</div>
+</div>
 <div id="container">
 <canvas id="gameCanvas" width="800" height="600"></canvas>
 <div id="ui">
@@ -122,6 +175,8 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
   </div>
   <button id="inv-btn">INVENTORY [E]</button>
   <button id="world-btn">WORLD MAP [ESC]</button>
+  <button id="fs-btn">⛶</button>     
+
   <div id="dlg">
     <div id="dlg-who"></div>
     <div id="dlg-txt"></div>
@@ -172,12 +227,22 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
     <div class="tt-tag">Ten Worlds. Sixty Artefacts. Every encounter is unique.</div>
     <button class="tt-btn" id="tt-start">BEGIN JOURNEY</button>
     <div class="tt-note">Approach characters and press SPACE to interact</div>
+    <button class="tt-btn" id="tt-fs" style="margin-top:12px;font-size:11px;padding:8px 24px;letter-spacing:2px;">⛶ FULLSCREEN</button>
   </div>
   <div id="ctrls">
     <div class="ct"><span>WASD/ARROWS</span> MOVE</div>
     <div class="ct"><span>SPACE/ENTER</span> INTERACT</div>
     <div class="ct"><span>E</span> INVENTORY</div>
     <div class="ct"><span>ESC</span> WORLD MAP</div>
+  </div>
+  <button id="joy-toggle">JOYSTICK</button>
+  <div id="joy-overlay">
+    <div id="joy-zone">
+      <div id="joy-base"></div>
+      <div id="joy-stick"></div>
+    </div>
+    <div id="joy-interact">TALK</div>
+    <div id="joy-inv">INV</div>
   </div>
 </div>
 </div>
@@ -2375,6 +2440,7 @@ function loadWorld(w){
   document.getElementById('hud-ct').textContent=gs.artefacts.length;
   document.getElementById('wsel').classList.add('off');
   gs.screen='game';
+  fitGameCanvas();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2394,7 +2460,7 @@ document.addEventListener('keydown',e=>{
       }
     }
     if(e.key==='e'||e.key==='E')openInv();
-    if(e.key==='Escape'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';}
+    if(e.key==='Escape'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect'; fitGameCanvas();}
   }
 });
 document.addEventListener('keyup',e=>gs.keys[e.key]=false);
@@ -2428,15 +2494,181 @@ document.getElementById('pr-in').addEventListener('keydown',e=>{if(e.key==='Ente
 document.getElementById('pr-back').onclick=closeProb;
 document.getElementById('inv-cl').onclick=closeInv;
 document.getElementById('inv-btn').onclick=()=>{if(gs.screen==='game')openInv();};
-document.getElementById('world-btn').onclick=()=>{if(gs.screen==='game'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';}};document.getElementById('tt-start').onclick=()=>{
+document.getElementById('world-btn').onclick=()=>{if(gs.screen==='game'){buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';} fitGameCanvas();};document.getElementById('tt-start').onclick=()=>{
   document.getElementById('title').classList.add('off');
   buildWorldSelect();
   gs.screen='worldselect';
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// GAME LOOP
+// VIRTUAL JOYSTICK
 // ═══════════════════════════════════════════════════════════════════════════════
+(function(){
+  const overlay = document.getElementById('joy-overlay');
+  const toggleBtn = document.getElementById('joy-toggle');
+  const zone = document.getElementById('joy-zone');
+  const stick = document.getElementById('joy-stick');
+  const interactBtn = document.getElementById('joy-interact');
+  const invBtn = document.getElementById('joy-inv');
+
+  let joyOn = false;
+  let active = false;
+  let zoneRect = null;
+  let cx = 0, cy = 0;
+
+  const DEAD = 18;   // deadzone px
+  const MAX  = 60;   // max stick travel px
+
+  // Directions mapped to virtual key names
+  const JOY_KEYS = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
+
+  function clearJoyKeys(){
+    JOY_KEYS.forEach(k => gs.keys[k] = false);
+  }
+
+  function setStickPos(dx, dy){
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const clamped = Math.min(dist, MAX);
+    const angle = Math.atan2(dy, dx);
+    const sx = Math.cos(angle) * clamped;
+    const sy = Math.sin(angle) * clamped;
+    stick.style.transform = `translate(calc(-50% + ${sx}px), calc(-50% + ${sy}px))`;
+
+    clearJoyKeys();
+    if(dist < DEAD) return;
+
+    // Primary axis: whichever is larger
+    if(Math.abs(dx) >= Math.abs(dy)){
+      gs.keys[dx < 0 ? 'ArrowLeft' : 'ArrowRight'] = true;
+    } else {
+      gs.keys[dy < 0 ? 'ArrowUp' : 'ArrowDown'] = true;
+    }
+  }
+
+  function resetStick(){
+    active = false;
+    clearJoyKeys();
+    stick.style.transform = 'translate(-50%,-50%)';
+  }
+
+  zone.addEventListener('touchstart', e => {
+    e.preventDefault();
+    active = true;
+    zoneRect = zone.getBoundingClientRect();
+    cx = zoneRect.left + zoneRect.width  / 2;
+    cy = zoneRect.top  + zoneRect.height / 2;
+    const t = e.touches[0];
+    setStickPos(t.clientX - cx, t.clientY - cy);
+  }, {passive:false});
+
+  zone.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if(!active) return;
+    const t = e.touches[0];
+    setStickPos(t.clientX - cx, t.clientY - cy);
+  }, {passive:false});
+
+  zone.addEventListener('touchend',  e => { e.preventDefault(); resetStick(); }, {passive:false});
+  zone.addEventListener('touchcancel',e=>{ e.preventDefault(); resetStick(); }, {passive:false});
+
+  // Mouse fallback (for desktop testing)
+  zone.addEventListener('mousedown', e => {
+    active = true;
+    zoneRect = zone.getBoundingClientRect();
+    cx = zoneRect.left + zoneRect.width  / 2;
+    cy = zoneRect.top  + zoneRect.height / 2;
+    setStickPos(e.clientX - cx, e.clientY - cy);
+  });
+  window.addEventListener('mousemove', e => {
+    if(!active) return;
+    setStickPos(e.clientX - cx, e.clientY - cy);
+  });
+  window.addEventListener('mouseup', () => { if(active) resetStick(); });
+
+  // Interact button
+  interactBtn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if(gs.screen === 'dialogue'){ advDlg(); return; }
+    if(gs.screen === 'game' && gs.nearNPC){
+      const key = gs.world.id + '_' + gs.nearNPC.id;
+      if(!gs.cooldowns[key] || Date.now() > gs.cooldowns[key]) startDlg(gs.nearNPC);
+    }
+  }, {passive:false});
+  interactBtn.addEventListener('mousedown', () => {
+    if(gs.screen === 'dialogue'){ advDlg(); return; }
+    if(gs.screen === 'game' && gs.nearNPC){
+      const key = gs.world.id + '_' + gs.nearNPC.id;
+      if(!gs.cooldowns[key] || Date.now() > gs.cooldowns[key]) startDlg(gs.nearNPC);
+    }
+  });
+
+  // Inventory button
+  invBtn.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if(gs.screen === 'game') openInv();
+    else if(gs.screen === 'inventory') closeInv();
+  }, {passive:false});
+  invBtn.addEventListener('mousedown', () => {
+    if(gs.screen === 'game') openInv();
+    else if(gs.screen === 'inventory') closeInv();
+  });
+
+  // Show/hide joystick based on current screen
+  function syncJoyVisibility(){
+    if(!joyOn) return;
+    const screen = gs.screen;
+    const gameOnly = (screen === 'game');
+    overlay.style.visibility = gameOnly ? 'visible' : 'hidden';
+    overlay.style.pointerEvents = gameOnly ? 'auto' : 'none';
+    if(!gameOnly) resetStick();
+  }
+
+  // Patch gs.screen setter to auto-sync
+  let _screen = gs.screen;
+  Object.defineProperty(gs, 'screen', {
+    get(){ return _screen; },
+    set(v){
+      _screen = v;
+      syncJoyVisibility();
+    }
+  });
+
+  // Toggle button
+  toggleBtn.addEventListener('click', () => {
+    joyOn = !joyOn;
+    overlay.classList.toggle('on', joyOn);
+    toggleBtn.textContent = joyOn ? 'HIDE JOY' : 'JOYSTICK';
+    toggleBtn.style.borderColor = joyOn ? '#c9a96e' : '#4a3010';
+    if(!joyOn){ resetStick(); overlay.style.visibility=''; overlay.style.pointerEvents=''; }
+    else syncJoyVisibility();
+  });
+
+  // Auto-show joystick on touch devices
+  window.addEventListener('touchstart', () => {
+    if(!joyOn){
+      joyOn = true;
+      overlay.classList.add('on');
+      toggleBtn.textContent = 'HIDE JOY';
+      toggleBtn.style.borderColor = '#c9a96e';
+      syncJoyVisibility();
+    }
+  }, {once:true, passive:true});
+})();
+
+function fitGameCanvas(){
+  const c = document.getElementById('container');
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Fit 800x600 ratio within viewport
+  const scale = Math.min(vw / 800, vh / 600);
+  const w = Math.floor(800 * scale);
+  const h = Math.floor(600 * scale);
+  c.style.width = w + 'px';
+  c.style.height = h + 'px';
+}
+window.addEventListener('resize', fitGameCanvas);
+window.addEventListener('orientationchange', () => setTimeout(fitGameCanvas, 300));
+fitGameCanvas();
 let lastT=0;
 function loop(ts){
   const dt=ts-lastT;lastT=ts;gs.tick++;
@@ -2463,7 +2695,11 @@ function loop(ts){
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-
+document.getElementById('tt-fs').addEventListener('click', () => {
+  const el = document.documentElement;
+  if(el.requestFullscreen) el.requestFullscreen();
+  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+});
 </script>
 </body>
 </html>
