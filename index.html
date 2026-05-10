@@ -33,7 +33,13 @@
 </script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>The Lost Theorem</title>
+<meta name="description" content="The Lost Theorem is a free browser-based mathematics RPG. Explore ten worlds, solve maths problems, and collect artefacts. Covers calculus, geometry, probability, algebra, statistics, and more.">
+<meta property="og:title" content="The Lost Theorem">
+<meta property="og:description" content="Explore ten mathematical worlds. Solve curriculum-aligned problems. Collect sixty artefacts. Free to play in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thelosttheorem.netlify.app/">
+<link rel="canonical" href="https://thelosttheorem.netlify.app/">
+<title>The Lost Theorem — Free Maths RPG</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#060402;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;font-family:'Courier New',monospace;overflow:auto;}
@@ -69,7 +75,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 
 /* Settings panel */
 #settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:200px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:all;z-index:80;}
-#settings-panel.on{display:flex;}
+#settings-panel.on{display:flex;pointer-events:all;}
 .sp-btn{background:transparent;border:1px solid #2a1808;color:#c9a96e;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;font-family:'Courier New',monospace;text-align:left;transition:border-color 0.12s,color 0.12s;}
 .sp-btn:hover{border-color:#8a5020;color:#f0d070;background:rgba(30,15,5,0.5);}
 .sp-divider{height:1px;background:#2a1808;margin:3px 0;}
@@ -158,20 +164,20 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 /* Title */
 #title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;overflow-y:auto;}
 #title.off{display:none;}
-.tt-sup{color:#7a5830;font-size:11px;letter-spacing:4px;margin-bottom:12px;}
+.tt-sup{color:#7a5830;font-size:15px;letter-spacing:4px;margin-bottom:12px;}
 .tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
-.tt-tag{color:#9a6830;font-size:12px;letter-spacing:3px;margin-bottom:36px;}
+.tt-tag{color:#9a6830;font-size:15px;letter-spacing:3px;margin-bottom:36px;}
 .tt-btn{background:#2a1808;border:2px solid #6a4010;color:#f0d070;font-size:13px;padding:12px 32px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:3px;text-transform:uppercase;animation:glow 2s ease-in-out infinite;}
 @keyframes glow{0%,100%{border-color:#4a2808}50%{border-color:#b08030}}
 .tt-btn:hover{background:#3a2010;}
-.tt-note{color:#6a4820;font-size:11px;letter-spacing:1px;margin-top:16px;font-style:italic;}
+.tt-note{color:#6a4820;font-size:15px;letter-spacing:1px;margin-top:16px;font-style:italic;}
 /* Settings cog button */
 #settings-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#c9a96e;font-size:18px;cursor:pointer;pointer-events:all;transition:border-color 0.15s,transform 0.3s;}
 #settings-btn:hover{border-color:#8a5020;color:#f0d070;}
 #settings-btn.open{transform:rotate(60deg);}
 /* Settings panel */
-#settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:all;z-index:80;}
-#settings-panel.on{display:flex;}
+#settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:none;z-index:80;}
+#settings-panel.on{display:flex;pointer-events:all;}
 .sp-btn{background:transparent;border:1px solid #2a1808;color:#c9a96e;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;font-family:'Courier New',monospace;text-align:left;transition:border-color 0.12s,color 0.12s;}
 .sp-btn:hover{border-color:#8a5020;color:#f0d070;background:rgba(30,15,5,0.5);}
 .sp-divider{height:1px;background:#2a1808;margin:3px 0;}
@@ -182,8 +188,8 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #vol-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:12px;height:12px;background:#c9a96e;cursor:pointer;}
 #vol-slider::-moz-range-thumb{width:12px;height:12px;background:#c9a96e;border:none;cursor:pointer;}
 /* Help modal */
-#help-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:all;overflow-y:auto;z-index:150;}
-#help-modal.on{display:flex;}
+#help-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:none;overflow-y:auto;z-index:150;}
+#help-modal.on{display:flex;pointer-events:all;}
 .hm-title{color:#f0d070;font-size:16px;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;}
 .hm-sub{color:#7a5830;font-size:10px;letter-spacing:2px;margin-bottom:20px;}
 .hm-section{width:100%;max-width:560px;margin-bottom:14px;}
@@ -203,8 +209,8 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #wsel-back-btn{position:absolute;top:12px;left:12px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 14px;color:#c9a96e;font-size:11px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;}
 #wsel-back-btn:hover{border-color:#8a5020;color:#f0d070;}
 /* How-to-play */
-#htp-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:all;overflow-y:auto;z-index:250;}
-#htp-overlay.on{display:flex;}
+#htp-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:none;overflow-y:auto;z-index:250;}
+#htp-overlay.on{display:flex;pointer-events:all;}
 .htp-title{color:#f0d070;font-size:18px;letter-spacing:5px;text-transform:uppercase;margin-bottom:4px;}
 .htp-sub{color:#7a5830;font-size:10px;letter-spacing:2px;margin-bottom:22px;}
 .htp-block{width:100%;max-width:560px;background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:14px 18px;margin-bottom:12px;}
@@ -221,9 +227,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 .ct{color:#5a3e20;font-size:10px;letter-spacing:1px;}
 .ct span{color:#9a6830;}
 
-/* Joystick toggle button */
-#joy-toggle{position:absolute;bottom:0;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:5px 12px;color:#c9a96e;font-size:11px;letter-spacing:1px;cursor:pointer;pointer-events:all;font-family:'Courier New',monospace;display:none;z-index:30;}
-#joy-toggle:hover{border-color:#8a5020;color:#f0d070;}
+/* joy-toggle moved to settings panel */
 
 /* Virtual joystick overlay */
 #joy-overlay{position:absolute;bottom:0;left:0;right:0;height:200px;pointer-events:none;display:none;z-index:20;}
@@ -243,7 +247,6 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #joy-inv:active{border-color:#8a5020;}
 
 @media(max-width:900px) and (orientation:landscape){
-  #joy-toggle{display:block;}
   #ctrls{display:none;}
   #settings-btn{font-size:14px;width:30px;height:30px;}
   .hud-box{font-size:11px;padding:4px 8px;}
@@ -273,6 +276,9 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
     <button class="sp-btn" id="sp-fullscreen">&#9974; ENTER FULLSCREEN</button>
     <button class="sp-btn" id="sp-exitfs" style="display:none">&#8601; EXIT FULLSCREEN</button>
     <button class="sp-btn" id="sp-glowtoggle">&#9651; BLOCKED TILE GLOW: OFF</button>
+    <div class="sp-divider"></div>
+    <div class="sp-label">CONTROLS</div>
+    <button class="sp-btn" id="sp-joytoggle">&#9679; JOYSTICK: OFF</button>
     <div class="sp-divider"></div>
     <div class="sp-label">AUDIO</div>
     <div class="sp-vol-row"><label>VOL</label><input type="range" id="vol-slider" min="0" max="100" value="70"></div>
@@ -367,7 +373,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
   <div id="title">
     <div class="tt-sup">A Mathematics RPG</div>
     <div class="tt-main">The Lost Theorem</div>
-    <div class="tt-tag">Ten Worlds. Sixty Artefacts. Every encounter is unique.</div>
+    <div class="tt-tag">Ten Worlds. Sixty Artefacts.</div>
     <button class="tt-btn" id="tt-htp">HOW TO PLAY</button>
     <button class="tt-btn" id="tt-start" style="margin-top:10px;">BEGIN JOURNEY</button>
     <div class="tt-note">Approach characters and press SPACE to interact</div>
@@ -409,7 +415,6 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
     <div class="ct"><span>E</span> INVENTORY</div>
     <div class="ct"><span>ESC</span> WORLD MAP</div>
   </div>
-  <button id="joy-toggle">JOYSTICK</button>
   <div id="joy-overlay">
     <div id="joy-zone">
       <div id="joy-base"></div>
@@ -495,8 +500,8 @@ const WORLDS = [
     ]
   },
   {
-    id:'euclid_bay',
-    name:'Euclid Bay',
+    id:'euclid_eutopia',
+    name:'Euclid Eutopia',
     theme:'Geometry',
     icon:'📏',
     palette:{
@@ -526,15 +531,15 @@ const WORLDS = [
        flav:"Counts coins using circles — the merchant always inscribes a circle in a polygon before pricing.",
        dlg:["I price by area. A circle, a polygon — different formulas, same thinking.",
             "Tell me this: what is the area of a sector?"],
-       art:{id:'compass',icon:'🧭',name:'Surveyor Compass',desc:'Measures arcs and central angles. Belonged to the original Euclid Bay architect.'},
+       art:{id:'compass',icon:'🧭',name:'Surveyor Compass',desc:'Measures arcs and central angles. Belonged to the original Euclid Eutopia architect.'},
        cd:16,      },
       {id:'surveyor',name:'City Surveyor',tx:36,ty:12,spr:'scholar',col:'#30a070',
        loc:'The Clock Tower',
-       flav:"Has surveyed every lot in Euclid Bay using similarity and scale. Never approximate.",
+       flav:"Has surveyed every lot in Euclid Eutopia using similarity and scale. Never approximate.",
        dlg:["Two triangles are similar if their angles match.",
             "The ratio of sides is constant. That ratio unlocks the whole structure.",
             "Show me you understand similarity."],
-       art:{id:'scale',icon:'📐',name:'Scale Rule',desc:'Every measurement in Euclid Bay made with this. Markings in exact ratios.'},
+       art:{id:'scale',icon:'📐',name:'Scale Rule',desc:'Every measurement in Euclid Eutopia made with this. Markings in exact ratios.'},
        cd:20,      },
       {id:'cartographer',name:'The Cartographer',tx:8,ty:28,spr:'scholar',col:'#48c8a0',
        loc:'Buried Archive',
@@ -542,7 +547,7 @@ const WORLDS = [
        dlg:["The circle holds more secrets than any polygon.",
             "Angles in a circle obey strict laws — inscribed, central, cyclic.",
             "One theorem, one question."],
-       art:{id:'chart',icon:'🗾',name:'Bay Chart',desc:'The original map of Euclid Bay, drawn using only circle theorems and a compass.'},
+       art:{id:'chart',icon:'🗾',name:'Bay Chart',desc:'The original map of Euclid Eutopia, drawn using only circle theorems and a compass.'},
        cd:22,      },
       {id:'engineer',name:'Bridge Engineer',tx:28,ty:26,spr:'traveller',col:'#58b0a8',
        loc:'Bridge at Meridian Point',
@@ -2395,6 +2400,8 @@ function drawPlayer(sx,sy,dir,frame){
 // RENDER
 // ═══════════════════════════════════════════════════════════════════════════════
 function render(){
+  if(gs.screen!=='game'&&gs.screen!=='dialogue'&&gs.screen!=='problem'&&gs.screen!=='inventory')return;
+  if(!gs.world||!gs.wmap)return;
   if(gs.screen==='title'||gs.screen==='worldselect')return;
   const pal=gs.world.palette;
   ctx.fillStyle=pal.bg;ctx.fillRect(0,0,VW,VH);
@@ -2559,7 +2566,7 @@ function submitAns(){
     }
   }
 }
-function closeProb(){document.getElementById('prob').classList.remove('on');gs.screen='game';gs.activeNPC=null;}
+function closeProb(){document.getElementById('prob').classList.remove('on');gs.screen='game';gs.activeNPC=null;syncJoyVisibility();}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // REWARD
@@ -2588,7 +2595,7 @@ function openInv(){
   }
   document.getElementById('inv').classList.add('on');
 }
-function closeInv(){document.getElementById('inv').classList.remove('on');gs.screen='game';}
+function closeInv(){document.getElementById('inv').classList.remove('on');gs.screen='game';syncJoyVisibility();}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // WORLD SELECT
@@ -2620,6 +2627,7 @@ function loadWorld(w){
   document.getElementById('hud-ct').textContent=gs.artefacts.length;
   document.getElementById('wsel').classList.add('off');
   gs.screen='game';
+  syncJoyVisibility();
   fitGameCanvas();
 }
 
@@ -2682,22 +2690,20 @@ document.getElementById('dlg-next').onclick=advDlg;
 document.getElementById('pr-sub').onclick=submitAns;
 document.getElementById('pr-in').addEventListener('keydown',e=>{if(e.key==='Enter')submitAns();});
 document.getElementById('pr-back').onclick=closeProb;
-document.getElementById('inv-cl').onclick=closeInv;// ═══════════════════════════════════════════════════════════════════════════════
-// MUSIC SYSTEM (placeholders — swap file paths for actual audio files)
-// ═══════════════════════════════════════════════════════════════════════════════
-const MUSIC_TRACKS = {
-  title:                 ['audio/title_theme.mp3'],
-  worldselect:           ['audio/worldmap_theme.mp3'],
-  integral_plains:       ['audio/integral_plains_1.mp3','audio/integral_plains_2.mp3'],
-  derivation_city:       ['audio/derivation_city_1.mp3','audio/derivation_city_2.mp3'],
-  trig_peaks:            ['audio/trig_peaks_1.mp3','audio/trig_peaks_2.mp3'],
-  euclid_bay:            ['audio/euclid_bay_1.mp3','audio/euclid_bay_2.mp3'],
-  probability_hollow:    ['audio/probability_hollow_1.mp3','audio/probability_hollow_2.mp3'],
-  algebra_aces:          ['audio/algebra_aces_1.mp3','audio/algebra_aces_2.mp3'],
-  vector_wastelands:     ['audio/vector_wastelands_1.mp3','audio/vector_wastelands_2.mp3'],
-  exponential_depths:    ['audio/exponential_depths_1.mp3','audio/exponential_depths_2.mp3'],
-  combinatorial_archives:['audio/combinatorial_archives_1.mp3'],
-  null_space:            ['audio/null_space_1.mp3','audio/null_space_2.mp3'],
+document.getElementById('inv-cl').onclick=closeInv;
+const MUSIC_TRACKS = { //https://pixabay.com/music/
+  title:                 ['audio/title_theme.mp3'], //done
+  worldselect:           ['audio/worldmap_theme.mp3'], //
+  integral_plains:       ['audio/integral_plains_1.mp3','audio/integral_plains_2.mp3'], //
+  derivation_city:       ['audio/derivation_city_1.mp3','audio/derivation_city_2.mp3'], //
+  trig_peaks:            ['audio/trig_peaks_1.mp3','audio/trig_peaks_2.mp3'], //
+  euclid_eutopia:        ['audio/euclid_eutopia_1.mp3','audio/euclid_eutopia_2.mp3'], //
+  probability_hollow:    ['audio/probability_hollow_1.mp3','audio/probability_hollow_2.mp3'], //
+  algebra_aces:          ['audio/algebra_aces_1.mp3','audio/algebra_aces_2.mp3'], //
+  vector_wastelands:     ['audio/vector_wastelands_1.mp3','audio/vector_wastelands_2.mp3'], //2 done
+  exponential_depths:    ['audio/exponential_depths_1.mp3','audio/exponential_depths_2.mp3'], //2 done
+  combinatorial_archives:['audio/combinatorial_archives_1.mp3', 'audio/combinatorial_archives_2.mp3'], //
+  null_space:            ['audio/null_space_1.mp3','audio/null_space_2.mp3'], //2 done
 };
 const music = {
   el:null, key:null, vol:0.7,
@@ -2742,11 +2748,13 @@ document.addEventListener('webkitfullscreenchange',updateFSButtons);
 
   document.getElementById('sp-worldmap').onclick=()=>{
     closePanel();
-    if(gs.screen==='game'||gs.screen==='inventory'||gs.screen==='dialogue'){
+    if(gs.screen==='game'||gs.screen==='inventory'||gs.screen==='dialogue'||gs.screen==='problem'){
       if(gs.screen==='inventory')document.getElementById('inv').classList.remove('on');
-      if(gs.screen==='dialogue'){document.getElementById('dlg').classList.remove('on');}
+      if(gs.screen==='dialogue')document.getElementById('dlg').classList.remove('on');
+      if(gs.screen==='problem')document.getElementById('prob').classList.remove('on');
+      gs.activeNPC=null; gs.nearNPC=null;
       buildWorldSelect();document.getElementById('wsel').classList.remove('off');gs.screen='worldselect';
-      music.play('worldselect');fitGameCanvas();
+      syncJoyVisibility(); music.play('worldselect');fitGameCanvas();
     }
   };
   document.getElementById('sp-inventory').onclick=()=>{
@@ -2780,20 +2788,28 @@ document.getElementById('tt-htp').onclick=()=>{document.getElementById('htp-over
 document.getElementById('htp-back-btn').onclick=()=>{
   document.getElementById('htp-overlay').classList.remove('on');
 };
-document.getElementById('tt-start').onclick=()=>{
+document.getElementById('tt-start').onclick = () => {
   document.getElementById('title').classList.add('off');
-  buildWorldSelect();gs.screen='worldselect';music.play('worldselect');
+  document.getElementById('wsel').classList.remove('off');
+  gs.world = null; gs.wmap = null; gs.nearNPC = null; gs.activeNPC = null;
+  buildWorldSelect();
+  gs.screen = 'worldselect';
+  syncJoyVisibility();
+  music.play('worldselect');
+  fitGameCanvas();
 };
 document.getElementById('tt-fs').onclick=()=>{enterFullscreen();};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // WORLD MAP BUTTONS
 // ═══════════════════════════════════════════════════════════════════════════════
-document.getElementById('wsel-fs-btn').onclick=()=>{enterFullscreen();};
-document.getElementById('wsel-back-btn').onclick=()=>{
+document.getElementById('wsel-back-btn').onclick = () => {
   document.getElementById('wsel').classList.add('off');
   document.getElementById('title').classList.remove('off');
-  gs.screen='title';music.play('title');
+  gs.screen = 'title';
+  gs.world = null; gs.wmap = null; gs.nearNPC = null; gs.activeNPC = null;
+  syncJoyVisibility();
+  music.play('title');
 };
 
 // Start title music on first interaction (browser autoplay policy)
@@ -2804,9 +2820,10 @@ document.addEventListener('touchstart',startTitleMusic,{once:true,passive:true})
 // ═══════════════════════════════════════════════════════════════════════════════
 // VIRTUAL JOYSTICK
 // ═══════════════════════════════════════════════════════════════════════════════
+var syncJoyVisibility = function(){};
 (function(){
   const overlay = document.getElementById('joy-overlay');
-  const toggleBtn = document.getElementById('joy-toggle');
+  const toggleBtn = document.getElementById('sp-joytoggle');
   const zone = document.getElementById('joy-zone');
   const stick = document.getElementById('joy-stick');
   const interactBtn = document.getElementById('joy-interact');
@@ -2915,7 +2932,7 @@ document.addEventListener('touchstart',startTitleMusic,{once:true,passive:true})
   });
 
   // Show/hide joystick based on current screen
-  function syncJoyVisibility(){
+  syncJoyVisibility = function syncJoyVisibility(){
     if(!joyOn) return;
     const screen = gs.screen;
     const gameOnly = (screen === 'game');
@@ -2924,22 +2941,12 @@ document.addEventListener('touchstart',startTitleMusic,{once:true,passive:true})
     if(!gameOnly) resetStick();
   }
 
-  // Patch gs.screen setter to auto-sync
-  let _screen = gs.screen;
-  Object.defineProperty(gs, 'screen', {
-    get(){ return _screen; },
-    set(v){
-      _screen = v;
-      syncJoyVisibility();
-    }
-  });
-
   // Toggle button
   toggleBtn.addEventListener('click', () => {
     joyOn = !joyOn;
     overlay.classList.toggle('on', joyOn);
-    toggleBtn.textContent = joyOn ? 'HIDE JOY' : 'JOYSTICK';
-    toggleBtn.style.borderColor = joyOn ? '#c9a96e' : '#4a3010';
+    toggleBtn.textContent = '● JOYSTICK: ' + (joyOn ? 'ON' : 'OFF');
+    // border handled by .sp-btn hover
     if(!joyOn){ resetStick(); overlay.style.visibility=''; overlay.style.pointerEvents=''; }
     else syncJoyVisibility();
   });
@@ -2949,7 +2956,7 @@ document.addEventListener('touchstart',startTitleMusic,{once:true,passive:true})
     if(!joyOn){
       joyOn = true;
       overlay.classList.add('on');
-      toggleBtn.textContent = 'HIDE JOY';
+      toggleBtn.textContent = '● JOYSTICK: ON';
       toggleBtn.style.borderColor = '#c9a96e';
       syncJoyVisibility();
     }
@@ -2998,5 +3005,14 @@ function loop(ts){
 requestAnimationFrame(loop);
 // tt-fs handled above
 </script>
+<div style="position:fixed;bottom:0;left:0;right:0;background:rgba(4,3,2,0.95);border-top:1px solid #1a0e05;padding:5px 16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;z-index:9999;pointer-events:all;" id="site-footer">
+  <a href="about.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">ABOUT</a>
+  <a href="lore.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">LORE</a>
+  <a href="blog.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">DEV-BLOG</a>
+  <a href="privacy.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">PRIVACY-POLICY</a>
+  <a href="tos.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">TERMS</a>
+  <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">INSTAGRAM</a>
+  <a href="https://www.youtube.com/@math.on.a.whiteboard" target="_blank" rel="noopener" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">YOUTUBE</a>
+</div>
 </body>
 </html>

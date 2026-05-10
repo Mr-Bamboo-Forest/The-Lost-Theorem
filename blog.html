@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://thelosttheorem.netlify.app/blog.html">
+<meta name="description" content="The Lost Theorem development blog — version history, feature breakdowns, and behind-the-scenes notes from building a single-file maths RPG.">
+<title>Dev Blog | The Lost Theorem</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060402;color:#c9a96e;font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;}
+a{color:#f0d070;text-decoration:none;}
+a:hover{text-decoration:underline;}
+nav{background:rgba(8,5,2,0.98);border-bottom:1px solid #2a1808;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;}
+.nav-logo{color:#f0d070;font-size:14px;letter-spacing:4px;text-transform:uppercase;padding:14px 0;text-decoration:none;}
+.nav-logo:hover{text-decoration:none;color:#ffd070;}
+.nav-links{display:flex;gap:0;flex-wrap:wrap;}
+.nav-links a{color:#9a7040;font-size:11px;letter-spacing:1px;padding:14px 14px;text-transform:uppercase;border-left:1px solid #1a0e05;transition:color 0.1s;}
+.nav-links a:hover{color:#f0d070;text-decoration:none;}
+.nav-links a.active{color:#c9a96e;border-bottom:2px solid #8a5020;}
+.nav-play{background:#2a1808;border:1px solid #6a4010;color:#f0d070;font-size:11px;padding:7px 18px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.nav-play:hover{background:#3a2010;text-decoration:none;}
+main{flex:1;max-width:860px;width:100%;margin:0 auto;padding:48px 24px;}
+h1{color:#f0d070;font-size:22px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;}
+.page-sub{color:#7a5830;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;border-bottom:1px solid #1a0e05;padding-bottom:16px;}
+h2{color:#c9a96e;font-size:14px;letter-spacing:3px;text-transform:uppercase;margin:28px 0 12px;}
+h3{color:#a08040;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:20px 0 8px;}
+p{color:#9a7848;font-size:13px;line-height:2;margin-bottom:14px;}
+ul,ol{color:#9a7848;font-size:13px;line-height:2;margin-bottom:14px;padding-left:24px;}
+li{margin-bottom:4px;}
+.box{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:20px 24px;margin-bottom:20px;}
+.tag{display:inline-block;background:rgba(20,14,5,0.9);border:1px solid #2a1808;color:#8a5828;font-size:10px;letter-spacing:1px;padding:3px 10px;margin:0 4px 6px 0;text-transform:uppercase;}
+.divider{height:1px;background:#1a0e05;margin:28px 0;}
+.blog-card{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:24px;margin-bottom:16px;}
+.blog-meta{color:#5a3818;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.blog-title{color:#f0d070;font-size:16px;letter-spacing:2px;margin-bottom:12px;}
+.blog-body{color:#9a7848;font-size:13px;line-height:2;}
+.blog-body p{margin-bottom:12px;}
+.blog-body ul{margin-bottom:12px;padding-left:20px;}
+.blog-tags{margin-top:14px;padding-top:12px;border-top:1px solid #1a0e05;}
+.lore-quote{border-left:2px solid #4a2808;padding:10px 18px;margin:16px 0;color:#8a6030;font-style:italic;font-size:13px;line-height:1.9;}
+footer{background:rgba(4,3,2,0.98);border-top:1px solid #1a0e05;padding:24px;text-align:center;}
+footer p{color:#4a3018;font-size:11px;line-height:1.8;margin:0;}
+footer a{color:#6a4820;}
+.social-links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;}
+.social-links a{color:#8a5830;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid #2a1808;padding:8px 18px;transition:border-color 0.1s,color 0.1s;}
+.social-links a:hover{border-color:#6a4010;color:#c9a96e;text-decoration:none;}
+@media(max-width:600px){nav{padding:0 12px;}.nav-links a{padding:12px 10px;font-size:10px;}main{padding:32px 16px;}h1{font-size:18px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo">THE LOST THEOREM</a>
+  <div class="nav-links">
+    <a href="blog.html" class="active">DEV BLOG</a>
+    <a href="lore.html" >LORE</a>
+    <a href="about.html" >ABOUT</a>
+    <a href="privacy.html" >PRIVACY</a>
+    <a href="tos.html" >TERMS</a>
+  </div>
+  <a class="nav-play" href="index.html">&#9654; PLAY NOW</a>
+</nav>
+<main>
+<h1>Development Blog</h1>
+<div class="page-sub">Behind the scenes of building The Lost Theorem</div>
+
+<div class="blog-card">
+  <div class="blog-title">v0.8: Settings Overhaul, Bug Fixes, and AdSense Prep</div>
+  <div class="blog-body">
+    <p>The biggest quality-of-life update so far. Here is what changed in v0.8.</p>
+    <p><strong>Settings Panel.</strong> The three separate top-right buttons (World Map, Inventory, Fullscreen) are gone. In their place is a single cog icon that opens a settings panel. From there you can navigate to the World Map or Inventory, toggle fullscreen or exit it, adjust the volume slider, toggle the blocked tile glow effect, show the joystick on mobile, read the How to Play guide, and reset all progress.</p>
+    <p><strong>Bug fixes.</strong> Several critical bugs were fixed in this update:</p>
+    <ul>
+      <li>Returning to the title screen and pressing Begin Journey no longer spawns the player into a broken, non-responsive world. The root cause was a stale Object.defineProperty patch on gs.screen that left pointer events blocked on invisible overlay elements. This has been rewritten to use explicit syncJoyVisibility() calls at every screen transition point.</li>
+      <li>Resetting progress or cycling fullscreen rapidly no longer freezes the page. The fix involved removing pointer-events:all from elements that are display:none, ensuring invisible overlays can never swallow input.</li>
+      <li>The joystick toggle has been moved from a standalone bottom-bar button into the settings panel, simplifying the HUD significantly.</li>
+    </ul>
+    <p><strong>Music system.</strong> Placeholder file paths have been added for per-world and per-screen audio tracks. When audio files are placed in the /audio/ folder they will load and loop automatically, with world-specific tracks switching on map entry.</p>
+    <p><strong>Site pages.</strong> This dev blog, a Lore page, About, Privacy Policy, and Terms of Service have been added to the site to prepare for Google AdSense review.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.8</span><span class="tag">Bug Fixes</span><span class="tag">Settings</span><span class="tag">Music</span><span class="tag">Mobile</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">
+  <div class="blog-title">v0.7: Joystick, Movement Fixes, and Blocked Tile Glow</div>
+  <div class="blog-body">
+    <p>v0.7 focused on mobile playability and movement feel.</p>
+    <p><strong>Virtual joystick.</strong> A touch-based virtual joystick now appears automatically on mobile devices. It supports both touch and mouse input, with a dead zone and clamped travel distance. The joystick can be toggled on or off via the settings panel.</p>
+    <p><strong>Movement behaviour.</strong> The movement system was changed so that a single keypress moves exactly one tile immediately, with the held-repeat timer reset on each fresh press. This means tapping moves one step, holding moves continuously, and releasing stops movement cleanly. Previously, the hold-repeat could compound with fresh presses to produce erratic multi-step jumps.</p>
+    <p><strong>Blocked tile glow.</strong> Impassable tiles (water, mountains, trees, ruin walls) now have a subtle amber outline to indicate they cannot be traversed. This is off by default and can be toggled in the settings panel under Display.</p>
+    <p><strong>In-app browser redirect.</strong> The game now detects when it is being opened inside Instagram, TikTok, Facebook, or other in-app browsers and redirects users to their real browser, where the game runs correctly.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.7</span><span class="tag">Mobile</span><span class="tag">Joystick</span><span class="tag">Movement</span><span class="tag">UX</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">
+  <div class="blog-title">v0.6: Statistical Archipelago and The Combinatorial Archives</div>
+  <div class="blog-body">
+    <p>Two more worlds shipped in v0.6, bringing the total to ten and completing the main content of the game.</p>
+    <p><strong>The Statistical Archipelago</strong> covers statistics: mean, median, standard deviation, interquartile range, hypothesis testing, regression, confidence intervals, and outlier detection. The world has five NPCs: the Data Collector, the Hypothesis Judge, the Regression Keeper, the Confidence Sage, and the Outlier Watcher.</p>
+    <p><strong>The Combinatorial Archives</strong> covers combinatorics: permutations, combinations, stars and bars, and derangements. Its NPCs are the Arrangement Sage, the Selection Scholar, the Stars and Bars Keeper, and the Derangement Master.</p>
+    <p>With all ten worlds in place, the focus has shifted to polish, bug fixing, and accessibility. The world map was redesigned to show completion state clearly, with completed worlds highlighted in green.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.6</span><span class="tag">New Worlds</span><span class="tag">Statistics</span><span class="tag">Combinatorics</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">
+  <div class="blog-title">v0.5: The Null Space, Inventory, and World Completion</div>
+  <div class="blog-body">
+    <p>v0.5 added The Null Space, the game's most abstract world, dedicated to complex numbers. Its six NPCs cover complex arithmetic, modulus and argument, De Moivre's theorem, roots of unity, division using conjugates, and locus problems.</p>
+    <p>The Inventory system was added in this update. Players can now view all collected Artefacts across all worlds in a 60-slot grid. Each Artefact shows its icon, name, and source world. The Inventory is accessible via the E key, a mobile button, or the settings panel.</p>
+    <p>World completion tracking was also added. Completing all NPCs in a world turns its card green on the world map. The HUD artefact counter updates in real time.</p>
+    <p>Progress is now persisted across sessions using localStorage. Artefacts and NPC cooldowns survive browser refreshes. A Reset Progress option allows players to start over if needed.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.5</span><span class="tag">Complex Numbers</span><span class="tag">Inventory</span><span class="tag">Progress Save</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">  <div class="blog-title">v0.4: Six Worlds, NPC Dialogue, and the Problem System</div>
+  <div class="blog-body">
+    <p>v0.4 was the first version that felt like a complete game. Six worlds were in place, each with a full set of NPCs, dialogue, and curriculum-aligned maths problems.</p>
+    <p><strong>The dialogue system</strong> shows NPC name, location, and flavour text, then cycles through two or three lines of character-specific dialogue before presenting the problem screen. Each NPC has three questions in their pool, with one chosen randomly on world load, so repeat visits feel different.</p>
+    <p><strong>The problem system</strong> gives players three attempts per NPC. A correct answer earns an Artefact and sets a cooldown on that NPC. Incorrect attempts show feedback immediately. After all three attempts are spent, the player is returned to the map and the NPC enters a longer cooldown.</p>
+    <p>Worlds added in v0.4: Algebra Aces (polynomials, logarithms, sequences, induction, domain and range), The Vector Wastelands (dot product, cross product, lines and planes), and Exponential Depths (exponential growth and decay, logarithmic equations).</p>
+    <div class="blog-tags">
+      <span class="tag">v0.4</span><span class="tag">Dialogue</span><span class="tag">Problem System</span><span class="tag">Algebra</span><span class="tag">Vectors</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">
+  <div class="blog-title">v0.3: Tile Engine, Palette System, and the First Three Worlds</div>
+  <div class="blog-body">
+    <p>The core tile engine was completed in v0.3. All ten worlds share the same 50x38 tile map structure, procedurally generated from a deterministic noise function seeded by the world ID. The map includes a central river, mountain corners, path networks, six ruin sites, and scattered tree clusters. What changes between worlds is the palette: each world has its own set of colour values for grass, dirt, water, paths, ruins, trees, mountains, and NPCs.</p>
+    <p>This palette system means that adding a new world requires writing only the world data object (ID, name, theme, icon, palette, start position, and NPC array) without touching the map generator or rendering code.</p>
+    <p>The first three worlds shipped in v0.3: The Integral Plains (calculus), Euclid Bay (geometry), and Probability Hollow (probability). Each had three to six NPCs with handwritten dialogue and a pool of three questions each.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.3</span><span class="tag">Tile Engine</span><span class="tag">Palette System</span><span class="tag">Procedural Generation</span>
+    </div>
+  </div>
+</div>
+
+<div class="blog-card">
+  <div class="blog-title">Origins: From a Single File to a Working Prototype</div>
+  <div class="blog-body">
+    <p>The Lost Theorem started as a question: can a meaningful maths game fit in a single HTML file? No build tools, no frameworks, no server. Just one file you can open in a browser.</p>
+    <p>v0.1 was a proof of concept: a canvas renderer, a player character, keyboard input, and a single tile map hard-coded as a 2D array. The player could walk around. That was it.</p>
+    <p>v0.2 added the NPC proximity system, dialogue boxes, and the first working problem screen. The question pool was a single array of five integration questions. The reward system was not yet implemented. But the loop worked: walk, find NPC, talk, answer, return.</p>
+    <p>From that loop, everything else followed. The decision to build ten worlds came from mapping out the Queensland senior mathematics curriculum and realising that each major topic had enough depth to sustain its own set of characters and environments.</p>
+    <div class="blog-tags">
+      <span class="tag">v0.1</span><span class="tag">v0.2</span><span class="tag">Origins</span><span class="tag">Architecture</span>
+    </div>
+  </div>
+</div></main>
+<footer>
+  <div class="social-links">
+    <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener">&#128247; INSTAGRAM</a>
+    <a href="https://www.youtube.com/@math.on.a.whiteboard" target="_blank" rel="noopener">&#9654; YOUTUBE</a>
+    <a href="https://github.com/Mr-Bamboo-Forest/The-Lost-Theorem" target="_blank" rel="noopener">&#128187; GITHUB</a>
+  </div>
+  <p>
+    &copy; 2026 The Lost Theorem &nbsp;&bull;&nbsp;
+    <a href="privacy.html">Privacy Policy</a> &nbsp;&bull;&nbsp;
+    <a href="tos.html">Terms of Service</a> &nbsp;&bull;&nbsp;
+    <a href="about.html">About</a>
+  </p>
+</footer>
+</body>
+</html>
