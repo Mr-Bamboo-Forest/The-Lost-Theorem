@@ -259,7 +259,6 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
   <div id="settings-panel">
     <div class="sp-label">NAVIGATION</div>
     <button class="sp-btn" id="sp-inventory">&#127873; INVENTORY [E]</button>
-    <button class="sp-btn" id="sp-title">&#8592; RETURN TO TITLE</button>
     <div class="sp-divider"></div>
     <div class="sp-label">DISPLAY</div>
     <button class="sp-btn" id="sp-fullscreen">&#9974; ENTER FULLSCREEN</button>
@@ -278,6 +277,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="sp-divider"></div>
     <div class="sp-label">DANGER</div>
     <button class="sp-btn" id="sp-reset" style="color:#c04030;">&#8635; RESET ALL PROGRESS</button>
+    <button class="sp-btn" id="sp-title">&#8592; TITLE [resets progress]</button>
   </div>
 
   <!-- Help modal (in-game) -->
@@ -2376,7 +2376,6 @@ document.addEventListener('keydown',e=>{
     }
     if(e.key==='e'||e.key==='E')openInv();
     if(e.key==='p'||e.key==='P')togglePause();
-    if(e.key==='Escape'){returnToTitle();}
     if(!gs.keys[e.key]){
       const u=e.key==='ArrowUp'||e.key==='w'||e.key==='W';
       const d=e.key==='ArrowDown'||e.key==='s'||e.key==='S';
