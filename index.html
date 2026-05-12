@@ -22,8 +22,8 @@
 <title>The Lost Theorem</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#060402;display:flex;align-items:center;justify-content:center;min-height:100vh;min-height:100dvh;font-family:'Courier New',monospace;overflow:hidden;}
-#container{position:relative;width:min(800px,100vw);height:min(600px,calc(100vw*0.75));overflow:hidden;border:2px solid #2a1a08;box-shadow:0 0 60px rgba(0,0,0,0.9);}
+body{background:#060402;display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;height:100dvh;font-family:'Courier New',monospace;overflow:hidden;margin:0;padding:0;touch-action:none;}
+#container{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;border:none;box-shadow:none;}
 #gameCanvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;}
 @media(max-width:900px) and (orientation:landscape){
   body{padding:0;width:100vw;height:100vh;}
@@ -64,7 +64,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #settings-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#c9a96e;font-size:18px;cursor:pointer;pointer-events:all;transition:border-color 0.15s,transform 0.3s;}
 #settings-btn:hover{border-color:#8a5020;color:#f0d070;}
 #settings-btn.open{transform:rotate(60deg);}
-#settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:none;z-index:80;}
+#settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:none;z-index:80;max-height:calc(100dvh - 60px - env(safe-area-inset-bottom,0px));overflow-y:auto;}
 #settings-panel.on{display:flex;pointer-events:all;}
 .sp-btn{background:transparent;border:1px solid #2a1808;color:#c9a96e;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;font-family:'Courier New',monospace;text-align:left;transition:border-color 0.12s,color 0.12s;}
 .sp-btn:hover{border-color:#8a5020;color:#f0d070;background:rgba(30,15,5,0.5);}
@@ -77,7 +77,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #vol-slider::-moz-range-thumb{width:12px;height:12px;background:#c9a96e;border:none;cursor:pointer;}
 
 /* Dialogue */
-#dlg{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:min(770px,calc(100% - 16px));background:rgba(4,3,2,0.97);border:2px solid #5a3a18;padding:12px 16px 10px;display:none;pointer-events:all;}
+#dlg{position:absolute;bottom:calc(36px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(770px,calc(100% - 16px));background:rgba(4,3,2,0.97);border:2px solid #5a3a18;padding:12px 16px 10px;display:none;pointer-events:all;}
 #dlg.on{display:block;}
 #dlg-who{font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
 #dlg-txt{color:#e8d0a0;font-size:14px;line-height:1.9;min-height:40px;}
@@ -147,7 +147,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
 #go-restart:hover{background:#5a1010;border-color:#e04030;}
 
 /* Title */
-#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;overflow-y:auto;}
+#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;overflow-y:auto;padding-bottom:44px;}
 #title.off{display:none;}
 .tt-sup{color:#7a5830;font-size:11px;letter-spacing:4px;margin-bottom:12px;}
 .tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
@@ -259,6 +259,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;m
   <div id="settings-panel">
     <div class="sp-label">NAVIGATION</div>
     <button class="sp-btn" id="sp-inventory">&#127873; INVENTORY [E]</button>
+    <button class="sp-btn" id="sp-title">&#8592; RETURN TO TITLE</button>
     <div class="sp-divider"></div>
     <div class="sp-label">DISPLAY</div>
     <button class="sp-btn" id="sp-fullscreen">&#9974; ENTER FULLSCREEN</button>
@@ -2247,6 +2248,7 @@ let dlgTimer2=null;
 function startDlg(npc){
   gs.activeNPC=npc;gs.dlgLine=0;gs.screen='dialogue';
   document.getElementById('dlg').classList.add('on');showLine();
+  syncJoyVisibility();
 }
 function showLine(){
   const npc=gs.activeNPC;
@@ -2261,13 +2263,14 @@ function advDlg(){
   if(gs.dlgLine>=gs.activeNPC.dlg.length){closeDlg();openProb(gs.activeNPC);}
   else showLine();
 }
-function closeDlg(){document.getElementById('dlg').classList.remove('on');gs.screen='game';}
+function closeDlg(){document.getElementById('dlg').classList.remove('on');gs.screen='game';syncJoyVisibility();}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PROBLEM
 // ═══════════════════════════════════════════════════════════════════════════════
 function openProb(npc){
   gs.screen='problem';gs.attempts=0;
+  syncJoyVisibility();
   const pool=QB[npc.id];
   if(pool&&pool.length>0)npc.prob=pool[Math.floor(Math.random()*pool.length)];
   const p=npc.prob;
@@ -2521,6 +2524,10 @@ var syncJoyVisibility=function(){};
   document.getElementById('sp-pause').onclick=()=>{closePanel();togglePause();};
   document.getElementById('pause-resume-btn').onclick=()=>togglePause();
   document.getElementById('vol-slider').addEventListener('input',e=>{music.setVol(parseInt(e.target.value)/100);});
+  document.getElementById('sp-title').onclick=()=>{
+    closePanel();
+    location.reload();
+  };
   document.getElementById('sp-reset').onclick=()=>{
     closePanel();
     if(confirm('Reset ALL progress? Loses all artefacts and lives.')){
@@ -2590,6 +2597,7 @@ document.getElementById('tt-htp').onclick=()=>{document.getElementById('htp-over
 document.getElementById('htp-back-btn').onclick=()=>{document.getElementById('htp-overlay').classList.remove('on');};
 document.getElementById('tt-start').onclick=()=>{
   document.getElementById('title').classList.add('off');
+  document.getElementById('site-footer').style.display='none';  // ← add this
   initGame();
   gs.screen='game';
   syncJoyVisibility();
@@ -2604,10 +2612,20 @@ document.addEventListener('touchstart',()=>{if(gs.screen==='title')music.play('t
 // FIT CANVAS
 // ═══════════════════════════════════════════════════════════════════════════════
 function fitGameCanvas(){
-  const c=document.getElementById('container');
-  const scale=Math.min(window.innerWidth/800,window.innerHeight/600);
-  c.style.width=Math.floor(800*scale)+'px';
-  c.style.height=Math.floor(600*scale)+'px';
+  const c = document.getElementById('container');
+  const canvas = document.getElementById('gameCanvas');
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const scale = Math.min(vw / 800, vh / 600);
+  const w = Math.floor(800 * scale);
+  const h = Math.floor(600 * scale);
+  c.style.width = vw + 'px';
+  c.style.height = vh + 'px';
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.style.position = 'absolute';
+  canvas.style.left = Math.floor((vw - w) / 2) + 'px';
+  canvas.style.top = Math.floor((vh - h) / 2) + 'px';
 }
 window.addEventListener('resize',fitGameCanvas);
 window.addEventListener('orientationchange',()=>setTimeout(fitGameCanvas,300));
