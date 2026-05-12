@@ -1652,9 +1652,17 @@ function removeBarrier(zoneIdx){
 }
 
 let unlockMsg=null,unlockTimer=0;
+// Zone compass arrow — shown for 15s after unlock
+let unlockArrow=null; // {tx, ty, name, color, timer}
+const ARROW_DURATION=15000;
+
 function showZoneUnlock(z){
   unlockMsg=z.name+' UNLOCKED';
   unlockTimer=4000;
+  // Centre tile of newly unlocked zone
+  const zoneCX=Math.floor((z.c0+z.c1)/2);
+  const zoneCY=Math.floor((z.r0+z.r1)/2);
+  unlockArrow={tx:zoneCX, ty:zoneCY, name:z.name, color:z.color, timer:ARROW_DURATION};
   spawnUnlockParticles();
   music.play(z.id);
 }
@@ -1951,6 +1959,92 @@ function render(){
 
   // Particles
   drawParticles();
+
+  // Zone compass arrow — points toward newly unlocked zone for 15s
+  if(unlockArrow&&unlockArrow.timer>0){
+    // Vector from player to zone centre
+    const pdx=(unlockArrow.tx-gs.player.tx);
+    const pdy=(unlockArrow.ty-gs.player.ty);
+    const dist=Math.sqrt(pdx*pdx+pdy*pdy);
+
+    // Only show if zone centre is off-screen or far away (>8 tiles)
+    const zoneSX=unlockArrow.tx*TILE-Math.floor(gs.cam.x);
+    const zoneSY=unlockArrow.ty*TILE-Math.floor(gs.cam.y);
+    const onScreen=zoneSX>0&&zoneSX<VW&&zoneSY>0&&zoneSY<VH;
+
+    if(!onScreen||dist>8){
+      const angle=Math.atan2(pdy,pdx);
+      // Arrow orbits a circle around screen centre
+      const orbitR=Math.min(VW,VH)*0.36;
+      const ax=VW/2+Math.cos(angle)*orbitR;
+      const ay=VH/2+Math.sin(angle)*orbitR;
+
+      // Fade in/out
+      const frac=unlockArrow.timer/ARROW_DURATION;
+      const alpha=frac>0.85?((1-frac)/0.15):frac<0.15?(frac/0.15):1;
+      // Pulse
+      const pulse=0.82+Math.sin(gs.tick*0.18)*0.18;
+
+      ctx.save();
+      ctx.globalAlpha=alpha*pulse;
+      ctx.translate(ax,ay);
+      ctx.rotate(angle);
+
+      // Outer glow
+      ctx.shadowColor=unlockArrow.color;
+      ctx.shadowBlur=18;
+
+      // Arrow body
+      const AL=28,AW=10,AH=14; // length, body width, head height
+      ctx.fillStyle=unlockArrow.color;
+      // Shaft
+      ctx.fillRect(-AL/2,-AW/2,AL-AH,AW);
+      // Head (triangle)
+      ctx.beginPath();
+      ctx.moveTo(AL/2,0);
+      ctx.lineTo(AL/2-AH,-AH);
+      ctx.lineTo(AL/2-AH,AH);
+      ctx.closePath();
+      ctx.fill();
+
+      // Dark border
+      ctx.shadowBlur=0;
+      ctx.strokeStyle='rgba(0,0,0,0.6)';
+      ctx.lineWidth=1.5;
+      ctx.strokeRect(-AL/2,-AW/2,AL-AH,AW);
+      ctx.beginPath();
+      ctx.moveTo(AL/2,0);
+      ctx.lineTo(AL/2-AH,-AH);
+      ctx.lineTo(AL/2-AH,AH);
+      ctx.closePath();
+      ctx.stroke();
+
+      ctx.restore();
+
+      // Label near the arrow
+      ctx.save();
+      ctx.globalAlpha=alpha*0.92;
+      const lx=ax+Math.cos(angle)*36;
+      const ly=ay+Math.sin(angle)*36;
+      // Clamp label to screen edges
+      const clx=Math.max(60,Math.min(VW-60,lx));
+      const cly=Math.max(20,Math.min(VH-16,ly));
+      ctx.fillStyle='rgba(4,3,2,0.88)';
+      ctx.fillRect(clx-58,cly-13,116,18);
+      ctx.strokeStyle=unlockArrow.color+'88';
+      ctx.lineWidth=1;
+      ctx.strokeRect(clx-58,cly-13,116,18);
+      ctx.fillStyle=unlockArrow.color;
+      ctx.font='bold 10px Courier New';
+      ctx.textAlign='center';
+      ctx.fillText(unlockArrow.name.toUpperCase(),clx,cly+1);
+      // Distance
+      ctx.fillStyle='#7a5830';
+      ctx.font='9px Courier New';
+      ctx.fillText(Math.round(dist)+' TILES',clx,cly+13);
+      ctx.restore();
+    }
+  }
 
   // Unlock message
   if(unlockMsg&&unlockTimer>0){
@@ -2650,6 +2744,10 @@ function loop(ts){
     checkNear();updateCam();updateZombies(dt);updateParticles(dt);
     updateZoneMusic();
     if(unlockTimer>0){unlockTimer-=dt;}
+    if(unlockArrow&&unlockArrow.timer>0){
+      unlockArrow.timer-=dt;
+      if(unlockArrow.timer<=0)unlockArrow=null;
+    }
     // NPC anims
     gs.npcList.forEach(n=>{
       const a=gs.npcAnims[n.id];a.timer+=dt;
