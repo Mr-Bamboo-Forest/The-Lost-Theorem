@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://thelosttheorem.netlify.app/blog.html">
-<meta name="description" content="The Lost Theorem development blog — version history, feature breakdowns, and behind-the-scenes notes from building a single-file maths RPG.">
+<meta name="description" content="The Lost Theorem development blog — version history, feature breakdowns, and behind-the-scenes notes from building a single-file maths survival RPG.">
 <title>Dev Blog | The Lost Theorem</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7958491546686840" crossorigin="anonymous"></script>
 <style>
@@ -21,7 +21,12 @@ nav{background:rgba(8,5,2,0.98);border-bottom:1px solid #2a1808;padding:0 24px;d
 .nav-links a.active{color:#c9a96e;border-bottom:2px solid #8a5020;}
 .nav-play{background:#2a1808;border:1px solid #6a4010;color:#f0d070;font-size:11px;padding:7px 18px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
 .nav-play:hover{background:#3a2010;text-decoration:none;}
-main{flex:1;max-width:860px;width:100%;margin:0 auto;padding:48px 24px;}
+.page-wrap{display:flex;flex:1;gap:0;max-width:1200px;width:100%;margin:0 auto;}
+main{flex:1;min-width:0;padding:48px 24px;}
+.ad-sidebar{width:180px;min-width:180px;padding:48px 12px 48px 0;display:flex;flex-direction:column;gap:20px;}
+.ad-sidebar-right{width:180px;min-width:180px;padding:48px 0 48px 12px;display:flex;flex-direction:column;gap:20px;}
+.ad-block{background:rgba(10,7,3,0.6);border:1px solid #1a0e05;padding:4px;min-height:250px;display:flex;align-items:flex-start;justify-content:center;}
+.ad-block-horizontal{background:rgba(10,7,3,0.6);border:1px solid #1a0e05;padding:4px;width:100%;margin:20px 0;}
 h1{color:#f0d070;font-size:22px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;}
 .page-sub{color:#7a5830;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;border-bottom:1px solid #1a0e05;padding-bottom:16px;}
 h2{color:#c9a96e;font-size:14px;letter-spacing:3px;text-transform:uppercase;margin:28px 0 12px;}
@@ -32,6 +37,7 @@ li{margin-bottom:4px;}
 .box{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:20px 24px;margin-bottom:20px;}
 .tag{display:inline-block;background:rgba(20,14,5,0.9);border:1px solid #2a1808;color:#8a5828;font-size:10px;letter-spacing:1px;padding:3px 10px;margin:0 4px 6px 0;text-transform:uppercase;}
 .divider{height:1px;background:#1a0e05;margin:28px 0;}
+.lore-quote{border-left:2px solid #4a2808;padding:10px 18px;margin:16px 0;color:#8a6030;font-style:italic;font-size:13px;line-height:1.9;}
 .blog-card{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:24px;margin-bottom:16px;}
 .blog-meta{color:#5a3818;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
 .blog-title{color:#f0d070;font-size:16px;letter-spacing:2px;margin-bottom:12px;}
@@ -39,156 +45,162 @@ li{margin-bottom:4px;}
 .blog-body p{margin-bottom:12px;}
 .blog-body ul{margin-bottom:12px;padding-left:20px;}
 .blog-tags{margin-top:14px;padding-top:12px;border-top:1px solid #1a0e05;}
-.lore-quote{border-left:2px solid #4a2808;padding:10px 18px;margin:16px 0;color:#8a6030;font-style:italic;font-size:13px;line-height:1.9;}
 footer{background:rgba(4,3,2,0.98);border-top:1px solid #1a0e05;padding:24px;text-align:center;}
 footer p{color:#4a3018;font-size:11px;line-height:1.8;margin:0;}
 footer a{color:#6a4820;}
 .social-links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;}
 .social-links a{color:#8a5830;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid #2a1808;padding:8px 18px;transition:border-color 0.1s,color 0.1s;}
 .social-links a:hover{border-color:#6a4010;color:#c9a96e;text-decoration:none;}
+@media(max-width:900px){.ad-sidebar,.ad-sidebar-right{display:none;}.page-wrap{flex-direction:column;}}
 @media(max-width:600px){nav{padding:0 12px;}.nav-links a{padding:12px 10px;font-size:10px;}main{padding:32px 16px;}h1{font-size:18px;}}
 </style>
 </head>
 <body>
 <nav>
-  <a class="nav-logo">THE LOST THEOREM</a>
+  <a class="nav-logo" href="../index.html">THE LOST THEOREM</a>
   <div class="nav-links">
     <a href="blog.html" class="active">DEV BLOG</a>
-    <a href="lore.html" >LORE</a>
-    <a href="about.html" >ABOUT</a>
-    <a href="privacy.html" >PRIVACY</a>
-    <a href="tos.html" >TERMS</a>
+    <a href="lore.html">LORE</a>
+    <a href="about.html">ABOUT</a>
+    <a href="privacy.html">PRIVACY</a>
+    <a href="tos.html">TERMS</a>
   </div>
   <a class="nav-play" href="../index.html">&#9654; PLAY NOW</a>
 </nav>
-<main>
+<div class="ad-block-horizontal" style="max-width:728px;margin:16px auto 0;">
+<ins class="adsbygoogle"
+     style="display:block;min-height:90px;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="7994573493"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+<div class="page-wrap">
+  <aside class="ad-sidebar">
+  <div class="ad-block">
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="1355493043"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  <div class="ad-block">
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="8608817018"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+</aside>
+  <main>
 <h1>Development Blog</h1>
 <div class="page-sub">Behind the scenes of building The Lost Theorem</div>
+
 <div class="blog-card">
-  <div class="blog-title">v0.91: Mobile Bug Fixes</div>
+  <div class="blog-meta">May 2026 &nbsp;&bull;&nbsp; Update v1.0</div>
+  <div class="blog-title">v1.0: One World, Eleven Zones, and Zombie Survival</div>
   <div class="blog-body">
-    <p>A focused patch addressing several mobile issues introduced with the new open world.</p>
-    <ul>
-      <li>The title screen was being cut off at the bottom on mobile. The layout now accounts for the site footer so all buttons are fully visible.</li>
-      <li>The settings panel was clipped behind the bottom bar on smaller screens. It now has a maximum height and scrolls if the content is taller than the available space.</li>
-      <li>The dialogue box was sitting too low and getting hidden behind the bottom navigation bar. It has been nudged upward.</li>
-      <li>The virtual joystick was remaining visible while talking to NPCs and during the problem screen. It now hides automatically during dialogue and problem screens, then reappears when you return to the map.</li>
-      <li>A Return to Title option has been added to the settings panel under Navigation, giving mobile players a way to exit to the title screen without a keyboard.</li>
-    </ul>
+    <p>The biggest structural change in the game's history. Eleven separate worlds have been merged into one massive open map — 160x120 tiles — divided into zones that unlock as you collect Artefacts. Algebra is the starting zone at the centre. Every other zone radiates outward, harder topics further from the start.</p>
+    <p><strong>Zombie survival.</strong> Zombies now spawn from purple skull spawners placed throughout each zone. They path slowly but persistently toward you using a BFS-lite algorithm with shuffled tie-breaking so movement feels organic. You have five lives. Touching a zombie costs a life and converts it to a grave tile. Questions freeze all zombies mid-step. Shields and extra lives can drop from Artefact rewards.</p>
+    <p><strong>Zone unlock arrows.</strong> When a zone unlocks, a glowing directional arrow orbits the screen for 15 seconds pointing toward the newly accessible area. It fades in, pulses, and fades out, and shows the zone name and distance in tiles. It disappears automatically once you walk close enough to see the zone.</p>
+    <p><strong>Progress bar HUD.</strong> A colour-matched progress bar in the top-left shows how many Artefacts remain until the next zone unlock. The bar colour updates as you move between zones.</p>
+    <p><strong>AdSense integration.</strong> Placeholder ad slots are now in place across all content pages ready for publisher ID and slot ID replacement once approved.</p>
     <div class="blog-tags">
-      <span class="tag">v0.91</span><span class="tag">Bug Fixes</span><span class="tag">Mobile</span>
+      <span class="tag">v1.0</span><span class="tag">Open World</span><span class="tag">Zombies</span><span class="tag">Zone Unlock</span><span class="tag">Major Update</span>
     </div>
   </div>
 </div>
 
 <div class="blog-card">
-  <div class="blog-title">v0.9: One World — The Map is Now Explorable</div>
+  <div class="blog-meta">April 2026 &nbsp;&bull;&nbsp; Update v0.9</div>
+  <div class="blog-title">v0.9: 77 NPCs, Question Bank Overhaul, Tap-to-Talk</div>
   <div class="blog-body">
-    <p>The biggest structural change to the game yet. All ten separate worlds have been collapsed into a single continuous map that you explore on foot.</p>
-    <p>Previously the game used a world-select screen to jump between zones. Now everything exists in one place. You start in the Algebra zone at the centre of the map and walk outward. Every 3 artefacts you collect removes a barrier wall and opens the next zone, so the world literally expands around you as you progress.</p>
-    <p>NPCs are placed throughout the map in their respective zones. Zombies spawn from skull spawners scattered across the world and path toward you, so staying still is no longer safe. The further from the centre you venture, the harder the mathematics gets.</p>
-    <p>The world map screen is gone. The HUD now shows your current zone, artefact count, and progress toward the next unlock directly on screen.</p>
+    <p>The question bank grew from 33 NPCs to 77 in this update. Every zone now has between 5 and 9 NPCs, each with three questions drawn from their specific topic. New NPCs include the Quadratic Monk, Substitution Witch, Integration by Parts Bishop, Volume Sculptor, Binomial Wizard, Normal Nurse, Poisson Hermit, Double Angle Sage, Quotient Alchemist, Tangent Painter, Pascal's Keeper, Roots of Unity Sage, Locus Painter, Regression Oracle, and Central Limit Guardian, among many others.</p>
+    <p><strong>Tap-to-talk.</strong> Tapping or clicking on the canvas while adjacent to an NPC now starts dialogue, in addition to the SPACE/ENTER keyboard shortcut and the TALK joystick button on mobile.</p>
+    <p><strong>Bug fixes.</strong> A missing opening bracket on the Inclusion Sage's dialogue array caused a syntax error that silently broke all NPCs defined after it in the file. Fixed. A null guard was also added to openProb so NPCs without question bank entries exit cleanly rather than hanging.</p>
     <div class="blog-tags">
-      <span class="tag">v0.9</span><span class="tag">Open World</span><span class="tag">Map</span><span class="tag">Exploration</span>
+      <span class="tag">v0.9</span><span class="tag">77 NPCs</span><span class="tag">Question Bank</span><span class="tag">Bug Fix</span>
     </div>
   </div>
 </div>
 
 <div class="blog-card">
-  <div class="blog-title">v0.8: Settings Overhaul, Bug Fixes, and AdSense Prep</div>
+  <div class="blog-meta">March 2026 &nbsp;&bull;&nbsp; Update v0.8</div>
+  <div class="blog-title">v0.8: Settings Overhaul, IAB Redirect, Music System</div>
   <div class="blog-body">
-    <p>The biggest quality-of-life update so far. Here is what changed in v0.8.</p>
-    <p><strong>Settings Panel.</strong> The three separate top-right buttons (World Map, Inventory, Fullscreen) are gone. In their place is a single cog icon that opens a settings panel. From there you can navigate to the World Map or Inventory, toggle fullscreen or exit it, adjust the volume slider, toggle the blocked tile glow effect, show the joystick on mobile, read the How to Play guide, and reset all progress.</p>
-    <p><strong>Bug fixes.</strong> Several critical bugs were fixed in this update:</p>
-    <ul>
-      <li>Returning to the title screen and pressing Begin Journey no longer spawns the player into a broken, non-responsive world. The root cause was a stale Object.defineProperty patch on gs.screen that left pointer events blocked on invisible overlay elements. This has been rewritten to use explicit syncJoyVisibility() calls at every screen transition point.</li>
-      <li>Resetting progress or cycling fullscreen rapidly no longer freezes the page. The fix involved removing pointer-events:all from elements that are display:none, ensuring invisible overlays can never swallow input.</li>
-      <li>The joystick toggle has been moved from a standalone bottom-bar button into the settings panel, simplifying the HUD significantly.</li>
-    </ul>
-    <p><strong>Music system.</strong> Placeholder file paths have been added for per-world and per-screen audio tracks. When audio files are placed in the /audio/ folder they will load and loop automatically, with world-specific tracks switching on map entry.</p>
-    <p><strong>Site pages.</strong> This dev blog, a Lore page, About, Privacy Policy, and Terms of Service have been added to the site to prepare for Google AdSense review.</p>
+    <p>Three standalone HUD buttons replaced with a single cog settings panel. From the panel: World Map, Inventory, Fullscreen toggle, Volume slider, Blocked Tile Glow toggle, Joystick toggle, How To Play, and Reset All Progress.</p>
+    <p><strong>IAB redirect.</strong> Instagram, TikTok, Facebook, and other in-app browsers intercept links and open them in a sandboxed browser that breaks the game. A redirect snippet at the top of the page now detects these browsers and sends users to their real browser with an instruction screen as fallback.</p>
+    <p><strong>Music system.</strong> Placeholder file paths for per-zone audio tracks were added. Tracks shuffle randomly from each zone's pool on entry and loop, picking a new random track when the current one ends.</p>
+    <p><strong>Critical bug fixes.</strong> Object.defineProperty on gs.screen was removed — it caused a re-entrant setter that left overlay elements blocking input after reset or fullscreen cycling. pointer-events:none added to all display:none overlays so invisible elements can never swallow clicks.</p>
     <div class="blog-tags">
-      <span class="tag">v0.8</span><span class="tag">Bug Fixes</span><span class="tag">Settings</span><span class="tag">Music</span><span class="tag">Mobile</span>
+      <span class="tag">v0.8</span><span class="tag">Settings</span><span class="tag">Music</span><span class="tag">IAB Fix</span><span class="tag">Bug Fix</span>
     </div>
   </div>
 </div>
 
 <div class="blog-card">
-  <div class="blog-title">v0.7: Joystick, Movement Fixes, and Blocked Tile Glow</div>
+  <div class="blog-meta">February 2026 &nbsp;&bull;&nbsp; Update v0.7</div>
+  <div class="blog-title">v0.7: Virtual Joystick, Movement Fix, Blocked Tile Glow</div>
   <div class="blog-body">
-    <p>v0.7 focused on mobile playability and movement feel.</p>
-    <p><strong>Virtual joystick.</strong> A touch-based virtual joystick now appears automatically on mobile devices. It supports both touch and mouse input, with a dead zone and clamped travel distance. The joystick can be toggled on or off via the settings panel.</p>
-    <p><strong>Movement behaviour.</strong> The movement system was changed so that a single keypress moves exactly one tile immediately, with the held-repeat timer reset on each fresh press. This means tapping moves one step, holding moves continuously, and releasing stops movement cleanly. Previously, the hold-repeat could compound with fresh presses to produce erratic multi-step jumps.</p>
-    <p><strong>Blocked tile glow.</strong> Impassable tiles (water, mountains, trees, ruin walls) now have a subtle amber outline to indicate they cannot be traversed. This is off by default and can be toggled in the settings panel under Display.</p>
-    <p><strong>In-app browser redirect.</strong> The game now detects when it is being opened inside Instagram, TikTok, Facebook, or other in-app browsers and redirects users to their real browser, where the game runs correctly.</p>
+    <p>A touch-based virtual joystick with dead zone and clamped travel appears automatically on mobile. A single keypress now moves exactly one tile with immediate response; holding continues movement after a delay; releasing stops cleanly. Impassable tiles can optionally show a subtle amber glow, toggled in settings and off by default.</p>
     <div class="blog-tags">
-      <span class="tag">v0.7</span><span class="tag">Mobile</span><span class="tag">Joystick</span><span class="tag">Movement</span><span class="tag">UX</span>
+      <span class="tag">v0.7</span><span class="tag">Mobile</span><span class="tag">Movement</span><span class="tag">Joystick</span>
     </div>
   </div>
 </div>
 
 <div class="blog-card">
-  <div class="blog-title">v0.6: Statistical Archipelago and The Combinatorial Archives</div>
+  <div class="blog-meta">January 2026 &nbsp;&bull;&nbsp; Update v0.6</div>
+  <div class="blog-title">v0.6: Inventory, Progress Persistence, Cooldown System</div>
   <div class="blog-body">
-    <p>Two more worlds shipped in v0.6, bringing the total to ten and completing the main content of the game.</p>
-    <p><strong>The Statistical Archipelago</strong> covers statistics: mean, median, standard deviation, interquartile range, hypothesis testing, regression, confidence intervals, and outlier detection. The world has five NPCs: the Data Collector, the Hypothesis Judge, the Regression Keeper, the Confidence Sage, and the Outlier Watcher.</p>
-    <p><strong>The Combinatorial Archives</strong> covers combinatorics: permutations, combinations, stars and bars, and derangements. Its NPCs are the Arrangement Sage, the Selection Scholar, the Stars and Bars Keeper, and the Derangement Master.</p>
-    <p>With all ten worlds in place, the focus has shifted to polish, bug fixing, and accessibility. The world map was redesigned to show completion state clearly, with completed worlds highlighted in green.</p>
+    <p>The Inventory screen shows all collected Artefacts in a grid with zone attribution. Progress now persists across sessions using localStorage. NPC cooldowns survive browser refreshes. The Reset Progress option in settings wipes both artefacts and cooldowns. NPCs on cooldown render faded with no interaction marker.</p>
     <div class="blog-tags">
-      <span class="tag">v0.6</span><span class="tag">New Worlds</span><span class="tag">Statistics</span><span class="tag">Combinatorics</span>
+      <span class="tag">v0.6</span><span class="tag">Inventory</span><span class="tag">Persistence</span><span class="tag">Cooldowns</span>
     </div>
   </div>
 </div>
 
 <div class="blog-card">
-  <div class="blog-title">v0.5: The Null Space, Inventory, and World Completion</div>
+  <div class="blog-meta">December 2025 &nbsp;&bull;&nbsp; v0.1 — v0.5</div>
+  <div class="blog-title">Origins: From a Single File to a Working Game</div>
   <div class="blog-body">
-    <p>v0.5 added The Null Space, the game's most abstract world, dedicated to complex numbers. Its six NPCs cover complex arithmetic, modulus and argument, De Moivre's theorem, roots of unity, division using conjugates, and locus problems.</p>
-    <p>The Inventory system was added in this update. Players can now view all collected Artefacts across all worlds in a 60-slot grid. Each Artefact shows its icon, name, and source world. The Inventory is accessible via the E key, a mobile button, or the settings panel.</p>
-    <p>World completion tracking was also added. Completing all NPCs in a world turns its card green on the world map. The HUD artefact counter updates in real time.</p>
-    <p>Progress is now persisted across sessions using localStorage. Artefacts and NPC cooldowns survive browser refreshes. A Reset Progress option allows players to start over if needed.</p>
+    <p>The Lost Theorem started as a single question: can a meaningful maths game fit in one HTML file? v0.1 was a canvas renderer and a player character that could walk. v0.2 added NPC proximity detection and the first dialogue boxes. v0.3 introduced the tile engine, the palette system, and the first three worlds. v0.4 brought the full dialogue and problem system with three attempts per NPC. v0.5 added The Null Space and the first version of the Inventory.</p>
+    <p>The decision to cover eleven mathematical topics came from mapping the Queensland senior mathematics curriculum and noticing that each major topic had enough depth to sustain its own set of characters and environments.</p>
     <div class="blog-tags">
-      <span class="tag">v0.5</span><span class="tag">Complex Numbers</span><span class="tag">Inventory</span><span class="tag">Progress Save</span>
+      <span class="tag">v0.1</span><span class="tag">v0.5</span><span class="tag">Origins</span><span class="tag">Architecture</span>
     </div>
   </div>
 </div>
-
-<div class="blog-card">  <div class="blog-title">v0.4: Six Worlds, NPC Dialogue, and the Problem System</div>
-  <div class="blog-body">
-    <p>v0.4 was the first version that felt like a complete game. Six worlds were in place, each with a full set of NPCs, dialogue, and curriculum-aligned maths problems.</p>
-    <p><strong>The dialogue system</strong> shows NPC name, location, and flavour text, then cycles through two or three lines of character-specific dialogue before presenting the problem screen. Each NPC has three questions in their pool, with one chosen randomly on world load, so repeat visits feel different.</p>
-    <p><strong>The problem system</strong> gives players three attempts per NPC. A correct answer earns an Artefact and sets a cooldown on that NPC. Incorrect attempts show feedback immediately. After all three attempts are spent, the player is returned to the map and the NPC enters a longer cooldown.</p>
-    <p>Worlds added in v0.4: Algebra Aces (polynomials, logarithms, sequences, induction, domain and range), The Vector Wastelands (dot product, cross product, lines and planes), and Exponential Depths (exponential growth and decay, logarithmic equations).</p>
-    <div class="blog-tags">
-      <span class="tag">v0.4</span><span class="tag">Dialogue</span><span class="tag">Problem System</span><span class="tag">Algebra</span><span class="tag">Vectors</span>
-    </div>
-  </div>
+<div class="ad-block-horizontal" style="max-width:728px;margin:0 auto 16px;"><!-- Ad slot: Bottom leaderboard | STEP 2: Replace 2065939485 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;min-height:90px;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="2065939485"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  </main>
+  <aside class="ad-sidebar-right">
+  <div class="ad-block"><!-- Ad slot: Right sidebar 1 | STEP 2: Replace 2093859649 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="2093859649"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  <div class="ad-block"><!-- Ad slot: Right sidebar 2 | STEP 2: Replace 1789395860 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="1789395860"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+</aside>
 </div>
-
-<div class="blog-card">
-  <div class="blog-title">v0.3: Tile Engine, Palette System, and the First Three Worlds</div>
-  <div class="blog-body">
-    <p>The core tile engine was completed in v0.3. All ten worlds share the same 50x38 tile map structure, procedurally generated from a deterministic noise function seeded by the world ID. The map includes a central river, mountain corners, path networks, six ruin sites, and scattered tree clusters. What changes between worlds is the palette: each world has its own set of colour values for grass, dirt, water, paths, ruins, trees, mountains, and NPCs.</p>
-    <p>This palette system means that adding a new world requires writing only the world data object (ID, name, theme, icon, palette, start position, and NPC array) without touching the map generator or rendering code.</p>
-    <p>The first three worlds shipped in v0.3: The Integral Plains (calculus), Euclid Bay (geometry), and Probability Hollow (probability). Each had three to six NPCs with handwritten dialogue and a pool of three questions each.</p>
-    <div class="blog-tags">
-      <span class="tag">v0.3</span><span class="tag">Tile Engine</span><span class="tag">Palette System</span><span class="tag">Procedural Generation</span>
-    </div>
-  </div>
-</div>
-
-<div class="blog-card">
-  <div class="blog-title">Origins: From a Single File to a Working Prototype</div>
-  <div class="blog-body">
-    <p>The Lost Theorem started as a question: can a meaningful maths game fit in a single HTML file? No build tools, no frameworks, no server. Just one file you can open in a browser.</p>
-    <p>v0.1 was a proof of concept: a canvas renderer, a player character, keyboard input, and a single tile map hard-coded as a 2D array. The player could walk around. That was it.</p>
-    <p>v0.2 added the NPC proximity system, dialogue boxes, and the first working problem screen. The question pool was a single array of five integration questions. The reward system was not yet implemented. But the loop worked: walk, find NPC, talk, answer, return.</p>
-    <p>From that loop, everything else followed. The decision to build ten worlds came from mapping out the Queensland senior mathematics curriculum and realising that each major topic had enough depth to sustain its own set of characters and environments.</p>
-    <div class="blog-tags">
-      <span class="tag">v0.1</span><span class="tag">v0.2</span><span class="tag">Origins</span><span class="tag">Architecture</span>
-    </div>
-  </div>
-</div></main>
 <footer>
   <div class="social-links">
     <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener">&#128247; INSTAGRAM</a>

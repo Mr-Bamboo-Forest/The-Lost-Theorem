@@ -50,7 +50,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 #hud-progress-label{font-size:9px;letter-spacing:1px;color:#5a3818;margin-top:2px;}
 #hud-lives{display:flex;align-items:center;gap:4px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:4px 10px;}
 #hud-lives-lbl{font-size:9px;letter-spacing:1px;color:#7a3020;margin-right:2px;}
-.heart{font-size:18px;line-height:1;transition:all 0.3s;color:#d03020;}
+.heart{font-size:18px;line-height:1;transition:all 0.3s;color:#d03020;}.heart.shield{color:#40c0ff;animation:heartpop 0.4s ease;}.heart.bonus{color:#f0d070;animation:heartpop 0.4s ease;}
 .heart.lost{color:#2a1010;opacity:0.35;filter:grayscale(1);}
 .heart.gain{animation:heartpop 0.4s ease;}
 @keyframes heartpop{0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)}}
@@ -64,7 +64,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 #settings-btn{position:absolute;top:8px;right:8px;background:rgba(6,4,2,0.92);border:2px solid #4a3010;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#c9a96e;font-size:18px;cursor:pointer;pointer-events:all;transition:border-color 0.15s,transform 0.3s;}
 #settings-btn:hover{border-color:#8a5020;color:#f0d070;}
 #settings-btn.open{transform:rotate(60deg);}
-#settings-panel{position:absolute;top:50px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:none;z-index:80;max-height:calc(100dvh - 60px - env(safe-area-inset-bottom,0px));overflow-y:auto;}
+#settings-panel{position:absolute;top:55px;right:8px;background:rgba(6,4,2,0.97);border:2px solid #4a3010;min-width:210px;display:none;flex-direction:column;gap:2px;padding:6px;pointer-events:none;z-index:80;max-height:calc(100dvh - 60px - env(safe-area-inset-bottom,0px));overflow-y:auto;}
 #settings-panel.on{display:flex;pointer-events:all;}
 .sp-btn{background:transparent;border:1px solid #2a1808;color:#c9a96e;font-size:11px;letter-spacing:1px;padding:7px 12px;cursor:pointer;font-family:'Courier New',monospace;text-align:left;transition:border-color 0.12s,color 0.12s;}
 .sp-btn:hover{border-color:#8a5020;color:#f0d070;background:rgba(30,15,5,0.5);}
@@ -206,12 +206,72 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
   .hud-box{font-size:11px;padding:4px 8px;}
 }
 
+/* Score HUD */
+#hud-score{background:rgba(6,4,2,0.92);border:2px solid #4a3010;padding:4px 10px;font-size:10px;letter-spacing:1px;color:#c9a96e;display:none;}
+#hud-score.on{display:block;}
+#hud-score span{color:#f0d070;}
+
+/* Hard mode badge */
+#hud-hardmode{background:rgba(40,0,0,0.95);border:2px solid #c02020;padding:3px 10px;font-size:9px;letter-spacing:2px;color:#e04030;display:none;text-transform:uppercase;}
+#hud-hardmode.on{display:block;animation:hardpulse 1.5s ease infinite;}
+@keyframes hardpulse{0%,100%{border-color:#8a1010}50%{border-color:#e04030}}
+
+/* Difficulty picker */
+.tt-diff-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:14px;}
+.tt-diff-lbl{color:#5a3818;font-size:10px;letter-spacing:3px;text-transform:uppercase;}
+.tt-diff-row{display:flex;gap:0;}
+.tt-diff-opt{background:#0e0a05;border:2px solid #3a2008;color:#7a5830;font-size:12px;padding:10px 28px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:all 0.15s;position:relative;}
+.tt-diff-opt:first-child{border-right-width:1px;}
+.tt-diff-opt:last-child{border-left-width:1px;}
+.tt-diff-opt.selected-normal{background:#1a2a10;border-color:#4a8020;color:#90d050;}
+.tt-diff-opt.selected-hard{background:#2a0808;border-color:#c02020;color:#ff5040;animation:hardpulse 1.5s ease infinite;}
+.tt-diff-opt:hover:not(.selected-normal):not(.selected-hard){border-color:#6a4010;color:#c9a96e;}
+.tt-diff-desc{font-size:10px;letter-spacing:1px;font-style:italic;text-align:center;min-height:14px;}
+.tt-diff-desc.normal{color:#4a7020;}
+.tt-diff-desc.hard{color:#7a2010;}
+/* Secondary title buttons */
+.tt-secondary-row{display:flex;gap:10px;margin-top:14px;}
+.tt-btn-sm{background:transparent;border:1px solid #3a2808;color:#9a7040;font-size:10px;padding:7px 18px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:border-color 0.15s,color 0.15s;}
+.tt-btn-sm:hover{border-color:#7a5020;color:#c9a96e;}
+
+/* Skin customisation modal */
+#skin-modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:none;overflow-y:auto;z-index:260;}
+#skin-modal.on{display:flex;pointer-events:all;}
+.sk-title{color:#f0d070;font-size:18px;letter-spacing:5px;text-transform:uppercase;margin-bottom:4px;}
+.sk-sub{color:#7a5830;font-size:10px;letter-spacing:2px;margin-bottom:22px;}
+.sk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:560px;margin-bottom:20px;}
+.sk-item{background:rgba(14,10,5,0.9);border:2px solid #2a1808;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s;}
+.sk-item:hover{border-color:#8a5020;}
+.sk-item.selected{border-color:#f0d070;background:rgba(30,20,5,0.95);}
+.sk-preview{width:32px;height:32px;margin:0 auto 8px;position:relative;}
+.sk-name{font-size:10px;letter-spacing:1px;color:#c9a96e;text-transform:uppercase;}
+#sk-close{background:transparent;border:2px solid #3a2008;color:#8a5830;font-size:12px;padding:9px 28px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;margin-top:8px;}
+#sk-close:hover{border-color:#6a4010;color:#c9a96e;}
+
+/* Game over rank */
+.go-rank{color:#f0d070;font-size:22px;letter-spacing:4px;margin:8px 0 16px;text-align:center;}
+.go-rank-lbl{color:#7a5830;font-size:10px;letter-spacing:2px;margin-bottom:4px;}
+
 /* Site footer */
-#site-footer{position:absolute;bottom:0;left:0;right:0;background:rgba(4,3,2,0.9);border-top:1px solid #1a0e05;padding:4px 16px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;z-index:9999;pointer-events:all;}
-#site-footer a{color:#2a1808;font-size:9px;letter-spacing:1px;text-decoration:none;}
+/* In-game ad panels */
+#ad-loading{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:400;}
+#ad-loading.on{display:flex;}
+.ad-loading-title{color:#f0d070;font-size:16px;letter-spacing:4px;text-transform:uppercase;margin-bottom:4px;}
+.ad-loading-sub{color:#7a5830;font-size:10px;letter-spacing:2px;margin-bottom:24px;}
+.ad-loading-box{width:min(728px,calc(100% - 32px));background:rgba(10,7,3,0.8);border:1px solid #2a1808;padding:8px;margin-bottom:20px;min-height:90px;}
+.ad-loading-skip{background:transparent;border:2px solid #3a2008;color:#8a5830;font-size:11px;padding:8px 24px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;margin-top:8px;}
+.ad-loading-skip:hover{border-color:#6a4010;color:#c9a96e;}
+.ad-loading-timer{color:#5a3818;font-size:10px;letter-spacing:1px;margin-top:6px;}
+.ad-inv-box{width:100%;max-width:728px;background:rgba(10,7,3,0.8);border:1px solid #1a1005;padding:4px;margin:12px 0 4px;min-height:90px;}
+.ad-reward-box{width:min(320px,90%);background:rgba(10,7,3,0.8);border:1px solid #1a1005;padding:4px;margin-top:12px;min-height:90px;}
+#site-footer{position:absolute;bottom:0;left:0;right:0;background:rgba(4,3,2,0.9);border-top:1px solid #1a0e05;padding:4px 16px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;z-index:9999;pointer-events:none;}
+#site-footer a{color:#2a1808;font-size:9px;letter-spacing:1px;text-decoration:none;pointer-events:all;}
 #site-footer a:hover{color:#6a4020;}
 
-/* Pause overlay */
+/* Candy zone (Statistical Archipelago) theming */
+.candy-zone-active #hud{border-color:#ff80c0 !important;}
+
+
 #pause-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.92);display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:180;}
 #pause-overlay.on{display:flex;pointer-events:all;}
 .pause-bars{display:flex;gap:14px;margin-bottom:20px;}
@@ -220,6 +280,16 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 .pause-hint{color:#5a3818;font-size:10px;letter-spacing:2px;margin-bottom:20px;}
 #pause-resume-btn{background:transparent;border:2px solid #6a4010;color:#c9a96e;font-size:12px;padding:9px 28px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:3px;text-transform:uppercase;}
 #pause-resume-btn:hover{border-color:#b07830;color:#f0d070;}
+
+/* Minimap */
+#minimap-wrap{position:absolute;bottom:10px;right:10px;z-index:30;pointer-events:none;display:none;}
+#minimap-wrap.on{display:block;}
+#minimap{display:block;border:2px solid #4a3010;background:#080604;image-rendering:pixelated;image-rendering:crisp-edges;}
+#minimap-label{color:#5a3818;font-size:8px;letter-spacing:2px;text-align:center;margin-top:2px;font-family:'Courier New',monospace;}
+/* On mobile landscape keep minimap smaller and clear of joystick (joystick is bottom-left) */
+@media(max-width:900px) and (orientation:landscape){
+  #minimap{width:96px;height:72px;}
+}
 </style>
 </head>
 <body>
@@ -252,6 +322,8 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     </div>
     <div id="hud-shield">&#128737; SHIELD ACTIVE</div>
     <div id="hud-kills">&#128128; ZOMBIES: <span id="kill-ct">0</span></div>
+    <div id="hud-score">&#9733; SCORE: <span id="score-ct">0</span></div>
+    <div id="hud-hardmode">&#9888; HARD MODE</div>
   </div>
 
   <!-- Settings cog -->
@@ -267,11 +339,13 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="sp-divider"></div>
     <div class="sp-label">CONTROLS</div>
     <button class="sp-btn" id="sp-joytoggle">&#9679; JOYSTICK: OFF</button>
+    <button class="sp-btn" id="sp-maptoggle">&#9638; MINIMAP: OFF</button>
     <div class="sp-divider"></div>
     <div class="sp-label">AUDIO</div>
     <div class="sp-vol-row"><label>VOL</label><input type="range" id="vol-slider" min="0" max="100" value="70"></div>
     <div class="sp-divider"></div>
     <button class="sp-btn" id="sp-help">&#63; HOW TO PLAY</button>
+    <button class="sp-btn" id="sp-skin">&#128100; CUSTOMISE SKIN</button>
     <div class="sp-divider"></div>
     <button class="sp-btn" id="sp-pause">PAUSE GAME [P]</button>
     <div class="sp-divider"></div>
@@ -286,18 +360,19 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="hm-sub">THE LOST THEOREM</div>
     <div class="hm-section">
       <div class="hm-sh">Movement</div>
-      <div class="hm-row"><div class="hm-key">WASD / ARROWS</div><div class="hm-desc">Move one tile. Hold to move continuously.</div></div>
-      <div class="hm-row"><div class="hm-key">SPACE / ENTER</div><div class="hm-desc">Interact with an adjacent character.</div></div>
-      <div class="hm-row"><div class="hm-key">E</div><div class="hm-desc">Open Inventory.</div></div>
-      <div class="hm-row"><div class="hm-key">ESC</div><div class="hm-desc">Return to Title.</div></div>
+      <div class="htp-krow"><div class="htp-k">WASD / ARROWS</div><div class="htp-kd">Movement</div></div>
+      <div class="htp-krow"><div class="htp-k">SPACE / ENTER</div><div class="htp-kd">Interact with adjacent NPC</div></div>
+      <div class="htp-krow"><div class="htp-k">E</div><div class="htp-kd">Inventory</div></div>
+      <div class="htp-krow"><div class="htp-k">H</div><div class="htp-k">&#9881;</div><div class="htp-kd">Settings: volume, fullscreen, joystick, blocked tile glow</div></div>
+      <div class="htp-krow"><div class="htp-k">F</div><div class="htp-k">&#9974;</div><div class="htp-kd">Fullscreen</div></div>
     </div>
     <div class="hm-section">
       <div class="hm-sh">Survival</div>
-      <div class="hm-row"><div class="hm-desc">Zombies spawn from purple spawner skulls and slowly path toward you. You have 5 lives. Touching a zombie kills it but costs you a life. Shield artefacts protect you temporarily. Questions pause zombies.</div></div>
+      <div class="hm-row"><div class="hm-desc">Zombies spawn from purple spawners, labelled as [SP], and slowly path toward you. You have 5 lives. Touching a zombie kills it but costs you a life. Shield artefacts protect you temporarily. Questions pause zombies.</div></div>
     </div>
     <div class="hm-section">
       <div class="hm-sh">Zones</div>
-      <div class="hm-row"><div class="hm-desc">Every 3 artefacts unlocks a new zone. Locked zones are shown as greyed-out barriers. Algebra is the starting zone — work outward to harder topics.</div></div>
+      <div class="hm-row"><div class="hm-desc">Every 3 artefacts unlocks a new zone. Locked zones are shown as greyed-out barriers. Algebra is the starting zone and work outwards to harder topics.</div></div>
     </div>
     <button id="hm-close">CLOSE</button>
   </div>
@@ -336,6 +411,10 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="inv-h">Inventory</div>
     <div class="inv-s">ARTEFACTS COLLECTED</div>
     <div class="inv-g" id="inv-g"></div>
+    <div class="ad-inv-box">
+<ins class="adsbygoogle" style="display:block;min-height:90px;" data-ad-client="ca-pub-7958491546686840" data-ad-slot="5122136217" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
     <button id="inv-cl">CLOSE [E]</button>
   </div>
 
@@ -346,6 +425,10 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="rw-n" id="rw-n"></div>
     <div class="rw-d" id="rw-d"></div>
     <div class="rw-bonus" id="rw-bonus"></div>
+    <div class="ad-reward-box">
+<ins class="adsbygoogle" style="display:block;min-height:90px;" data-ad-client="ca-pub-7958491546686840" data-ad-slot="6544926302" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
   </div>
 
   <!-- Pause Overlay -->
@@ -363,12 +446,28 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
   <div id="gameover">
     <div class="go-title">YOU FELL</div>
     <div class="go-sub">THE ZOMBIES HAVE CLAIMED THE THEOREM</div>
+    <div class="go-rank-lbl">RANK ACHIEVED</div>
+    <div class="go-rank" id="go-rank">—</div>
     <div class="go-stats">
+      <div class="go-stat">FINAL SCORE: <span id="go-score">0</span></div>
       <div class="go-stat">ARTEFACTS LOST: <span id="go-art">0</span></div>
       <div class="go-stat">ZONES EXPLORED: <span id="go-zones">1</span></div>
       <div class="go-stat">ZOMBIES SLAIN: <span id="go-kills">0</span></div>
+      <div class="go-stat">SURVIVAL TIME: <span id="go-time">0s</span></div>
     </div>
     <button id="go-restart">TRY AGAIN</button>
+  </div>
+
+  <!-- Ad loading screen — shown between title and game start -->
+  <div id="ad-loading">
+    <div class="ad-loading-title">Loading World</div>
+    <div class="ad-loading-sub">THE LOST THEOREM</div>
+    <div class="ad-loading-box">
+<ins class="adsbygoogle" style="display:block;min-height:90px;" data-ad-client="ca-pub-7958491546686840" data-ad-slot="6681491829" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <button class="ad-loading-skip" id="ad-skip">ENTER THE WORLD &#9654;</button>
+    <div class="ad-loading-timer" id="ad-timer">Loading...</div>
   </div>
 
   <!-- Title -->
@@ -376,11 +475,22 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="tt-sup">A Mathematics RPG</div>
     <div class="tt-main">The Lost Theorem</div>
     <div class="tt-tag">Survive. Solve. Unlock the world.</div>
-    <button class="tt-btn" id="tt-htp">HOW TO PLAY</button>
-    <button class="tt-btn" id="tt-start" style="margin-top:10px;">BEGIN JOURNEY</button>
-    <div class="tt-note">Approach characters and press SPACE to interact</div>
-    <div class="tt-danger">Warning: zombies will hunt you. Solve problems to survive.</div>
-    <button class="tt-btn" id="tt-fs" style="margin-top:12px;font-size:11px;padding:8px 24px;letter-spacing:2px;">&#9974; FULLSCREEN</button>
+    <button class="tt-btn" id="tt-continue" style="display:none;">&#9654; CONTINUE</button>
+    <button class="tt-btn" id="tt-start" style="margin-top:10px;">NEW GAME</button>
+    <div class="tt-diff-wrap">
+      <div class="tt-diff-lbl">Difficulty</div>
+      <div class="tt-diff-row">
+        <button class="tt-diff-opt selected-normal" id="tt-diff-normal">NORMAL</button>
+        <button class="tt-diff-opt" id="tt-diff-hard">HARD</button>
+      </div>
+      <div class="tt-diff-desc normal" id="tt-diff-desc">Standard difficulty</div>
+    </div>
+    <div class="tt-secondary-row">
+      <button class="tt-btn-sm" id="tt-htp">HOW TO PLAY</button>
+      <button class="tt-btn-sm" id="tt-fs">FULLSCREEN</button>
+    </div>
+    <div class="tt-note" style="margin-top:20px;">Move with arrow keys or WASD &middot; Press SPACE near characters to interact</div>
+    <div class="tt-danger">Zombies will hunt you. Solve maths problems to survive.</div>
   </div>
 
   <!-- HTP overlay -->
@@ -393,7 +503,7 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     </div>
     <div class="htp-block">
       <div class="htp-bh">Zombies</div>
-      <div class="htp-p">Zombies spawn from purple skull spawners scattered around the map. They slowly path toward you. You have 5 lives. Touching a zombie kills it but costs a life. You have a brief invincibility window after each hit. When you die (0 lives) you respawn at the start and lose all artefacts.</div>
+      <div class="htp-p">Zombies spawn from purple spawners labelled as [SP] and are scattered around the map. They slowly pathfind toward you. You have 5 lives. Touching a zombie kills it but costs a life. You have a brief invincibility window after each hit. When you die (0 lives) you respawn at the start and lose all artefacts.</div>
     </div>
     <div class="htp-block">
       <div class="htp-bh">Artefacts and Bonuses</div>
@@ -401,13 +511,21 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     </div>
     <div class="htp-block">
       <div class="htp-bh">Controls</div>
-      <div class="htp-krow"><div class="htp-k">WASD / ARROWS</div><div class="htp-kd">Move (one tile per press, hold to continue)</div></div>
+      <div class="htp-krow"><div class="htp-k">WASD / ARROWS</div><div class="htp-kd">Movement</div></div>
       <div class="htp-krow"><div class="htp-k">SPACE / ENTER</div><div class="htp-kd">Interact with adjacent NPC</div></div>
       <div class="htp-krow"><div class="htp-k">E</div><div class="htp-kd">Inventory</div></div>
-      <div class="htp-krow"><div class="htp-k">ESC</div><div class="htp-kd">Return to title</div></div>
-      <div class="htp-krow"><div class="htp-k">&#9881;</div><div class="htp-kd">Settings, volume, fullscreen, joystick</div></div>
+      <div class="htp-krow"><div class="htp-k">H</div><div class="htp-k">&#9881;</div><div class="htp-kd">Settings: volume, fullscreen, joystick, blocked tile glow</div></div>
+      <div class="htp-krow"><div class="htp-k">F</div><div class="htp-k">&#9974;</div><div class="htp-kd">Fullscreen</div></div>
     </div>
     <button id="htp-back-btn">&#8592; BACK TO TITLE</button>
+  </div>
+
+  <!-- Skin Modal -->
+  <div id="skin-modal">
+    <div class="sk-title">Customise Skin</div>
+    <div class="sk-sub">Choose your adventurer</div>
+    <div class="sk-grid" id="skin-grid"></div>
+    <button id="sk-close">&#8592; BACK</button>
   </div>
 
   <!-- Controls bar -->
@@ -426,6 +544,12 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     </div>
     <div id="joy-interact">TALK</div>
     <div id="joy-inv">INV</div>
+  </div>
+
+  <!-- Minimap -->
+  <div id="minimap-wrap">
+    <canvas id="minimap" width="120" height="90"></canvas>
+    <div id="minimap-label">WORLD MAP</div>
   </div>
 </div>
 </div>
@@ -817,40 +941,41 @@ const ZONES = [
        art:{id:'complex_series_gem',icon:'💎',name:'Complex Series Gem',desc:'Sums any convergent complex geometric series automatically.'},cd:1},
     ]
   },
-  // Zone 10: Statistical Archipelago — SOUTH extremity
+  // Zone 10: Statistical Archipelago — SOUTH extremity (CANDY THEME 🍬)
   {
     id:'statistics', name:'Statistical Archipelago', theme:'Statistics',
-    color:'#20d0a0', fogColor:'#031008',
+    color:'#ff80c0', fogColor:'#1a0610',
+    candy:true,
     c0:56, r0:104, c1:104, r1:116,
     startTX:80, startTY:110,
     unlocksAt:30,
     npcs:[
-      {id:'data_collector',name:'Data Collector',tx:70,ty:108,spr:'scholar',col:'#18c890',
-       loc:'The Survey Cove',flav:"Has collected data on everything. Every dataset needs a summary.",
+      {id:'data_collector',name:'Data Collector',tx:70,ty:108,spr:'scholar',col:'#ff60b0',
+       loc:'The Candy Cove',flav:"Has collected data on everything — now kept in pink sugar jars.",
        dlg:["Mean, median, mode — be precise.","And standard deviation: spread matters as much as centre."],
        art:{id:'data_scroll',icon:'📊',name:'Data Scroll',desc:'The original Archipelago census. Mean and SD annotated in red.'},cd:1},
-      {id:'hypothesis_judge',name:'Hypothesis Judge',tx:90,ty:106,spr:'elder',col:'#20d8a8',
-       loc:'The Testing Court',flav:"Presides over hypothesis tests. Claims never to have made a Type I error.",
+      {id:'hypothesis_judge',name:'Hypothesis Judge',tx:90,ty:106,spr:'elder',col:'#ff40a0',
+       loc:'The Frosted Court',flav:"Presides over hypothesis tests behind a white chocolate bench.",
        dlg:["A hypothesis test is a structured argument using probability.","State hypotheses. Find p-value. Compare to α."],
        art:{id:'pvalue_stone',icon:'⚖️',name:'p-Value Stone',desc:'Displays the exact p-value of any experiment. Currently 0.043.'},cd:1},
-      {id:'confidence_sage',name:'Confidence Sage',tx:80,ty:112,spr:'scholar',col:'#10b878',
-       loc:'The Interval Cliffs',flav:"Builds confidence intervals around every estimate.",
+      {id:'confidence_sage',name:'Confidence Sage',tx:80,ty:112,spr:'scholar',col:'#ff80d0',
+       loc:'The Marshmallow Cliffs',flav:"Builds confidence intervals from sugar and statistics.",
        dlg:["A confidence interval does not guarantee the parameter is inside.","Construct one. Interpret it carefully."],
        art:{id:'interval_stone',icon:'📏',name:'Interval Stone',desc:'Marked with ±1.96σ/√n. The 95% CI formula made solid.'},cd:1},
-      {id:'regression_oracle',name:'Regression Oracle',tx:62,ty:110,spr:'elder',col:'#30e0b0',
-       loc:'The Line of Best Fit',flav:"Finds the line of best fit in every scatter plot.",
+      {id:'regression_oracle',name:'Regression Oracle',tx:62,ty:110,spr:'elder',col:'#ff50b8',
+       loc:'The Candy Line of Fit',flav:"Finds the line of best fit in every scatter plot — drawn in strawberry syrup.",
        dlg:["The regression line minimises the sum of squared residuals.","ŷ = a + bx. Find b first, then a."],
        art:{id:'regression_rod',icon:'📉',name:'Regression Rod',desc:'A ruler that automatically aligns with the line of best fit.'},cd:1},
-      {id:'correlation_watcher',name:'Correlation Watcher',tx:98,ty:112,spr:'traveller',col:'#20c8a0',
-       loc:'The Scatter Island',flav:"Watches scatter plots and mutters correlation coefficients.",
+      {id:'correlation_watcher',name:'Correlation Watcher',tx:98,ty:112,spr:'traveller',col:'#ffa0d0',
+       loc:'The Sprinkle Island',flav:"Watches scatter plots and mutters correlation coefficients while eating gummy bears.",
        dlg:["r measures the strength and direction of a linear relationship.","r = 1: perfect positive. r = −1: perfect negative. r = 0: none."],
        art:{id:'correlation_lens',icon:'🔎',name:'Correlation Lens',desc:'Shows the r value of any scatter plot at a glance.'},cd:1},
-      {id:'sampling_navigator',name:'Sampling Navigator',tx:74,ty:106,spr:'traveller',col:'#40d090',
-       loc:'The Sample Eutopia',flav:"Sails through populations taking random samples.",
+      {id:'sampling_navigator',name:'Sampling Navigator',tx:74,ty:106,spr:'traveller',col:'#ff70c0',
+       loc:'The Cotton Candy Bay',flav:"Sails through populations on a bubblegum raft.",
        dlg:["A larger sample gives a smaller standard error.","SE = σ/√n. As n grows, SE shrinks."],
        art:{id:'sample_net',icon:'🎣',name:'Sampling Net',desc:'Captures a perfectly representative random sample every time.'},cd:1},
-      {id:'central_limit_guardian',name:'CLT Guardian',tx:88,ty:114,spr:'elder',col:'#18e098',
-       loc:'The Central Limit Shrine',flav:"Tends the theorem that makes statistics possible.",
+      {id:'central_limit_guardian',name:'CLT Guardian',tx:88,ty:114,spr:'elder',col:'#ff90c8',
+       loc:'The Strawberry Shrine',flav:"Tends the theorem that makes statistics possible — between lollipop pillars.",
        dlg:["As n grows, the sample mean approaches normality.","This is true regardless of the original distribution."],
        art:{id:'clt_coin',icon:'🪙',name:'CLT Coin',desc:'Flip it enough times and the distribution of the sum becomes normal.'},cd:1},
     ]
@@ -1386,7 +1511,7 @@ function generateBigMap(){
     (r,c)=>prng(r*200+c+800)>0.9?T.RUIN_FLOOR:null,
     // null space — heavy ruins, dark
     (r,c)=>prng(r*200+c+900)>0.7?T.RUIN_FLOOR:prng(r*200+c+901)>0.9?T.RUIN_WALL:null,
-    // statistics — sandy archipelago
+    // statistics — candy archipelago (sandy/water — recoloured pink in render)
     (r,c)=>prng(r*200+c+1000)>0.75?T.SAND:prng(r*200+c+1001)>0.9?T.WATER:null,
   ];
   ZONES.forEach((z,i)=>{
@@ -1534,6 +1659,11 @@ function spawnerZone(r,c){
   return -1;
 }
 
+function isInCandyZone(tc,tr){
+  const z=ZONES[10]; // Statistical Archipelago
+  return tc>=z.c0&&tc<=z.c1&&tr>=z.r0&&tr<=z.r1&&gs.unlockedZones.includes(10);
+}
+
 // Returns true if the tile at (tc,tr) is inside a zone that isn't yet unlocked.
 // Used for fog rendering and movement blocking instead of map-embedded barrier tiles.
 function isInLockedZone(tc,tr){
@@ -1543,6 +1673,216 @@ function isInLockedZone(tc,tr){
     if(tc>=z.c0&&tc<=z.c1&&tr>=z.r0&&tr<=z.r1)return true;
   }
   return false;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SKIN DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+const SKINS=[
+  {id:'default',    name:'Wanderer',    body:'#3a1a08', torso:'#5a3018', head:'#c8985a', hat:null,          hatCol:null},
+  {id:'knight',     name:'Knight',      body:'#3a3a4a', torso:'#5a5a6a', head:'#d0c0a0', hat:'visor',       hatCol:'#5a5a70'},
+  {id:'mage',       name:'Mage',        body:'#1a1050', torso:'#2a2060', head:'#c8985a', hat:'wizard',      hatCol:'#5030a0'},
+  {id:'rogue',      name:'Rogue',       body:'#1a1a10', torso:'#2a2a18', head:'#b88040', hat:'hood',        hatCol:'#1a1a14'},
+  {id:'scholar',    name:'Scholar',     body:'#182060', torso:'#283070', head:'#c8985a', hat:'mortarboard', hatCol:'#101830'},
+  {id:'ranger',     name:'Ranger',      body:'#1a3010', torso:'#2a4018', head:'#a87040', hat:'cap',         hatCol:'#1a3010'},
+  {id:'candy',      name:'Candy',       body:'#c03070', torso:'#e050a0', head:'#ffc0d0', hat:'bow',         hatCol:'#ff60a0'},
+  {id:'neon',       name:'Neon',        body:'#0a0a0a', torso:'#0a0a0a', head:'#f0f0f0', hat:'visor',       hatCol:'#00ffcc'},
+  {id:'royal',      name:'Royal',       body:'#2a0a50', torso:'#4a1a80', head:'#f0d898', hat:'wizard',      hatCol:'#7a20d0'},
+  {id:'pirate',     name:'Pirate',      body:'#1a0808', torso:'#8a1010', head:'#c8985a', hat:'hood',        hatCol:'#1a0808'},
+  {id:'arctic',     name:'Arctic',      body:'#c0d8f0', torso:'#e0f0ff', head:'#fff8f0', hat:'cap',         hatCol:'#80b8e0'},
+  {id:'druid',      name:'Druid',       body:'#1a2a10', torso:'#2a4a18', head:'#b8a060', hat:'wizard',      hatCol:'#2a4a10'},
+  {id:'ember',      name:'Ember',       body:'#3a0800', torso:'#6a1000', head:'#e89050', hat:'hood',        hatCol:'#2a0400'},
+  {id:'void',       name:'Void',        body:'#080010', torso:'#100020', head:'#c0a0ff', hat:'wizard',      hatCol:'#200040'},
+  {id:'gilded',     name:'Gilded',      body:'#5a3800', torso:'#8a5800', head:'#f8d870', hat:'mortarboard', hatCol:'#c09020'},
+  {id:'plague',     name:'Plague Doc',  body:'#1a1808', torso:'#2a2810', head:'#c8b87a', hat:'hood',        hatCol:'#2a2810'},
+  {id:'crystal',    name:'Crystal',     body:'#1a3050', torso:'#2a4870', head:'#b0e0ff', hat:'visor',       hatCol:'#60c0ff'},
+  {id:'zombie',     name:'Zombie?',     body:'#1a3010', torso:'#2a4020', head:'#6a7860', hat:null,          hatCol:null},
+];
+
+let activeSkin=SKINS[0];
+
+function drawPlayerSkinned(sx,sy,dir,frame){
+  const S=TILE,H=S/2,Q=S/4;
+  const sk=activeSkin;
+  // Shield glow
+  if(gs.shieldActive){
+    const pulse=0.3+Math.sin(gs.tick*0.15)*0.2;
+    ctx.fillStyle=`rgba(40,120,220,${pulse})`;ctx.fillRect(sx-4,sy-4,S+8,S+8);
+  }
+  if(gs.invincible&&Math.floor(gs.tick/4)%2===0){ctx.globalAlpha=0.4;}
+  // Neon glow
+  if(sk.id==='neon'){ctx.shadowColor='#00ffcc';ctx.shadowBlur=12;}
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';ctx.fillRect(sx+H-7,sy+S-2,14,3);
+  // Body
+  ctx.fillStyle=sk.body;ctx.fillRect(sx+H-5,sy+H-2,10,12);
+  ctx.fillStyle=sk.torso;ctx.fillRect(sx+H-4,sy+H,8,8);
+  // Head
+  ctx.fillStyle=sk.head;ctx.fillRect(sx+H-4,sy+3,8,10);
+  // Hat
+  if(sk.hat==='visor'){
+    ctx.fillStyle=sk.hatCol;ctx.fillRect(sx+H-4,sy+3,8,3);
+    ctx.fillStyle='rgba(80,180,255,0.5)';ctx.fillRect(sx+H-3,sy+5,6,3);
+  } else if(sk.hat==='wizard'){
+    ctx.fillStyle=sk.hatCol;ctx.fillRect(sx+H-4,sy+2,8,2);
+    ctx.beginPath();ctx.moveTo(sx+H,sy-6);ctx.lineTo(sx+H-5,sy+4);ctx.lineTo(sx+H+5,sy+4);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#f0d070';ctx.fillRect(sx+H-2,sy,4,1);
+  } else if(sk.hat==='hood'){
+    ctx.fillStyle=sk.hatCol;ctx.fillRect(sx+H-5,sy+2,10,5);
+    ctx.fillRect(sx+H-6,sy+3,2,8);ctx.fillRect(sx+H+4,sy+3,2,8);
+  } else if(sk.hat==='mortarboard'){
+    ctx.fillStyle=sk.hatCol;ctx.fillRect(sx+H-5,sy+2,10,2);
+    ctx.fillRect(sx+H-6,sy,12,2);
+    ctx.fillStyle='#f0d070';ctx.fillRect(sx+H+5,sy,1,4);
+  } else if(sk.hat==='cap'){
+    ctx.fillStyle=sk.hatCol;ctx.fillRect(sx+H-4,sy+3,8,3);
+    ctx.fillRect(sx+H-6,sy+5,12,2);
+  } else if(sk.hat==='bow'){
+    ctx.fillStyle=sk.hatCol;
+    ctx.fillRect(sx+H-5,sy+1,4,3);ctx.fillRect(sx+H+1,sy+1,4,3);
+    ctx.fillRect(sx+H-1,sy+2,3,2);
+  } else {
+    // default hair/headband
+    ctx.fillStyle='#2a1808';ctx.fillRect(sx+H-4,sy+3,8,3);
+  }
+  // Eyes
+  ctx.fillStyle=sk.id==='zombie'?'#c02020':'#fff';
+  if(dir===2){ctx.fillRect(sx+H-3,sy+8,2,2);ctx.fillRect(sx+H+1,sy+8,2,2);}
+  else if(dir===0){ctx.fillRect(sx+H-3,sy+9,2,2);ctx.fillRect(sx+H+1,sy+9,2,2);}
+  else if(dir===3){ctx.fillRect(sx+H+1,sy+8,3,2);}
+  else{ctx.fillRect(sx+H-4,sy+8,3,2);}
+  // Legs
+  ctx.fillStyle=sk.body;
+  if(frame===0||frame===2){ctx.fillRect(sx+H-4,sy+S-7,4,7);ctx.fillRect(sx+H,sy+S-7,4,7);}
+  else if(frame===1){ctx.fillRect(sx+H-4,sy+S-9,4,9);ctx.fillRect(sx+H,sy+S-5,4,5);}
+  else{ctx.fillRect(sx+H-4,sy+S-5,4,5);ctx.fillRect(sx+H,sy+S-9,4,9);}
+  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.shadowColor='transparent';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCORE & RANK SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+let gameStartTime=0;
+let correctAnswers=0;let _lastMilestone=0;let scoreDeductions=0;
+
+function calcScore(){
+  const survivalSecs=Math.floor((Date.now()-gameStartTime)/1000);
+  const base=Math.max(0, survivalSecs*2 + correctAnswers*100 + (gs.zombieKills||0)*20 + (gs.artefacts.length||0)*50 - scoreDeductions);
+  return hardMode?base*2:base;
+}
+
+function getRank(score){
+  if(score>=5000)return'★ THEOREM MASTER ★';
+  if(score>=3000)return'◆ PROOF LEGEND';
+  if(score>=2000)return'▲ ZONE EXPLORER';
+  if(score>=1000)return'■ SHADOW WALKER';
+  if(score>=500) return'▪ WANDERING SOUL';
+  return'· LOST ONE';
+}
+
+const SCORE_MILESTONES=[500,1000,2000,3000,5000,7500,10000];
+const MILESTONE_TRAILS=[
+  {score:500,  color:'#f0d070',trailCol:'#f0d07088'},
+  {score:1000, color:'#70d0ff',trailCol:'#70d0ff88'},
+  {score:2000, color:'#90ff70',trailCol:'#90ff7088'},
+  {score:3000, color:'#ff8040',trailCol:'#ff804088'},
+  {score:5000, color:'#ff40ff',trailCol:'#ff40ff88'},
+  {score:7500, color:'#ffffff',trailCol:'#ffffff88'},
+  {score:10000,color:'#ffd700',trailCol:'#ffd70088'},
+];
+function checkScoreMilestone(sc){
+  for(let i=MILESTONE_TRAILS.length-1;i>=0;i--){
+    const m=MILESTONE_TRAILS[i];
+    if(sc>=m.score){
+      if(_lastMilestone<m.score){
+        _lastMilestone=m.score;
+        // Burst on milestone unlock
+        const px=Math.floor(gs.player.tx*TILE-gs.cam.x+8);
+        const py=Math.floor(gs.player.ty*TILE-gs.cam.y+8);
+        for(let p=0;p<20;p++){
+          const angle=Math.random()*Math.PI*2;
+          const spd=40+Math.random()*60;
+          particles.push({x:px,y:py,vx:Math.cos(angle)*spd/16,vy:Math.sin(angle)*spd/16,life:1,col:m.color,size:2+Math.random()*3});
+        }
+        // Flash score HUD
+        const hud=document.getElementById('hud-score');
+        hud.style.color=m.color;hud.style.borderColor=m.color;
+        setTimeout(()=>{hud.style.color='';hud.style.borderColor='';},1500);
+      }
+      break;
+    }
+  }
+}
+function updateScoreHUD(){
+  const sc=calcScore();
+  document.getElementById('score-ct').textContent=sc;
+  document.getElementById('hud-score').classList.add('on');
+  if(gs.screen==='game')checkScoreMilestone(sc);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HARD MODE CONFIG
+// ═══════════════════════════════════════════════════════════════════════════════
+let hardMode=false;
+const HARD={
+  lives:1,
+  zombieSpeedMult:2.0,
+  spawnIntervalMult:0.5,
+  maxPerSpawnerBonus:2,
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LOCALSTORAGE SAVE / LOAD
+// ═══════════════════════════════════════════════════════════════════════════════
+const SAVE_KEY='tlt_save_v2';
+
+function saveProgress(){
+  try{
+    const data={
+      artefacts:gs.artefacts,
+      unlockedZones:gs.unlockedZones,
+      cooldowns:gs.cooldowns,
+      lives:gs.lives,
+      zombieKills:gs.zombieKills,
+      playerTx:gs.player.tx,
+      playerTy:gs.player.ty,
+      skinId:activeSkin.id,
+      hardMode:hardMode,
+      score:calcScore(),
+      correctAnswers:correctAnswers,
+      gameStartTime:gameStartTime,
+    };
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadProgress(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return null;
+    return JSON.parse(raw);
+  }catch(e){return null;}
+}
+
+function hasSave(){
+  return !!loadProgress();
+}
+
+function applyLoadedProgress(data){
+  gs.artefacts=data.artefacts||[];
+  gs.unlockedZones=data.unlockedZones||[0];
+  gs.cooldowns=data.cooldowns||{};
+  gs.lives=data.lives||5;
+  gs.zombieKills=data.zombieKills||0;
+  correctAnswers=data.correctAnswers||0;
+  gameStartTime=data.gameStartTime||Date.now();
+  if(data.playerTx){gs.player.tx=data.playerTx;gs.player.ty=data.playerTy;gs.player.px=data.playerTx*TILE;gs.player.py=data.playerTy*TILE;}
+  if(data.skinId){const sk=SKINS.find(s=>s.id===data.skinId);if(sk)activeSkin=sk;}
+  if(data.hardMode)hardMode=true;
+}
+
+function clearSave(){
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1573,6 +1913,7 @@ const gs={
   npcAnims:{},
   tick:0,
   showBlockGlow:false,
+  showMinimap:false,
   zoneName:'Algebra Aces',
   zombieKills:0,
   paused:false,
@@ -1583,14 +1924,18 @@ const gs={
 // ═══════════════════════════════════════════════════════════════════════════════
 function initGame(){
   gs.wmap=generateBigMap();
-  gs.lives=5; gs.maxLives=5;
+  const startLives=hardMode?HARD.lives:5;
+  gs.lives=startLives; gs.maxLives=startLives;
   gs.shieldActive=false; gs.invincible=false;
   gs.cooldowns={}; gs.artefacts=[];
   gs.unlockedZones=[0];
   gs.zombies=[]; gs.graves=[];
   gs.zombieKills=0;
+  correctAnswers=0;_lastMilestone=0;scoreDeductions=0;
+  gameStartTime=Date.now();
   document.getElementById('hud-kills').classList.remove('on');
   document.getElementById('hud-shield').classList.remove('on');
+  document.getElementById('hud-hardmode').classList.toggle('on',hardMode);
 
   // Assign random question to each NPC
   gs.npcList=[];
@@ -1866,6 +2211,93 @@ function drawParticles(){
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// MINIMAP
+// ═══════════════════════════════════════════════════════════════════════════════
+const mmCanvas=document.getElementById('minimap');
+const mmCtx=mmCanvas.getContext('2d');
+// Tile colours for the minimap (simplified palette)
+const MM_PAL={
+  [T.GRASS]:'#1a2410',[T.DIRT]:'#2a1c10',[T.PATH]:'#4a3820',
+  [T.WATER]:'#1a3a6a',[T.RUIN_FLOOR]:'#2e2218',[T.RUIN_WALL]:'#3a2e1c',
+  [T.TREE]:'#0e1a08',[T.MTN]:'#3c3428',[T.SAND]:'#3a2c18',
+  [T.STONE]:'#2a2018',[T.BARRIER]:'#0a0804',[T.SPAWNER]:'#3a0848',
+  [T.GRAVE]:'#1e1010',
+};
+
+function drawMinimap(){
+  if(!gs.showMinimap)return;
+  if(!gs.wmap)return;
+  // Hide during problem/inventory/gameover screens
+  if(gs.screen==='problem'||gs.screen==='inventory'||gs.screen==='gameover')return;
+
+  const mw=mmCanvas.width,mh=mmCanvas.height;
+  // Scale: map is COLS×ROWS, minimap is mw×mh
+  const sx=mw/COLS,sy=mh/ROWS;
+
+  mmCtx.fillStyle='#080604';
+  mmCtx.fillRect(0,0,mw,mh);
+
+  // Draw tiles
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const t=gs.wmap[r][c];
+      const locked=isInLockedZone(c,r);
+      if(locked){
+        mmCtx.fillStyle='#0a0806';
+      } else {
+        mmCtx.fillStyle=MM_PAL[t]||'#1a1208';
+      }
+      // ceil so no gaps appear at small sizes
+      mmCtx.fillRect(Math.floor(c*sx),Math.floor(r*sy),Math.ceil(sx),Math.ceil(sy));
+    }
+  }
+
+  // Zone tint for unlocked zones
+  ZONES.forEach((z,i)=>{
+    if(!gs.unlockedZones.includes(i))return;
+    mmCtx.fillStyle=z.color+'22';
+    mmCtx.fillRect(Math.floor(z.c0*sx),Math.floor(z.r0*sy),
+      Math.ceil((z.c1-z.c0+1)*sx),Math.ceil((z.r1-z.r0+1)*sy));
+  });
+
+  // Locked zone overlay with small lock indicator
+  ZONES.forEach((z,i)=>{
+    if(gs.unlockedZones.includes(i))return;
+    const zx=Math.floor(z.c0*sx),zy=Math.floor(z.r0*sy);
+    const zw=Math.ceil((z.c1-z.c0+1)*sx),zh=Math.ceil((z.r1-z.r0+1)*sy);
+    mmCtx.fillStyle='rgba(0,0,0,0.55)';
+    mmCtx.fillRect(zx,zy,zw,zh);
+    mmCtx.strokeStyle='#2a1808';
+    mmCtx.lineWidth=0.5;
+    mmCtx.strokeRect(zx+0.5,zy+0.5,zw-1,zh-1);
+  });
+
+  // Player dot
+  const px=Math.floor(gs.player.tx*sx);
+  const py=Math.floor(gs.player.ty*sy);
+  // Pulsing outer glow
+  const pulse=0.5+Math.sin(gs.tick*0.15)*0.5;
+  mmCtx.fillStyle='rgba(249,200,80,'+pulse*0.5+')';
+  mmCtx.fillRect(px-2,py-2,5,5);
+  mmCtx.fillStyle='#f0d070';
+  mmCtx.fillRect(px-1,py-1,3,3);
+
+  // Camera viewport rect
+  const vx=Math.floor(gs.cam.x/TILE*sx);
+  const vy=Math.floor(gs.cam.y/TILE*sy);
+  const vw=Math.ceil(VW/TILE*sx);
+  const vh=Math.ceil(VH/TILE*sy);
+  mmCtx.strokeStyle='rgba(200,160,60,0.35)';
+  mmCtx.lineWidth=0.75;
+  mmCtx.strokeRect(vx,vy,vw,vh);
+
+  // Border on the minimap canvas itself
+  mmCtx.strokeStyle='#4a3010';
+  mmCtx.lineWidth=1;
+  mmCtx.strokeRect(0,0,mw,mh);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════════════════════════════
 function render(){
@@ -1901,6 +2333,14 @@ function render(){
       const zc=zoneColorAt(c,r);
       if(zc!=='#c9a96e'){
         ctx.fillStyle=zc+'18';ctx.fillRect(sx,sy,TILE,TILE);
+      }
+      // Candy zone: extra pink tint on sand/floor tiles
+      if(isInCandyZone(c,r)){
+        if(t===T.SAND){ctx.fillStyle='rgba(255,160,200,0.45)';ctx.fillRect(sx,sy,TILE,TILE);}
+        else if(t===T.GRASS||t===T.DIRT){ctx.fillStyle='rgba(255,200,220,0.25)';ctx.fillRect(sx,sy,TILE,TILE);}
+        else if(t===T.PATH){ctx.fillStyle='rgba(255,120,180,0.35)';ctx.fillRect(sx,sy,TILE,TILE);}
+        else if(t===T.RUIN_FLOOR){ctx.fillStyle='rgba(255,180,210,0.4)';ctx.fillRect(sx,sy,TILE,TILE);}
+        else if(t===T.WATER){ctx.fillStyle='rgba(255,100,180,0.4)';ctx.fillRect(sx,sy,TILE,TILE);}
       }
     }
   }
@@ -1955,7 +2395,7 @@ function render(){
 
   // Player
   const psx=gs.player.px-cx,psy=gs.player.py-cy;
-  drawPlayer(psx,psy,gs.player.dir,gs.player.frame);
+  drawPlayerSkinned(psx,psy,gs.player.dir,gs.player.frame);
 
   // Particles
   drawParticles();
@@ -2064,6 +2504,9 @@ function render(){
   const curZone=getCurrentZoneName();
   ctx.fillStyle='rgba(180,140,60,0.18)';ctx.font='bold 11px Courier New';ctx.textAlign='left';
   ctx.fillText(curZone.toUpperCase(),8,VH-10);
+
+  // Minimap
+  drawMinimap();
 }
 
 function getCurrentZoneName(){
@@ -2139,9 +2582,9 @@ function updateZombies(dt){
     // Only spawn if spawner is in an unlocked zone
     if(!gs.unlockedZones.includes(sp.zoneIdx)&&sp.zoneIdx!==-1)return;
     sp.timer+=dt;
-    const interval=Math.max(3000,ZOMBIE_SPAWN_BASE-(nUnlocked*500));
-    // Max zombies per spawner scales with unlocked zones
-    const maxPerSpawner=1+Math.floor(nUnlocked/2);
+    const interval=Math.max(hardMode?1500:3000,(hardMode?ZOMBIE_SPAWN_BASE*HARD.spawnIntervalMult:ZOMBIE_SPAWN_BASE)-(nUnlocked*500));
+    // Max zombies per spawner scales with unlocked zones (more in hard mode)
+    const maxPerSpawner=(hardMode?HARD.maxPerSpawnerBonus:0)+1+Math.floor(nUnlocked/2);
     const zInZone=gs.zombies.filter(z=>z.spawnR===sp.r&&z.spawnC===sp.c).length;
     if(sp.timer>=interval&&zInZone<maxPerSpawner){
       sp.timer=0;
@@ -2149,10 +2592,11 @@ function updateZombies(dt){
     }
   });
 
-  // Movement via simple step toward player (every 600ms per zombie)
+  // Movement via simple step toward player (every 600ms per zombie, halved in hard mode)
+  const moveInterval=hardMode?300:600;
   gs.zombies.forEach(z=>{
     z.moveTimer+=dt;
-    if(z.moveTimer<600)return;
+    if(z.moveTimer<moveInterval)return;
     z.moveTimer=0;
     zombieStep(z);
   });
@@ -2169,11 +2613,12 @@ function updateZombies(dt){
         document.getElementById('hud-shield').classList.remove('on');
         document.getElementById('hud-shield').textContent='\u2737 SHIELD ACTIVE';
         spawnHitParticles(z.c*TILE-Math.floor(gs.cam.x),z.r*TILE-Math.floor(gs.cam.y),'#40a8f0');
-        gs.zombieKills++;updateKillHUD();
+        gs.zombieKills++;updateKillHUD();updateHearts();
       } else {
         gs.graves.push({r:z.r,c:z.c});
         gs.lives=Math.max(0,gs.lives-1);
         gs.zombieKills++;
+        scoreDeductions+=10;
         updateHearts();updateKillHUD();
         spawnHitParticles(z.c*TILE-Math.floor(gs.cam.x),z.r*TILE-Math.floor(gs.cam.y),'#e04030');
         if(gs.lives<=0){gameOver();return;}
@@ -2192,7 +2637,7 @@ function updateZombies(dt){
   // Shield timer
   if(gs.shieldActive){
     gs.shieldTimer-=dt;
-    if(gs.shieldTimer<=0){gs.shieldActive=false;document.getElementById('hud-shield').classList.remove('on');}
+    if(gs.shieldTimer<=0){gs.shieldActive=false;document.getElementById('hud-shield').classList.remove('on');updateHearts();}
     else{
       const secs=Math.ceil(gs.shieldTimer/1000);
       document.getElementById('hud-shield').textContent='🛡 SHIELD: '+secs+'s';
@@ -2245,7 +2690,13 @@ function spawnZombie(sp){
 function updateHearts(){
   for(let i=1;i<=5;i++){
     const el=document.getElementById('h'+i);
-    if(el)el.classList.toggle('lost',i>gs.lives);
+    if(!el)continue;
+    el.style.display=i>gs.maxLives?'none':'';
+    const alive=i<=gs.lives;
+    el.classList.toggle('lost',!alive);
+    if(alive&&gs.shieldActive){el.classList.add('shield');el.classList.remove('bonus');}
+    else if(alive&&gs.lives>3){el.classList.add('bonus');el.classList.remove('shield');}
+    else{el.classList.remove('shield','bonus');}
   }
 }
 function updateHUD(){
@@ -2294,9 +2745,16 @@ function getCurrentZoneInfo(){
 // GAME OVER / RESPAWN
 // ═══════════════════════════════════════════════════════════════════════════════
 function gameOver(){
+  const finalScore=calcScore();
+  const survSecs=Math.floor((Date.now()-gameStartTime)/1000);
+  const mins=Math.floor(survSecs/60), secs=survSecs%60;
   document.getElementById('go-art').textContent=gs.artefacts.length;
   document.getElementById('go-zones').textContent=gs.unlockedZones.length;
   document.getElementById('go-kills').textContent=gs.zombieKills;
+  document.getElementById('go-score').textContent=finalScore;
+  document.getElementById('go-rank').textContent=getRank(finalScore);
+  document.getElementById('go-time').textContent=mins+'m '+secs+'s';
+  clearSave(); // clear save on death
   gs.screen='gameover';
   document.getElementById('gameover').classList.add('on');
 }
@@ -2304,7 +2762,8 @@ function gameOver(){
 // Respawn: resets artefacts/lives/combat but KEEPS unlocked zones and map state.
 function respawnAfterDeath(){
   gs.artefacts=[];
-  gs.lives=5;gs.maxLives=5;
+  const startLives=hardMode?HARD.lives:5;
+  gs.lives=startLives;gs.maxLives=startLives;
   gs.shieldActive=false;gs.shieldTimer=0;
   document.getElementById('hud-shield').classList.remove('on');
   document.getElementById('hud-shield').textContent='\u2737 SHIELD ACTIVE';
@@ -2312,7 +2771,10 @@ function respawnAfterDeath(){
   gs.zombies=[];gs.graves=[];
   gs.cooldowns={};
   gs.zombieKills=0;
+  correctAnswers=0;_lastMilestone=0;scoreDeductions=0;
+  gameStartTime=Date.now();
   document.getElementById('hud-kills').classList.remove('on');
+  document.getElementById('hud-hardmode').classList.toggle('on',hardMode);
   // Re-randomise NPC questions so player can re-earn artefacts
   gs.npcList.forEach(npc=>{
     const pool=QB[npc.id];
@@ -2393,6 +2855,7 @@ function submitAns(){
   if(!raw)return;
   const ok=npc.prob.chk(raw);
   if(ok){
+    correctAnswers++;
     document.getElementById('pr-fb').textContent='Correct. '+npc.name+' grants you the '+npc.art.name+'.';
     document.getElementById('pr-fb').className='ok';
     document.getElementById('pr-sub').disabled=true;
@@ -2402,7 +2865,7 @@ function submitAns(){
       const roll=Math.random();
       let bonus='';
       if(roll<0.2&&gs.lives<gs.maxLives){gs.lives++;updateHearts();bonus='EXTRA LIFE GRANTED!';}
-      else if(roll<0.4){gs.shieldActive=true;gs.shieldTimer=gs.SHIELD_DURATION;document.getElementById('hud-shield').classList.add('on');bonus='SHIELD ACTIVATED (20s)!';}
+      else if(roll<0.4){gs.shieldActive=true;gs.shieldTimer=gs.SHIELD_DURATION;document.getElementById('hud-shield').classList.add('on');updateHearts();bonus='SHIELD ACTIVATED (20s)!';}
       gs.artefacts.push({...npc.art,zone:ZONES[npc.zoneIdx].name});
       updateHUD();checkUnlocks();
       document.getElementById('rw-bonus').textContent=bonus;
@@ -2470,6 +2933,9 @@ document.addEventListener('keydown',e=>{
     }
     if(e.key==='e'||e.key==='E')openInv();
     if(e.key==='p'||e.key==='P')togglePause();
+    if(e.key==='f'||e.key==='F')enterFullscreen();
+    if(e.key==='h'||e.key==='H')document.getElementById('settings-btn').click();
+    if(e.key==='m'||e.key==='M')document.getElementById('sp-maptoggle').click();
     if(!gs.keys[e.key]){
       const u=e.key==='ArrowUp'||e.key==='w'||e.key==='W';
       const d=e.key==='ArrowDown'||e.key==='s'||e.key==='S';
@@ -2508,14 +2974,20 @@ document.getElementById('pr-back').onclick=closeProb;
 document.getElementById('inv-cl').onclick=closeInv;
 
 function returnToTitle(){
+  if(gs.screen==='game'||gs.screen==='dialogue'||gs.screen==='inventory')saveProgress();
   gs.screen='title';
   gs.paused=false;
   document.getElementById('pause-overlay').classList.remove('on');
+  document.getElementById('skin-modal').classList.remove('on');
   document.getElementById('title').classList.remove('off');
   gs.nearNPC=null;gs.activeNPC=null;
   document.getElementById('dlg').classList.remove('on');
   document.getElementById('prob').classList.remove('on');
   document.getElementById('inv').classList.remove('on');
+  document.getElementById('skin-modal').dataset.pausedByModal='';
+  document.getElementById('site-footer').style.display='';
+  // Unlock difficulty toggle only if no active save
+  if(!hasSave()) setDifficultyLock(false);
   syncJoyVisibility();
 }
 
@@ -2597,8 +3069,18 @@ var syncJoyVisibility=function(){};
 (function(){
   const cogBtn=document.getElementById('settings-btn');
   const panel=document.getElementById('settings-panel');
-  function togglePanel(){const open=panel.classList.toggle('on');cogBtn.classList.toggle('open',open);}
-  function closePanel(){panel.classList.remove('on');cogBtn.classList.remove('open');}
+  function togglePanel(){
+    const open=panel.classList.toggle('on');
+    cogBtn.classList.toggle('open',open);
+    if(gs.screen==='game'){
+      if(open&&!gs.paused){gs.paused=true;panel.dataset.pausedByPanel='1';}
+      else if(!open&&panel.dataset.pausedByPanel==='1'){gs.paused=false;panel.dataset.pausedByPanel='';}
+    }
+  }
+  function closePanel(){
+    if(panel.dataset.pausedByPanel==='1'&&gs.screen==='game'){gs.paused=false;panel.dataset.pausedByPanel='';}
+    panel.classList.remove('on');cogBtn.classList.remove('open');
+  }
   cogBtn.addEventListener('click',e=>{e.stopPropagation();togglePanel();});
   document.addEventListener('click',e=>{if(!panel.contains(e.target)&&e.target!==cogBtn)closePanel();});
   document.getElementById('sp-inventory').onclick=()=>{closePanel();if(gs.screen==='game')openInv();else if(gs.screen==='inventory')closeInv();};
@@ -2614,28 +3096,55 @@ var syncJoyVisibility=function(){};
     if(gs.screen==='paused') gs.screen='game';
   };
   document.getElementById('sp-glowtoggle').onclick=()=>{gs.showBlockGlow=!gs.showBlockGlow;document.getElementById('sp-glowtoggle').textContent='△ BLOCKED TILE GLOW: '+(gs.showBlockGlow?'ON':'OFF');};
+
+  // Minimap toggle
+  document.getElementById('sp-maptoggle').onclick=()=>{
+    gs.showMinimap=!gs.showMinimap;
+    document.getElementById('sp-maptoggle').textContent='▣ MINIMAP: '+(gs.showMinimap?'ON':'OFF');
+    document.getElementById('minimap-wrap').classList.toggle('on',gs.showMinimap);
+  };
   document.getElementById('sp-pause').onclick=()=>{closePanel();togglePause();};
   document.getElementById('pause-resume-btn').onclick=()=>togglePause();
   document.getElementById('vol-slider').addEventListener('input',e=>{music.setVol(parseInt(e.target.value)/100);});
   document.getElementById('sp-title').onclick=()=>{
     closePanel();
-    location.reload();
+    if(confirm('Return to title? Your progress will be saved.')){
+      saveProgress();
+      returnToTitle();
+      document.getElementById('tt-continue').style.display='';
+      document.getElementById('tt-start').textContent='NEW GAME';
+    }
   };
   document.getElementById('sp-reset').onclick=()=>{
     closePanel();
-    if(confirm('Reset ALL progress? Loses all artefacts and lives.')){
-      gs.artefacts=[];gs.lives=5;gs.unlockedZones=[0];gs.zombies=[];gs.graves=[];
-      gs.cooldowns={};updateHUD();updateHearts();
-      // Rebuild map to restore barriers
-      gs.wmap=generateBigMap();
-      ZONES.forEach((z,i)=>{if(i===0)return;});
+    if(confirm('Reset ALL progress? This cannot be undone.')){
+      clearSave();
+      hardMode=false;
+      returnToTitle();
+      setDifficultyLock(false);
+      document.getElementById('tt-continue').style.display='none';
+      document.getElementById('tt-start').textContent='NEW GAME';
     }
   };
+
+  // Skin button in settings
+  document.getElementById('sp-skin').onclick=()=>{closePanel();openSkinModal();};
 
   // Joystick toggle
   const overlay=document.getElementById('joy-overlay');
   const toggleBtn=document.getElementById('sp-joytoggle');
   let joyOn=false;
+  function syncMinimapPosition(){
+    const wrap=document.getElementById('minimap-wrap');
+    if(joyOn){
+      // Lift minimap up so it clears the TALK/INV buttons on the right.
+      // joy-interact sits at bottom:30px and is 70px tall → top of button ≈ 100px from bottom.
+      // Add a comfortable gap so minimap clears it.
+      wrap.style.bottom='140px';
+    } else {
+      wrap.style.bottom='10px';
+    }
+  }
   syncJoyVisibility=function(){
     if(!joyOn)return;
     const gameOnly=(gs.screen==='game');
@@ -2648,9 +3157,10 @@ var syncJoyVisibility=function(){};
     toggleBtn.textContent='● JOYSTICK: '+(joyOn?'ON':'OFF');
     if(!joyOn){overlay.style.visibility='';overlay.style.pointerEvents='';}
     else syncJoyVisibility();
+    syncMinimapPosition();
   });
   window.addEventListener('touchstart',()=>{
-    if(!joyOn){joyOn=true;overlay.classList.add('on');toggleBtn.textContent='● JOYSTICK: ON';syncJoyVisibility();}
+    if(!joyOn){joyOn=true;overlay.classList.add('on');toggleBtn.textContent='● JOYSTICK: ON';syncJoyVisibility();syncMinimapPosition();}
   },{once:true,passive:true});
 
   // Joystick controls
@@ -2684,19 +3194,182 @@ var syncJoyVisibility=function(){};
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// SKIN MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function buildSkinGrid(){
+  const grid=document.getElementById('skin-grid');
+  grid.innerHTML='';
+  SKINS.forEach(sk=>{
+    const item=document.createElement('div');
+    item.className='sk-item'+(sk.id===activeSkin.id?' selected':'');
+    // Draw mini canvas preview
+    const c=document.createElement('canvas');c.width=32;c.height=32;c.style.imageRendering='pixelated';
+    const cx2=c.getContext('2d');
+    // Draw preview character
+    cx2.fillStyle=sk.body;cx2.fillRect(8,14,14,12);
+    cx2.fillStyle=sk.torso;cx2.fillRect(10,16,10,8);
+    cx2.fillStyle=sk.head;cx2.fillRect(10,4,12,12);
+    if(sk.hat==='wizard'){cx2.fillStyle=sk.hatCol;cx2.fillRect(10,2,12,3);cx2.beginPath();cx2.moveTo(16,-4);cx2.lineTo(10,5);cx2.lineTo(22,5);cx2.closePath();cx2.fill();}
+    else if(sk.hat==='visor'){cx2.fillStyle=sk.hatCol;cx2.fillRect(10,4,12,4);}
+    else if(sk.hat==='hood'){cx2.fillStyle=sk.hatCol;cx2.fillRect(8,4,16,7);}
+    else if(sk.hat==='mortarboard'){cx2.fillStyle=sk.hatCol;cx2.fillRect(9,3,14,3);}
+    else if(sk.hat==='cap'){cx2.fillStyle=sk.hatCol;cx2.fillRect(10,4,12,4);}
+    else if(sk.hat==='bow'){cx2.fillStyle=sk.hatCol;cx2.fillRect(10,2,5,3);cx2.fillRect(17,2,5,3);}
+    else{cx2.fillStyle='#2a1808';cx2.fillRect(10,4,12,3);}
+    if(sk.id==='neon'){cx2.shadowColor='#00ffcc';cx2.shadowBlur=6;}else{cx2.shadowBlur=0;}
+    cx2.fillStyle=sk.id==='zombie'?'#c02020':'#fff';
+    cx2.fillRect(12,9,3,2);cx2.fillRect(17,9,3,2);
+    cx2.fillStyle=sk.body;cx2.fillRect(10,26,5,6);cx2.fillRect(17,26,5,6);
+    const nm=document.createElement('div');nm.className='sk-name';nm.textContent=sk.name;
+    item.appendChild(c);item.appendChild(nm);
+    item.onclick=()=>{
+      activeSkin=sk;
+      grid.querySelectorAll('.sk-item').forEach(el=>el.classList.remove('selected'));
+      item.classList.add('selected');
+      try{localStorage.setItem('tlt_skin',sk.id);}catch(e){}
+    };
+    grid.appendChild(item);
+  });
+}
+
+function openSkinModal(){
+  buildSkinGrid();
+  const modal=document.getElementById('skin-modal');
+  modal.classList.add('on');
+  modal.dataset.from=gs.screen;
+  if(gs.screen==='game'&&!gs.paused){gs.paused=true;modal.dataset.pausedByModal='1';}
+}
+function closeSkinModal(){
+  const modal=document.getElementById('skin-modal');
+  if(modal.dataset.pausedByModal==='1'){gs.paused=false;modal.dataset.pausedByModal='';}
+  modal.classList.remove('on');
+}
+document.getElementById('sk-close').onclick=closeSkinModal;
+const ttSkinBtn=document.getElementById('tt-skin');if(ttSkinBtn)ttSkinBtn.onclick=()=>openSkinModal();
+
+// Load saved skin on startup
+(function(){
+  try{const sid=localStorage.getItem('tlt_skin');if(sid){const sk=SKINS.find(s=>s.id===sid);if(sk)activeSkin=sk;}}catch(e){}
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // TITLE BUTTONS
 // ═══════════════════════════════════════════════════════════════════════════════
 document.getElementById('tt-htp').onclick=()=>{document.getElementById('htp-overlay').classList.add('on');};
 document.getElementById('htp-back-btn').onclick=()=>{document.getElementById('htp-overlay').classList.remove('on');};
+
+// Hard mode toggle
+(function(){
+  const normalBtn=document.getElementById('tt-diff-normal');
+  const hardBtn=document.getElementById('tt-diff-hard');
+  const desc=document.getElementById('tt-diff-desc');
+  function setDiff(isHard){
+    hardMode=isHard;
+    normalBtn.classList.toggle('selected-normal',!isHard);
+    hardBtn.classList.toggle('selected-hard',isHard);
+    if(isHard){
+      desc.textContent='Faster zombies · 1 life · Score ×2';
+      desc.className='tt-diff-desc hard';
+    } else {
+      desc.textContent='Standard difficulty';
+      desc.className='tt-diff-desc normal';
+    }
+  }
+  window.setDifficultyLock=function(locked){
+    normalBtn.style.opacity=locked?'0.35':'';
+    hardBtn.style.opacity=locked?'0.35':'';
+    normalBtn.style.cursor=locked?'not-allowed':'';
+    hardBtn.style.cursor=locked?'not-allowed':'';
+    normalBtn.style.pointerEvents=locked?'none':'';
+    hardBtn.style.pointerEvents=locked?'none':'';
+    const wrap=document.querySelector('.tt-diff-wrap');
+    if(wrap)wrap.title=locked?'Cannot change difficulty mid-game':'';
+  };
+  normalBtn.onclick=()=>setDiff(false);
+  hardBtn.onclick=()=>setDiff(true);
+})();
+
+// Check for save on load and show continue button
+(function(){
+  if(hasSave()){
+    document.getElementById('tt-continue').style.display='';
+    document.getElementById('tt-start').textContent='NEW GAME';
+    // Reflect saved hard mode state in picker, then lock it
+    const data=loadProgress();
+    if(data&&data.hardMode){
+      hardMode=true;
+      document.getElementById('tt-diff-normal').classList.remove('selected-normal');
+      document.getElementById('tt-diff-hard').classList.add('selected-hard');
+      const desc=document.getElementById('tt-diff-desc');
+      desc.textContent='Faster zombies · 1 life · Score ×2';
+      desc.className='tt-diff-desc hard';
+    }
+    setDifficultyLock(true);
+  }
+})();
+(function(){
+  let _skipTimer=null;
+  window.showLoadingThenStart=function(cb){
+    const el=document.getElementById('ad-loading');
+    const timerEl=document.getElementById('ad-timer');
+    const skipBtn=document.getElementById('ad-skip');
+    el.classList.add('on');
+    skipBtn.disabled=true;skipBtn.style.opacity='0.4';
+    let secs=3;timerEl.textContent='Skip in '+secs+'s…';
+    _skipTimer=setInterval(()=>{
+      secs--;
+      if(secs<=0){clearInterval(_skipTimer);skipBtn.disabled=false;skipBtn.style.opacity='1';timerEl.textContent='Ready — tap to enter!';}
+      else{timerEl.textContent='Skip in '+secs+'s…';}
+    },1000);
+    skipBtn.onclick=()=>{if(skipBtn.disabled)return;clearInterval(_skipTimer);el.classList.remove('on');cb();};
+  };
+})();
+
+function startGameFromTitle(continueGame){
+  showLoadingThenStart(()=>{
+    document.getElementById('title').classList.add('off');
+    document.getElementById('site-footer').style.display='none';
+    gs.world=null;gs.wmap=null;gs.nearNPC=null;gs.activeNPC=null;
+    initGame();
+    if(continueGame){
+      const data=loadProgress();
+      if(data)applyLoadedProgress(data);
+    }
+    gs.screen='game';
+    syncJoyVisibility();
+    fitGameCanvas();
+    music.play('algebra');
+    document.getElementById('hud-hardmode').classList.toggle('on',hardMode);
+    updateScoreHUD();
+    // Lock difficulty once game is running
+    setDifficultyLock(true);
+  });
+}
+
+let _pendingNewGame=false;
 document.getElementById('tt-start').onclick=()=>{
-  document.getElementById('title').classList.add('off');
-  document.getElementById('site-footer').style.display='none'; 
-  initGame();
-  gs.screen='game';
-  syncJoyVisibility();
-  fitGameCanvas();
-  music.play('algebra');
+  if(_pendingNewGame){
+    _pendingNewGame=false;
+    document.getElementById('tt-start').textContent='NEW GAME';
+    startGameFromTitle(false);
+    return;
+  }
+  if(hasSave()){
+    if(!confirm('Start a new game? This will erase your saved progress.'))return;
+    clearSave();
+    setDifficultyLock(false);
+    _pendingNewGame=true;
+    document.getElementById('tt-start').textContent='START ►';
+    document.getElementById('tt-continue').style.display='none';
+  } else {
+    startGameFromTitle(false);
+  }
 };
+
+document.getElementById('tt-continue').onclick=()=>{
+  startGameFromTitle(true);
+};
+
 document.getElementById('tt-fs').onclick=()=>{enterFullscreen();};
 document.addEventListener('click',()=>{if(gs.screen==='title')music.play('title');},{once:true});
 document.addEventListener('touchstart',()=>{if(gs.screen==='title')music.play('title');},{once:true,passive:true});
@@ -2727,11 +3400,14 @@ fitGameCanvas();
 // ═══════════════════════════════════════════════════════════════════════════════
 // GAME LOOP
 // ═══════════════════════════════════════════════════════════════════════════════
-let lastT=0;
+let lastT=0,lastSave=0;
 function loop(ts){
   const dt=Math.min(ts-lastT,100);lastT=ts;gs.tick++;
 
   if(gs.screen==='game'&&!gs.paused){
+    // Auto-save every 30 seconds
+    if(ts-lastSave>30000){lastSave=ts;saveProgress();}
+    updateScoreHUD();
     gs.moveTimer+=dt;
     if(gs.moveTimer>=gs.MOVE_DELAY){
       gs.moveTimer=0;
@@ -2760,7 +3436,7 @@ function loop(ts){
 }
 requestAnimationFrame(loop);
 </script>
-<div style="position:fixed;bottom:0;left:0;right:0;background:rgba(4,3,2,0.95);border-top:1px solid #1a0e05;padding:5px 16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;z-index:9999;pointer-events:all;" id="site-footer">
+<div id="site-footer">  
   <a href="extra/about.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">ABOUT</a>
   <a href="extra/lore.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">LORE</a>
   <a href="extra/blog.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">DEV-BLOG</a>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://thelosttheorem.netlify.app/lore.html">
-<meta name="description" content="The lore of The Lost Theorem — the story of ten mathematical worlds, sixty artefacts, and the puzzle game built to restore a lost proof.">
+<meta name="description" content="The lore of The Lost Theorem — eleven mathematical zones, seventy-seven artefacts, zombie survival, and the puzzle game built to restore a lost proof.">
 <title>Lore | The Lost Theorem</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7958491546686840" crossorigin="anonymous"></script>
 <style>
@@ -21,7 +21,12 @@ nav{background:rgba(8,5,2,0.98);border-bottom:1px solid #2a1808;padding:0 24px;d
 .nav-links a.active{color:#c9a96e;border-bottom:2px solid #8a5020;}
 .nav-play{background:#2a1808;border:1px solid #6a4010;color:#f0d070;font-size:11px;padding:7px 18px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
 .nav-play:hover{background:#3a2010;text-decoration:none;}
-main{flex:1;max-width:860px;width:100%;margin:0 auto;padding:48px 24px;}
+.page-wrap{display:flex;flex:1;gap:0;max-width:1200px;width:100%;margin:0 auto;}
+main{flex:1;min-width:0;padding:48px 24px;}
+.ad-sidebar{width:180px;min-width:180px;padding:48px 12px 48px 0;display:flex;flex-direction:column;gap:20px;}
+.ad-sidebar-right{width:180px;min-width:180px;padding:48px 0 48px 12px;display:flex;flex-direction:column;gap:20px;}
+.ad-block{background:rgba(10,7,3,0.6);border:1px solid #1a0e05;padding:4px;min-height:250px;display:flex;align-items:flex-start;justify-content:center;}
+.ad-block-horizontal{background:rgba(10,7,3,0.6);border:1px solid #1a0e05;padding:4px;width:100%;margin:20px 0;}
 h1{color:#f0d070;font-size:22px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;}
 .page-sub{color:#7a5830;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;border-bottom:1px solid #1a0e05;padding-bottom:16px;}
 h2{color:#c9a96e;font-size:14px;letter-spacing:3px;text-transform:uppercase;margin:28px 0 12px;}
@@ -32,97 +37,185 @@ li{margin-bottom:4px;}
 .box{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:20px 24px;margin-bottom:20px;}
 .tag{display:inline-block;background:rgba(20,14,5,0.9);border:1px solid #2a1808;color:#8a5828;font-size:10px;letter-spacing:1px;padding:3px 10px;margin:0 4px 6px 0;text-transform:uppercase;}
 .divider{height:1px;background:#1a0e05;margin:28px 0;}
-.blog-card{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:20px 24px;margin-bottom:16px;}
-.blog-date{color:#5a3818;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-.blog-title{color:#f0d070;font-size:15px;letter-spacing:2px;margin-bottom:10px;}
-.blog-excerpt{color:#9a7848;font-size:12px;line-height:1.9;}
-.blog-tags{margin-top:12px;}
 .lore-quote{border-left:2px solid #4a2808;padding:10px 18px;margin:16px 0;color:#8a6030;font-style:italic;font-size:13px;line-height:1.9;}
+.blog-card{background:rgba(14,10,5,0.8);border:1px solid #2a1808;padding:24px;margin-bottom:16px;}
+.blog-meta{color:#5a3818;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.blog-title{color:#f0d070;font-size:16px;letter-spacing:2px;margin-bottom:12px;}
+.blog-body{color:#9a7848;font-size:13px;line-height:2;}
+.blog-body p{margin-bottom:12px;}
+.blog-body ul{margin-bottom:12px;padding-left:20px;}
+.blog-tags{margin-top:14px;padding-top:12px;border-top:1px solid #1a0e05;}
 footer{background:rgba(4,3,2,0.98);border-top:1px solid #1a0e05;padding:24px;text-align:center;}
 footer p{color:#4a3018;font-size:11px;line-height:1.8;margin:0;}
 footer a{color:#6a4820;}
 .social-links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;}
 .social-links a{color:#8a5830;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:1px solid #2a1808;padding:8px 18px;transition:border-color 0.1s,color 0.1s;}
 .social-links a:hover{border-color:#6a4010;color:#c9a96e;text-decoration:none;}
+@media(max-width:900px){.ad-sidebar,.ad-sidebar-right{display:none;}.page-wrap{flex-direction:column;}}
 @media(max-width:600px){nav{padding:0 12px;}.nav-links a{padding:12px 10px;font-size:10px;}main{padding:32px 16px;}h1{font-size:18px;}}
 </style>
 </head>
 <body>
 <nav>
-  <a class="nav-logo">THE LOST THEOREM</a>
+  <a class="nav-logo" href="../index.html">THE LOST THEOREM</a>
   <div class="nav-links">
-    <a href="blog.html" >DEV BLOG</a>
+    <a href="blog.html">DEV BLOG</a>
     <a href="lore.html" class="active">LORE</a>
-    <a href="about.html" >ABOUT</a>
-    <a href="privacy.html" >PRIVACY</a>
-    <a href="tos.html" >TERMS</a>
+    <a href="about.html">ABOUT</a>
+    <a href="privacy.html">PRIVACY</a>
+    <a href="tos.html">TERMS</a>
   </div>
   <a class="nav-play" href="../index.html">&#9654; PLAY NOW</a>
 </nav>
-<main>
+<div class="ad-block-horizontal" style="max-width:728px;margin:16px auto 0;"><!-- Ad slot: Top leaderboard | STEP 2: Replace 7994573493 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;min-height:90px;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="7994573493"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+<div class="page-wrap">
+  <aside class="ad-sidebar">
+  <div class="ad-block"><!-- Ad slot: Left sidebar 1 | STEP 2: Replace 1355493043 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="1355493043"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  <div class="ad-block"><!-- Ad slot: Left sidebar 2 | STEP 2: Replace 8608817018 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="8608817018"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+</aside>
+  <main>
 <h1>The Lore of The Lost Theorem</h1>
-<div class="page-sub">The history of ten mathematical worlds and the theorem that sealed them</div>
+<div class="page-sub">The history of eleven mathematical zones and the theorem that sealed them</div>
 
 <div class="box">
-  <p>The Lost Theorem is more than a puzzle game. It is a mathematical adventure game built around a rich world of NPCs, ancient ruins, and a mystery that spans ten distinct realms. This page explores the lore, history, and characters that give each world its identity, and explains why mathematics sits at the heart of everything.</p>
+  <p>The Lost Theorem is more than a puzzle game. It is a mathematical adventure game built around a rich world of NPCs, ancient ruins, zombie spawners, and a mystery that spans eleven distinct zones. This page explores the lore, history, and characters that give each zone its identity, and explains why mathematics sits at the heart of everything.</p>
 </div>
 
 <h2>The Founding Theorem</h2>
 <div class="box">
-  <p>Long before the ten worlds were named, a single theorem held them together. Known simply as The Theorem, it was not a formula but a principle: that every branch of mathematics is connected, that no idea exists in isolation, and that the universe of numbers forms a continuous whole.</p>
-  <p>The Theorem was discovered by a mathematician known only as The Architect, who spent decades travelling between disciplines, from the geometry of Euclid Bay to the probability distributions of Probability Hollow, finding the hidden threads that linked them all. When The Architect finally wrote down the proof, the ten worlds stabilised. Trade routes opened. Knowledge spread. Characters who had once lived only in their own mathematical domain began to speak with scholars from others.</p>
+  <p>Long before the eleven zones were named, a single theorem held them together. Known simply as The Theorem, it was not a formula but a principle: that every branch of mathematics is connected, that no idea exists in isolation, and that the universe of numbers forms a continuous whole.</p>
+  <p>The Theorem was discovered by a mathematician known only as The Architect, who spent decades travelling between disciplines, from the geometry of Euclid Eutopia to the probability distributions of Probability Hollow, finding the hidden threads that linked them all. When The Architect finally wrote down the proof, the zones stabilised. Trade routes opened. Knowledge spread. Characters who had once lived only in their own mathematical domain began to speak with scholars from others.</p>
   <div class="lore-quote">"Every integral hides a derivative. Every probability hides a structure. The theorem does not unify mathematics. It reveals that mathematics was always unified."</div>
-  <p>Then something happened. Historians in Euclid Eutopia call it the Sealing. Scholars in Probability Hollow call it the Collapse of Certainty. Whatever its name, the result was the same: The Theorem was lost, and the ten worlds began to drift apart. Without the connecting proof, each world turned inward. NPCs forgot their neighbours. Ancient ruins stopped making sense. And sixty Artefacts, each one a fragment of the original Theorem's evidence, were scattered across the worlds.</p>
+  <p>Then something happened. Historians call it the Sealing. The Theorem was lost, and the zones began to drift apart. Without the connecting proof, each zone turned inward. Ancient ruins stopped making sense. The dead began to walk. And seventy-seven Artefacts, each one a fragment of the original Theorem's evidence, were scattered across the world.</p>
 </div>
 
-<h2>The Ten Worlds</h2>
+<h2>The Eleven Zones</h2>
+
+<h3>Algebra Aces — The Starting Zone</h3>
+<div class="box">
+  <p>A world of ancient ruins and buried archives at the centre of everything, Algebra Aces is where the journey begins. The Ruins Sage solves cubic polynomials with the patience of someone who has been doing it for decades. The Matrix Keeper maintains a grid of simultaneous equations on the walls of a stone chamber. Every path outward from the centre leads through this zone first.</p>
+  <div class="lore-quote">"The polynomial yields to those who know one root. Factor it out. The quadratic will follow." — Ruins Sage</div>
+</div>
 
 <h3>The Integral Plains</h3>
 <div class="box">
-  <p>A vast grassland crossed by a slow river, the Integral Plains were once the heartland of mathematical commerce. The river, whose flow rate changes continuously, became the natural metaphor for calculus. Wandering scholars here study integration not as an abstract operation but as the literal act of measuring the land, the water, the area beneath any curve in the terrain.</p>
-  <p>The ruins scattered across the Plains are the remains of measurement stations where ancient surveyors calculated areas and volumes. Each NPC in the Integral Plains carries a fragment of that surveying tradition. The Chain Rule Explorer carries a notebook dense with composite function decompositions. The Shrine Keeper guards a mossy altar where offerings were always areas beneath parabolas. The Ferryman at the Crossing at Dusk charges one correct answer per crossing.</p>
-  <div class="lore-quote">"The Fundamental Theorem connects what was separated. Differentiation and integration are inverse operations. This stone carries the proof."<br><br>— The Shrine Keeper, Integral Plains</div>
+  <p>A vast grassland crossed by slow rivers, the Integral Plains were once the heartland of mathematical commerce. The Archivist catalogues every indefinite integral in leather-bound volumes. The River Keeper guards the definite integral of the river's flow. The Shrine Keeper tends a mossy altar where offerings were always areas beneath parabolas.</p>
+  <div class="lore-quote">"The Fundamental Theorem connects what was separated. Differentiation and integration are inverse operations. This stone carries the proof." — Shrine Keeper</div>
 </div>
 
 <h3>Euclid Eutopia</h3>
 <div class="box">
-  <p>A coastal world of lighthouses, docks, and tidal ruins, Euclid Eutopia was built by geometers who measured everything before they built it. The original architects inscribed circles in polygons before pricing materials, surveyed every lot using similarity and scale, and built the bridge at Meridian Point using dot products to calculate stress angles.</p>
-  <p>The Eutopia is home to some of the game's most methodical characters. The Lighthouse Keeper calculated the light's reach using only angles and shadow. The Diver returns from the submerged ruins each evening with coordinate measurements and Pythagoras calculations. The Cartographer charts coastlines using circle theorems, treating every cape and inlet as an arc.</p>
-  <p>Euclid Eutopia is a math adventure game world designed to show that geometry is not abstract. It is the shape of the world itself.</p>
+  <p>A coastal zone of lighthouses, docks, and tidal ruins, Euclid Eutopia was built by geometers who measured everything before they built it. The Lighthouse Keeper calculated the light's reach using only angles and shadow. The Merchant prices by area, always inscribing a circle before quoting. The City Surveyor mapped every lot using similarity and scale.</p>
 </div>
 
 <h3>Probability Hollow</h3>
 <div class="box">
-  <p>A twilight world of misty hollows, crystal balls, and whispered calculations, Probability Hollow is where uncertainty became a discipline. The Oracle here does not claim to see the future. She calculates its likelihood. The Gambler has spent twenty years computing expected values in the Dice Hollow without ever actually gambling. The Poisoner works in the shadows of a binomial distribution, and the Census Taker maps the population of the Hollow using normal distributions.</p>
-  <p>The lore of Probability Hollow is the lore of decision-making under uncertainty, a theme that runs through every puzzle game encounter in this world. Each NPC problem tests a different tool: conditional probability, Bayes theorem, expected value, binomial distribution, normal distribution.</p>
+  <p>A twilight zone of misty hollows and whispered calculations, Probability Hollow is where uncertainty became a discipline. The Oracle does not claim to see the future — she calculates its likelihood. The Gambler has spent twenty years computing expected values without ever actually gambling. The Tree Builder constructs probability trees from raw outcomes, leaves labelled with exact fractions.</p>
 </div>
 
-<h3>Algebra Aces</h3>
+<h3>Trig Peaks</h3>
 <div class="box">
-  <p>A world of ancient ruins and buried archives, Algebra Aces is where the abstract became concrete. The Ruins Sage here solves cubic polynomials with the patience of someone who has been doing it for decades. The Matrix Keeper maintains a grid of simultaneous equations on the walls of a stone chamber. The Sequence Seer watches geometric series converge toward their sum to infinity from a high tower.</p>
-  <p>This is the NPC lore of structure: sequences that follow rules, polynomials that factor cleanly when you know one root, logarithms that compress the exponential into something manageable.</p>
+  <p>A zone of mountain passes and coastal watchtowers, Trig Peaks is where every distance was measured before it was walked. The Climber applies the sine rule to plan every ascent. The Navigator uses the cosine rule when no right angle exists. The Seismologist reads sinusoidal waves from underground sensors and can name the amplitude, period, and phase shift of any tremor.</p>
+</div>
+
+<h3>Derivation City</h3>
+<div class="box">
+  <p>A zone of workshops, laboratories, and junction stations, Derivation City is where rates of change became a science. The Chain Rule Explorer decomposes composite functions with mechanical precision. The Chemist applies the product rule to reaction rates. The Rail Planner uses implicit differentiation to calculate every curve in the network.</p>
+  <div class="lore-quote">"Not all curves can be written as y = f(x). Differentiate both sides implicitly with respect to x." — Rail Planner</div>
+</div>
+
+<h3>The Vector Wastelands</h3>
+<div class="box">
+  <p>A flat, hostile zone mapped entirely in vectors, the Wastelands have no landmarks — only directions and magnitudes. The Vector Wanderer maps the zone using position vectors and displacement. The Dot Product Sage found the angle between every pair of ruined walls. The Cross Guardian's gate opens only perpendicular to both approach vectors.</p>
+</div>
+
+<h3>Exponential Depths</h3>
+<div class="box">
+  <p>Underground caverns where everything grows or decays at a rate proportional to itself. The Growth Keeper models populations and compound interest without approximation. The Logarithm Hermit solves every exponential by taking logs. The Decay Warden tracks radioactive half-lives with silent precision.</p>
+</div>
+
+<h3>The Combinatorial Archives</h3>
+<div class="box">
+  <p>A vast library of arrangements, selections, and structures. The Arrangement Sage has counted every permutation of every set in the Archives. The Selection Scholar chairs committees with mathematical precision. The Derangement Master counts the permutations where nothing is in its correct position — and has never once been in the wrong place himself.</p>
 </div>
 
 <h3>The Null Space</h3>
 <div class="box">
-  <p>The most abstract and mysterious of the ten worlds, the Null Space is where complex numbers live. Its NPCs have names like The Complex Guide, The Modulus Keeper, De Moivre, The Conjugate Twin, and The Locus Keeper. The world itself does not fully conform to the laws of the other nine. Its geometry is different. Its colour palette is darker. Its ruins are older.</p>
-  <p>The Null Space is a math adventure game world for players who have made it through the other nine. It rewards persistence with the deepest lore and the hardest problems in the game.</p>
-  <div class="lore-quote">"The Null Space is not the absence of mathematics. It is the space where mathematics becomes something more than itself."<br><br>— Inscription above the entrance to the Null Space</div>
+  <p>The most abstract and mysterious of the eleven zones, the Null Space is where complex numbers live. Its NPCs include The Complex Guide, The Modulus Keeper, De Moivre's Shadow, The Conjugate Twin, and The Locus Painter. The zone itself does not fully conform to the laws of the other ten.</p>
+  <div class="lore-quote">"The Null Space is not the absence of mathematics. It is the space where mathematics becomes something more than itself." — Inscription above the entrance</div>
+</div>
+
+<h3>Statistical Archipelago</h3>
+<div class="box">
+  <p>A chain of islands in the furthest south, each devoted to a different statistical discipline. The Data Collector has measured everything. The Hypothesis Judge has never made a Type I error. The Confidence Sage builds interval estimates around every claim before speaking it aloud.</p>
 </div>
 
 <h2>The Artefacts</h2>
 <div class="box">
-  <p>Sixty Artefacts are scattered across the ten worlds, one per NPC encounter. Each Artefact is a physical object that once belonged to a scholar, a surveyor, a lighthouse keeper, or a gambler, and each one carries a fragment of the Lost Theorem's evidence.</p>
-  <p>Items like the Wanderer's Notebook (dense with chain rule proofs, with a partial map of the Null Space on the last page), the Angle Prism (glass that splits light into its component angles), the Probability Stone (translucent, shows the future, but only with P = 0.5 clarity), and the Surveyor Compass (measures arcs and central angles, belonged to Euclid Bay's original architect) are more than rewards. They are evidence.</p>
-  <p>Collect all sixty and the outlines of the Lost Theorem begin to emerge.</p>
+  <p>Seventy-seven Artefacts are scattered across the eleven zones, one per NPC encounter. Each Artefact is a physical object that once belonged to a scholar, surveyor, keeper, or wanderer, and each carries a fragment of the Lost Theorem's evidence. Some also grant gameplay bonuses: extra lives, timed shields, or both.</p>
+  <p>Collect all seventy-seven and the outlines of the Lost Theorem begin to emerge.</p>
+</div>
+
+<h2>The Zombie Awakening</h2>
+<div class="box">
+  <p>When the Theorem was lost, something else happened. The mathematical structures that kept the dead in place became inconsistent. Purple skull spawners appeared throughout the zones, endlessly producing the Awakened — zombies who path slowly but relentlessly toward any living mathematician. They cannot be permanently stopped; only the recovery of all Artefacts will restore the Theorem and end the Awakening.</p>
+  <p>Questions pause the Awakened. They freeze mid-step while a scholar answers. This is the only mercy the Null Space grants.</p>
 </div>
 
 <h2>Keywords and Context</h2>
 <div class="box">
-  <p>The Lost Theorem is a free browser-based puzzle game, maths adventure game, and educational RPG designed for secondary and senior secondary students. It covers curriculum topics including calculus, integration, differentiation, geometry, probability, statistics, algebra, trigonometry, vectors, complex numbers, combinatorics, and mathematical induction.</p>
-  <p>The NPC lore is designed to make each mathematical topic feel grounded in character and story. Every scholar, keeper, and traveller in the game has a reason to know what they know, and their problems follow from who they are rather than being imposed from outside.</p>
-  <span class="tag">Maths RPG</span><span class="tag">Puzzle Game</span><span class="tag">Math Adventure</span><span class="tag">Educational Game</span><span class="tag">NPC Lore</span><span class="tag">Browser Game</span><span class="tag">Free Maths Game</span><span class="tag">Calculus Game</span><span class="tag">Probability Game</span><span class="tag">Geometry Game</span>
-</div></main>
+  <p>The Lost Theorem is a free browser-based puzzle game, maths adventure game, and educational RPG for secondary and senior secondary students. It covers calculus, integration, differentiation, geometry, probability, statistics, algebra, trigonometry, vectors, complex numbers, combinatorics, and mathematical induction.</p>
+  <span class="tag">Maths RPG</span><span class="tag">Puzzle Game</span><span class="tag">Math Adventure</span><span class="tag">Educational Game</span><span class="tag">NPC Lore</span><span class="tag">Browser Game</span><span class="tag">Free Maths Game</span><span class="tag">Zombie Survival</span><span class="tag">Calculus Game</span><span class="tag">Statistics Game</span>
+</div>
+<div class="ad-block-horizontal" style="max-width:728px;margin:0 auto 16px;"><!-- Ad slot: Bottom leaderboard | STEP 2: Replace 2065939485 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;min-height:90px;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="2065939485"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  </main>
+  <aside class="ad-sidebar-right">
+  <div class="ad-block"><!-- Ad slot: Right sidebar 1 | STEP 2: Replace 2093859649 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="2093859649"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+  <div class="ad-block"><!-- Ad slot: Right sidebar 2 | STEP 2: Replace 1789395860 with your ad unit slot ID -->
+<ins class="adsbygoogle"
+     style="display:block;"
+     data-ad-client="ca-pub-7958491546686840"
+     data-ad-slot="1789395860"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+</aside>
+</div>
 <footer>
   <div class="social-links">
     <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener">&#128247; INSTAGRAM</a>
