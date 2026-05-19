@@ -332,9 +332,10 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
   <div id="settings-panel">
     <div class="sp-label">NAVIGATION</div>
     <button class="sp-btn" id="sp-inventory">&#127873; INVENTORY [E]</button>
+    <button class="sp-btn" id="sp-title">&#8592; TITLE</button>
     <div class="sp-divider"></div>
     <div class="sp-label">DISPLAY</div>
-    <button class="sp-btn" id="sp-fullscreen">&#9974; ENTER FULLSCREEN</button>
+    <button class="sp-btn" id="sp-fullscreen">&#9974; ENTER FULLSCREEN [F]</button>
     <button class="sp-btn" id="sp-exitfs" style="display:none">&#8601; EXIT FULLSCREEN</button>
     <button class="sp-btn" id="sp-glowtoggle">&#9651; BLOCKED TILE GLOW: OFF</button>
     <div class="sp-divider"></div>
@@ -352,7 +353,6 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
     <div class="sp-divider"></div>
     <div class="sp-label">DANGER</div>
     <button class="sp-btn" id="sp-reset" style="color:#c04030;">&#8635; RESET ALL PROGRESS</button>
-    <button class="sp-btn" id="sp-title">&#8592; TITLE [resets progress]</button>
   </div>
 
   <!-- Help modal (in-game) -->
@@ -2929,6 +2929,11 @@ document.addEventListener('keydown',e=>{
   if(gs.screen==='problem')return;
   if(gs.screen==='inventory'){if(e.key==='e'||e.key==='E'||e.key==='Escape')closeInv();return;}
   if(gs.screen==='game'){
+    if(e.key==='c'||e.key==='C'){
+      const modal=document.getElementById('skin-modal');
+      if(modal.classList.contains('on')) closeSkinModal();
+      else openSkinModal();
+  }
     if(e.key===' '||e.key==='Enter'){
       if(gs.nearNPC){const k=gs.nearNPC.id;if(!gs.cooldowns[k]||Date.now()>gs.cooldowns[k])startDlg(gs.nearNPC);}
     }
