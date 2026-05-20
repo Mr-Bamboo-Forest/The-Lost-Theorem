@@ -1764,10 +1764,11 @@ function drawPlayerSkinned(sx,sy,dir,frame){
 // SCORE & RANK SYSTEM
 // ═══════════════════════════════════════════════════════════════════════════════
 let gameStartTime=0;
+let survivalMs=0; // accumulated ms — only increments while screen==='game' and not paused
 let correctAnswers=0;let _lastMilestone=0;let scoreDeductions=0;
 
 function calcScore(){
-  const survivalSecs=Math.floor((Date.now()-gameStartTime)/1000);
+  const survivalSecs=Math.floor(survivalMs/1000);
   const base=Math.max(0, survivalSecs*2 + correctAnswers*100 + (gs.zombieKills||0)*20 + (gs.artefacts.length||0)*50 - scoreDeductions);
   return hardMode?base*2:base;
 }
@@ -1851,7 +1852,7 @@ function saveProgress(){
       hardMode:hardMode,
       score:calcScore(),
       correctAnswers:correctAnswers,
-      gameStartTime:gameStartTime,
+      survivalMs:survivalMs,
     };
     localStorage.setItem(SAVE_KEY,JSON.stringify(data));
   }catch(e){}
@@ -1876,7 +1877,8 @@ function applyLoadedProgress(data){
   gs.lives=data.lives||5;
   gs.zombieKills=data.zombieKills||0;
   correctAnswers=data.correctAnswers||0;
-  gameStartTime=data.gameStartTime||Date.now();
+  survivalMs=data.survivalMs||(data.gameStartTime?Math.max(0,Date.now()-data.gameStartTime):0);
+  gameStartTime=Date.now();
   if(data.playerTx){gs.player.tx=data.playerTx;gs.player.ty=data.playerTy;gs.player.px=data.playerTx*TILE;gs.player.py=data.playerTy*TILE;}
   if(data.skinId){const sk=SKINS.find(s=>s.id===data.skinId);if(sk)activeSkin=sk;}
   if(data.hardMode)hardMode=true;
@@ -1933,7 +1935,7 @@ function initGame(){
   gs.zombies=[]; gs.graves=[];
   gs.zombieKills=0;
   correctAnswers=0;_lastMilestone=0;scoreDeductions=0;
-  gameStartTime=Date.now();
+  gameStartTime=Date.now();survivalMs=0;
   document.getElementById('hud-kills').classList.remove('on');
   document.getElementById('hud-shield').classList.remove('on');
   document.getElementById('hud-hardmode').classList.toggle('on',hardMode);
@@ -2747,7 +2749,7 @@ function getCurrentZoneInfo(){
 // ═══════════════════════════════════════════════════════════════════════════════
 function gameOver(){
   const finalScore=calcScore();
-  const survSecs=Math.floor((Date.now()-gameStartTime)/1000);
+  const survSecs=Math.floor(survivalMs/1000);
   const mins=Math.floor(survSecs/60), secs=survSecs%60;
   document.getElementById('go-art').textContent=gs.artefacts.length;
   document.getElementById('go-zones').textContent=gs.unlockedZones.length;
@@ -2773,7 +2775,7 @@ function respawnAfterDeath(){
   gs.cooldowns={};
   gs.zombieKills=0;
   correctAnswers=0;_lastMilestone=0;scoreDeductions=0;
-  gameStartTime=Date.now();
+  gameStartTime=Date.now();survivalMs=0;
   document.getElementById('hud-kills').classList.remove('on');
   document.getElementById('hud-hardmode').classList.toggle('on',hardMode);
   // Re-randomise NPC questions so player can re-earn artefacts
@@ -3004,7 +3006,40 @@ function togglePause(){
   const btn=document.getElementById('sp-pause');
   ov.classList.toggle('on',gs.paused);
   if(btn)btn.textContent=gs.paused?'\u25b6 RESUME GAME [P]':'PAUSE GAME [P]';
+  if(!gs.paused)resetIdleTimer();
 }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// IDLE AUTO-PAUSE (2 minutes of no input)
+// ═══════════════════════════════════════════════════════════════════════════════
+const IDLE_LIMIT=2*60*1000;
+let _idleTimer=null;
+function resetIdleTimer(){
+  clearTimeout(_idleTimer);
+  if(gs.screen!=='game'||gs.paused)return;
+  _idleTimer=setTimeout(()=>{
+    if(gs.screen==='game'&&!gs.paused){
+      gs.paused=true;
+      const ov=document.getElementById('pause-overlay');
+      const btn=document.getElementById('sp-pause');
+      ov.classList.add('on');
+      if(btn)btn.textContent='\u25b6 RESUME GAME [P]';
+      // Swap pause title to indicate why
+      const pt=document.querySelector('.pause-title');
+      if(pt){pt.dataset.origText=pt.dataset.origText||pt.textContent;pt.textContent='Away?';}
+    }
+  },IDLE_LIMIT);
+}
+function _onActivity(){
+  // Restore pause title if we paused due to idle
+  const pt=document.querySelector('.pause-title');
+  if(pt&&pt.dataset.origText){pt.textContent=pt.dataset.origText;delete pt.dataset.origText;}
+  resetIdleTimer();
+}
+['keydown','mousemove','mousedown','touchstart','touchmove'].forEach(ev=>{
+  document.addEventListener(ev,_onActivity,{passive:true});
+});
+resetIdleTimer();
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // MUSIC
@@ -3349,6 +3384,7 @@ function startGameFromTitle(continueGame){
     updateScoreHUD();
     // Lock difficulty once game is running
     setDifficultyLock(true);
+    resetIdleTimer();
   });
 }
 
@@ -3403,14 +3439,23 @@ window.addEventListener('resize',fitGameCanvas);
 window.addEventListener('orientationchange',()=>setTimeout(fitGameCanvas,300));
 fitGameCanvas();
 
+// Freeze survival timer whenever the tab is hidden (close, switch tab, etc.)
+let _tabHidden=false;
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){_tabHidden=true;}
+});
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // GAME LOOP
 // ═══════════════════════════════════════════════════════════════════════════════
 let lastT=0,lastSave=0;
 function loop(ts){
+  if(_tabHidden){_tabHidden=false;lastT=ts;requestAnimationFrame(loop);return;}
   const dt=Math.min(ts-lastT,100);lastT=ts;gs.tick++;
 
   if(gs.screen==='game'&&!gs.paused){
+    // Accumulate survival time only while actively playing
+    survivalMs+=dt;
     // Auto-save every 30 seconds
     if(ts-lastSave>30000){lastSave=ts;saveProgress();}
     updateScoreHUD();
