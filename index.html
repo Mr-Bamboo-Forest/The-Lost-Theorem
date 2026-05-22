@@ -552,7 +552,7 @@ const ZONES_SPECIALIST=[
   {id:'integration',name:'Induction Highlands',theme:'Mathematical Induction',
    color:'#70b8e0',fogColor:'#040a10',c0:56,r0:16,c1:104,r1:44,startTX:80,startTY:30,unlocksAt:3,
    npcs:[
-    {id:'calculus_monk',name:'Calculus Monk',tx:68,ty:24,spr:'elder',col:'#60a8d0',loc:'The Base Case Chapel',flav:'Proves every result from n=1.',dlg:['Induction: prove for n=1, assume for n=k, show for n=k+1.','The inductive step must follow from the assumption.'],art:{id:'calc_scroll',icon:'📜',name:'Induction Scroll',desc:'Contains the full structure of a perfect induction proof.'},cd:1},
+    {id:'induction_monk',name:'Induction Monk',tx:68,ty:24,spr:'elder',col:'#60a8d0',loc:'The Base Case Chapel',flav:'Proves every result from n=1.',dlg:['Induction: prove for n=1, assume for n=k, show for n=k+1.','The inductive step must follow from the assumption.'],art:{id:'calc_scroll',icon:'📜',name:'Induction Scroll',desc:'Contains the full structure of a perfect induction proof.'},cd:1},
     {id:'limit_guardian',name:'Limit Guardian',tx:90,ty:26,spr:'scholar',col:'#5090c0',loc:'The Sigma Ruins',flav:'Converts sums to closed forms using sigma notation.',dlg:['Σ i = n(n+1)/2. Provable by induction.','The formula is the hypothesis — the step confirms it.'],art:{id:'limit_crystal',icon:'💠',name:'Sigma Crystal',desc:'Displays any sum in sigma notation and its closed form.'},cd:1},
     {id:'surface_artist',name:'Surface Artist',tx:78,ty:38,spr:'traveller',col:'#70a0d0',loc:'The Divisibility Gallery',flav:'Proves divisibility results for all positive integers.',dlg:['To prove aⁿ−1 divisible by a−1: induction on n.','Assume for k. Show k+1 by adding a(aᵏ−1)+(a−1).'],art:{id:'surface_gem',icon:'💎',name:'Divisibility Gem',desc:'Verifies any divisibility result for all positive integers.'},cd:1},
     {id:'volume_sage',name:'Volume Sage',tx:64,ty:36,spr:'elder',col:'#6080c0',loc:"De Moivre Proof Hall",flav:"Has proved De Moivre's theorem by induction many times.",dlg:["De Moivre by induction: base case n=1 is trivial.",'Inductive step: multiply (cisθ)ᵏ by cisθ.'],art:{id:'volume_prism',icon:'🔷',name:'De Moivre Proof Tablet',desc:"Full inductive proof of De Moivre's theorem."},cd:1},
@@ -663,99 +663,97 @@ const ZONES_SPECIALIST=[
 
 const QB_SPECIALIST={
  ruins_sage:[
-  {q:'Factorise over C:\nz⁴+z³−z²+z−2=0\n\nGiven z=1 is a root.',hint:'Divide by (z−1): z³+2z²+z+2=(z+2)(z²+1). Roots: 1,−2,±i.',sample:'z=1, z=−2, z=i, z=−i',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1')&&c.includes('-2')&&c.includes('i');}},
-  {q:'A polynomial with real coefficients has roots 3+2i and 1.\nWrite the minimal polynomial containing all roots.',hint:'Conjugate root theorem: 3−2i is also a root.',sample:'(z−1)(z−(3+2i))(z−(3−2i))',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3+2i')&&c.includes('3-2i');}},
-  {q:'Solve over C:\nz³−2iz²+z−2i=0',hint:'Factor: z²(z−2i)+(z−2i)=(z−2i)(z²+1). Roots: 2i,i,−i.',sample:'z=2i, z=i, z=−i',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2i')&&c.includes('-i');}}
+  {q:'Solve over C:\nz⁴+z³−z²+z−2=0\n\nGiven z=1 is a root.',hint:'Divide by (z−1).',sample:'z=#, z=#, z=#, z=#',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1')&&c.includes('-2')&&c.includes('i');}},
+  {q:'A polynomial with real coefficients has roots 3+2i and 1.\nWrite the factorised polynomial containing all roots.',hint:'Conjugate root theorem. What else is also a root.',sample:'(z−(#))(z−(#))(z−(#))',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3+2i')&&c.includes('3-2i');}},
+  {q:'Solve over C:\nz³−2iz²+z−2i=0',hint:'Factorise and use null factor law.',sample:'z=#, z=#, z=#',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2i')&&c.includes('-i');}}
  ],
  matrix_keeper:[
-  {q:'z=2(cos(π/3)+i sin(π/3)).\n\nFind z³ using De Moivre\'s theorem.',hint:'|z|³=8. arg(z³)=π. z³=−8.',sample:'z³=−8',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-8');}},
+  {q:'z=2(cos(π/3)+i sin(π/3)).\n\nFind z³ using De Moivre\'s theorem.',hint:'What happens to each part according to De Moivre\'s theorem?',sample:'z^3=#',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-8');}},
   {q:'Prove: |z₁z₂|=|z₁||z₂|',hint:'Write in polar form: r₁r₂cis(θ₁+θ₂). Modulus=r₁r₂. Answer QED',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}},
-  {q:'Find arg(z₁z₂) given arg(z₁)=π/4 and arg(z₂)=π/3.',hint:'arg(z₁z₂)=π/4+π/3=7π/12.',sample:'7π/12',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/pi/g,'π');return c.includes('7π/12')||c.includes('7pi/12');}}
+  {q:'Find arg(z₁z₂) given arg(z₁)=π/4 and arg(z₂)=π/3.',hint:'What does multiplying complex numbers do to their arguments (angles)?',sample:'#pi/#',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/pi/g,'π');return c.includes('7π/12')||c.includes('7pi/12');}}
  ],
  sequence_seer:[
-  {q:"Use De Moivre's theorem to find (1+i√3)⁶.",hint:'|z|=2,arg=π/3. z⁶=64cis(2π)=64.',sample:'64',chk:(s)=>s.replace(/[^0-9]/g,'')==='64'},
-  {q:"Find (cos(π/6)+i sin(π/6))¹².",hint:'(cisθ)¹²=cis(2π)=1.',sample:'1',chk:(s)=>s.trim()==='1'},
-  {q:"Use De Moivre's theorem to show cos(4x)=8cos⁴x−8cos²x+1.",hint:'Expand (cis x)⁴. Equate real parts.',sample:'Expand (cos x+isin x)⁴, equate real part: cos4x=8cos⁴x−8cos²x+1.',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('8cos')&&c.includes('1');}}
+  {q:"Use De Moivre's theorem to find z=(1+i√3)⁶.",hint:'Convert it into a better form first, it makes it easier.',sample:'z=#',chk:(s)=>s.replace(/[^0-9]/g,'')==='64'},
+  {q:"Find a=(cos(π/6)+i sin(π/6))¹².",hint:'The answer is more simple that you think.',sample:'a=#',chk:(s)=>s.trim()==='1'},
+  {q:"Use De Moivre's theorem to show cos(4x)=8cos⁴x−8cos²x+1.",hint:'Expand (cis x)⁴. Equate real parts. Answer QED',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}}
  ],
  archivist:[
-  {q:'Find all cube roots of 8.',hint:'2cis(0),2cis(2π/3),2cis(4π/3).',sample:'2, 2cis(2π/3), 2cis(4π/3)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('2')&&(c.includes('2π/3')||c.includes('2pi/3'));}},
-  {q:'Find the 4th roots of −16.',hint:'16cisπ. Roots: 2cis(π/4),2cis(3π/4),2cis(5π/4),2cis(7π/4).',sample:'2cis(π/4), 2cis(3π/4), 2cis(5π/4), 2cis(7π/4)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('π/4')||c.includes('pi/4');}},
-  {q:'Find all cube roots of unity and show they sum to zero.',hint:'1, cis(2π/3), cis(4π/3). Sum=0.',sample:'1, cis(2π/3), cis(4π/3). Sum=1+(−1/2+i√3/2)+(−1/2−i√3/2)=0.',chk:(s)=>{const c=s.toLowerCase();return c.includes('0');}}
+  {q:'Find all cube roots of 8.',hint:'Convert to the polar form, then apply De Moivre\'s theorem.',sample:'#,#cis(#pi/#),#cis(#pi/#)',chk: (s)=>{const c = s.replace(/\s/g, '');const roots = ['2', '2pi/3', '4pi/3'];return roots.every(r => c.includes(r) || c.includes(r.replace('pi', 'π')));}},
+  {q:'Find the 4th roots of −16.',hint:'Convert to the polar form, then apply De Moivre\'s theorem.',sample:'#cis(π/#),#cis(#π/#),#cis(#π/#),#cis(#π/#)',chk:(s)=>{const c=s.replace(/\s/g,'');return ['π/4','3π/4','5π/4','7π/4'].every(r=>c.includes(r)||c.includes(r.replace('π','pi')))&&c.includes('2');}},
+  {q:'Find all cube roots of unity and show they sum to zero.',hint:'Convert to cartesian form then add them together. Answer QED.',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}}
  ],
  river_keeper:[
-  {q:'Find z×z̄ and z+z̄ for z=4−3i.',hint:'z̄=4+3i. zz̄=25. z+z̄=8.',sample:'zz̄=25, z+z̄=8',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('25')&&c.includes('8');}},
-  {q:'Divide (3+4i)/(1−2i). Express in a+bi form.',hint:'Multiply by conjugate: (3+4i)(1+2i)/5=−1+2i.',sample:'−1+2i',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-1+2i')||c.includes('-1')&&c.includes('2i');}},
-  {q:'Show that z+z̄ is always real and z−z̄ is always purely imaginary.',hint:'z=a+bi. z̄=a−bi. Sum=2a. Diff=2bi.',sample:'z+z̄=2a (real). z−z̄=2bi (purely imaginary).',chk:(s)=>{const c=s.toLowerCase();return c.includes('2a')&&c.includes('2b');}}
+  {q:'Find z×z* and z+z* for z=4−3i.',hint:'Whats the conjugate (z*)? Apply the formula for addition and multiplication.',sample:'#and#',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('25')&&c.includes('8')&&!c.includes('258');}},
+  {q:'Divide (3+4i)/(1−2i). Express in a+bi form.',hint:'Multiply by conjugate.',sample:'#+#i',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-1+2i')||c.includes('-1')&&c.includes('2i');}},
+  {q:'Show that z+z* is always real and z−z* is always purely imaginary.',hint:'z=a+bi. z*=a−bi. Sum=2a. Diff=2bi. Answer QED.',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}}
  ],
  shrine_keeper:[
-  {q:'Find the remainder when P(z) = z³ - 2z² + z - 1 is divided by (z - i).',hint:'Evaluate P(i). P(i) = -i + 2 + i - 1 = 1.',sample:'1',chk:(s)=>s.includes('1')},
-  {q:'Given P(z) = z³ + az + 2. If (z - 1) is a factor, find a.',hint:'P(1) = 0. 1 + a + 2 = 0, so a = -3.',sample:'-3',chk:(s)=>s.includes('-3')},
-  {q:'P(z) = z⁴ + z² + 1. Find the remainder when divided by (z + i).',hint:'P(-i) = (-i)⁴ + (-i)² + 1 = 1 - 1 + 1 = 1.',sample:'1',chk:(s)=>s.includes('1')}
+  {q:'Find the remainder when P(z) = z³ - 2z² + z - 1 is divided by (z - i).',hint:'What happens when you evaluate P(i).',sample:'#',chk:(s)=>s.includes('1')},
+  {q:'Given P(z) = z³ + az + 2. If (z - 1) is a factor, find a.',hint:'If you evaluate P(1), how does that help you find a.',sample:'#',chk:(s)=>s.includes('-3')},
+  {q:'P(z) = z⁴ + z² + 1. Find the remainder when divided by (z + i).',hint:'What happens when you evaluate P(-i)?',sample:'#',chk:(s)=>s.includes('1')}
  ],
  peak_warden:[
-  {q:'Prove: zz̄=|z|².',hint:'z=a+bi. zz̄=a²+b²=|z|². Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
-  {q:'Given |z₁|=3 and |z₂|=5, find |z₁/z₂|.',hint:'|z₁/z₂|=|z₁|/|z₂|=3/5.',sample:'3/5',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3/5')||c.includes('0.6');}},
-  {q:'If arg(z)=π/6 and |z|=2, write z in a+bi form.',hint:'z=√3+i.',sample:'√3+i',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√3')||c.includes('sqrt3');}}
- ],
- calculus_monk:[
+  {q:'Prove: z×z*=|z|².',hint:'z=a+bi. z×z*=a²+b²=|z|². Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Given |z₁|=3 and |z₂|=5, find |z₁/z₂|.',hint:'|z₁/z₂|=|z₁|/|z₂|.',sample:'#/#',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3/5')||c.includes('0.6');}},
+  {q:'If arg(z)=π/6 and |z|=2, write z in a+bi form.',hint:'Use z = |z|(cosθ + isinθ).',sample:'sqrt#+#',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return (c.includes('√3')||c.includes('sqrt3'))&&c.includes('i')&&!c.includes('2i');}} 
+],
+ induction_monk:[
   {q:'Prove by induction:\n1+2+3+…+n=n(n+1)/2',hint:'Base n=1. Assume for k. Add (k+1): k(k+1)/2+(k+1)=(k+1)(k+2)/2. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Prove by induction:\n1²+2²+…+n²=n(n+1)(2n+1)/6',hint:'Add (k+1)² to k(k+1)(2k+1)/6 and simplify. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Prove by induction:\n3ⁿ−1 is divisible by 2 for all n≥1.',hint:'Base: 2. Assume 3ᵏ−1=2m. Then 3ᵏ⁺¹−1=3(2m+1)−1=6m+2=2(3m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  limit_guardian:[
-  {q:'Express using sigma notation:\n1+4+9+…+n²',hint:'Σᵢ₌₁ⁿ i²',sample:'Σ(i=1 to n) i²',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('i²')||c.includes('i^2')||c.includes('sigma');}},
-  {q:'Evaluate: Σ(k=1 to 5)(2k+1)',hint:'3+5+7+9+11=35.',sample:'35',chk:(s)=>s.replace(/[^0-9]/g,'')==='35'},
-  {q:'Prove by induction:\nΣ(k=1 to n)2ᵏ=2(2ⁿ−1)',hint:'Base: 2=2(1). Step: add 2^(k+1) to 2(2ᵏ−1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
+  {q:'Express using sigma notation:\n1+2²+3²+…+n²',hint:'What do you start from, to what do you end with? What function do you sub into to repeatedly sum?',sample:'sigma(i=# to #) i^#',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('i²')||c.includes('i^2')||c.includes('sigma');}},
+  {q:'Evaluate: a=Σ(k=1 to 5) of (2k+1)',hint:'(2(1)+1) + (2(2)+1) + (2(3)+1) + ... until what? What does adding those things give you?',sample:'a=#',chk:(s)=>s.replace(/[^0-9]/g,'')==='35'},
+  {q:'Prove by induction:\nΣ(k=1 to n) of 2ᵏ = 2(2ⁿ−1)',hint:'Base: 2=2(1). Step: add 2^(k+1) to 2(2ᵏ−1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  surface_artist:[
   {q:'Prove 6ⁿ−1 is divisible by 5 for all n≥1.',hint:'Base: 5. Step: 6^(k+1)−1=6(5m+1)−1=30m+5=5(6m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Prove 4ⁿ−1 is divisible by 3 for all n≥1.',hint:'Base: 3. Step: 4^(k+1)−1=4(3m+1)−1=12m+3=3(4m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
-  {q:'Prove 7ⁿ−1 is divisible by 6 for all n≥1.',hint:'Step: 7^(k+1)−1=7(6m+1)−1=42m+6=6(7m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
+  {q:'Prove 7ⁿ−1 is divisible by 6 for all n≥1.',hint:'Base: 6. Step: 7^(k+1)−1=7(6m+1)−1=42m+6=6(7m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  volume_sage:[
-  {q:"Prove De Moivre's theorem for n=2 from first principles.",hint:'(cosθ+isinθ)²=cos2θ+isin2θ.  Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
-  {q:"State the inductive step for De Moivre's theorem.",hint:'Assume (cisθ)ᵏ=cis(kθ). Multiply by cisθ to get cis((k+1)θ). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"Prove using De Moivre's theorem that (cosθ)^4 = 8(cosθ)^4 - 8(cosθ)^2 + 1.",hint:"Take the Re() part after using the sinθ formula many times. Answer QED.",sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"State the inductive step for De Moivre's theorem.",hint:'Assume (cisθ)ᵏ=cis(kθ). Then what? Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:"Use De Moivre's theorem to show sin(3θ)=3sinθ−4sin³θ.",hint:'Im part of (cisθ)³: 3cos²θsinθ−sin³θ=3(1−sin²θ)sinθ−sin³θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  trig_identity_sage:[
-  {q:"Use De Moivre's theorem to find cos(4θ) in terms of cosθ.",hint:'Re part of (cisθ)⁴. Use sin²θ=1−cos²θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Prove: cos(2θ)=1−2sin²θ.',hint:'cos2θ=cos²θ−sin²θ=1−sin²θ−sin²θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
-  {q:"Express cos³θ in terms of cos(3θ) and cosθ.",hint:'From cos3θ=4cos³θ−3cosθ: cos³θ=(cos3θ+3cosθ)/4. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
- ],
+  {q:"Prove that cos³θ = 1cos3θ/4 + 3cosθ using the triple angle identity.",hint:"Rearrange and use identities. Answer QED.",sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  ],
  partial_sage:[
-  {q:"Use De Moivre to find sin(3θ) in terms of sinθ.",hint:'Im part of (cisθ)³=3sinθ−4sin³θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"Use De Moivre to find sin(3θ) in terms of sinθ.",hint:'Im() part of (cisθ)³=3sinθ−4sin³θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Expand (cosθ+isinθ)⁴ using the binomial theorem.',hint:'C(4,0)cos⁴θ+C(4,1)icos³θsinθ−C(4,2)cos²θsin²θ−… Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'From De Moivre: show cos(2θ)=cos²θ−sin²θ.',hint:'Equate real parts of (cisθ)². Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  diff_eq_guide:[
-  {q:'State the four steps of a proof by mathematical induction.',hint:'1.Does it work? 2.Assumption 3.Inductive 4.Conclusion',sample:'1.Prove base _ _ _ _. 2.Assume true for n=_. 3.Prove true for n=_ _ _. 4.Conclude true for all n≥1.',chk:(s)=>{const c=s.toLowerCase();return c.includes('base')&&c.includes('assume')&&c.includes('k+1');}},
-  {q:'Write the assumption statement for the sum: Σ(k=1 to n)k=n(n+1)/2',hint:'Assume 1+2+…+k=k(k+1)/2.',sample:'Assume 1+2+…+k=k(k+1)/2 for some positive integer k.',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('k(k+1)/2');}},
-  {q:'Why must the inductive step show the result for n=k+1?',hint:'To chain from base case to all n.',sample:'So the base case n=1 chains to n=2, then n=3, and so on. Each step follows from the previous.',chk:(s)=>{const c=s.toLowerCase();return c.includes('chain')||c.includes('base')&&c.includes('k+1');}}
+  {q:'State the four steps of a proof by mathematical induction.',hint:'1.Does it work? 2.Assumption 3.Inductive 4.Conclusion',sample:'1.Prove base _ _ _ _. 2.Assume true for n=_. 3.Prove true for n=_ _ _. 4.Conclude true for all n>1.',chk:(s)=>{const c=s.toLowerCase();return c.includes('base')&&c.includes('assume')&&c.includes('k+1');}},
+  {q:'Write the assumption statement for the sum: Σ(k=1 to n)k=n(n+1)/2',hint:'What do you assume?',sample:'#(#+1)/2',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('k(k+1)/2');}},
  ],
  lighthouse_keeper:[
-  {q:'Find the magnitude of a=(2,−1,3).',hint:'|a|=√(4+1+9)=√14.',sample:'√14',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√14')||c.includes('sqrt14')||c.startsWith('3.74');}},
-  {q:'Find the unit vector in the direction of b=(1,2,2).',hint:'|b|=3. b̂=(1/3,2/3,2/3).',sample:'(1/3, 2/3, 2/3)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('1/3')&&c.includes('2/3');}},
-  {q:'Find the vector from A=(1,2,3) to B=(4,0,−1).',hint:'AB=B−A=(3,−2,−4).',sample:'(3, −2, −4)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3,-2,-4');}}
+  {q:'Find the magnitude of a=(2,−1,3).',hint:'|a|=√(4+1+9).',sample:'sqrt#',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√14')||c.includes('sqrt14')||c.startsWith('3.74');}},
+  {q:'Find the unit vector in the direction of b=(1,2,2).',hint:'|b|=3. What is the unit vector.',sample:'(#/3, #/3, #/3)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('1/3')&&c.includes('2/3');}},
+  {q:'Find the vector from A=(1,2,3) to B=(4,0,−1).',hint:'Find vector AB. To take from rule.',sample:'(#, #, #)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('3,-2,-4');}}
  ],
  merchant:[
-  {q:'Find a·b for a=(2,1,−1) and b=(3,−2,4).',hint:'6−2−4=0.',sample:'0',chk:(s)=>s.replace(/[^0-9]/g,'')==='0'},
-  {q:'Find the angle between p=(1,0,1) and q=(0,1,1).',hint:'p·q=1. |p|=|q|=√2. cosθ=1/2. θ=60°.',sample:'60°',chk:(s)=>{const c=s.replace(/[^0-9°]/g,'');return c.includes('60');}},
-  {q:'Are a=(3,−2,1) and b=(2,3,0) perpendicular? Justify.',hint:'a·b=6−6+0=0.',sample:'Yes. a·b=6−6+0=0.',chk:(s)=>{const c=s.toLowerCase();return c.includes('yes')||c.includes('0')||c.includes('perp');}}
+  {q:'Find a·b for a=(2,1,−1) and b=(3,−2,4).',hint:'Think about where the vectors are in relation to each other.',sample:'#',chk:(s)=>s.replace(/[^0-9]/g,'')==='0'},
+  {q:'Find the angle between p=(1,0,1) and q=(0,1,1) in degrees.',hint:'Use the dot product formula.',sample:'#',chk:(s)=>{const c=s.replace(/[^0-9°]/g,'');return c.includes('60');}},
+  {q:'Are a=(3,−2,1) and b=(2,3,0) perpendicular?',hint:'Think about the dot product.',sample:'Yes/No',chk:(s)=>{const c=s.toLowerCase();return c.includes('yes');}}
  ],
  surveyor:[
-  {q:'Find a×b for a=(1,2,0) and b=(0,1,3).',hint:'(6,−3,1).',sample:'(6, −3, 1)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('6,-3,1');}},
-  {q:'Find the area of the parallelogram with sides a=(2,0,0) and b=(1,3,0).',hint:'a×b=(0,0,6). |a×b|=6.',sample:'6',chk:(s)=>s.replace(/[^0-9]/g,'')==='6'},
-  {q:'Find a vector perpendicular to both (1,1,0) and (0,1,1).',hint:'(1×1−0×1, 0×0−1×1, 1×1−1×0)=(1,−1,1).',sample:'(1, −1, 1)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1,-1,1');}}
+  {q:'Find a×b for a=(1,2,0) and b=(0,1,3).',hint:'Cross product formula.',sample:'(#,#,#)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('6,-3,1');}},
+  {q:'Find the area of the parallelogram with sides a=(2,0,0) and b=(1,3,0).',hint:'What does the magnitude of the cross product give you?',sample:'#',chk:(s)=>s.replace(/[^0-9]/g,'')==='6'},
+  {q:'Find a vector perpendicular to both (1,1,0) and (0,1,1).',hint:'Cross product formula.',sample:'(#,#,#)',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('1,-1,1');}}
  ],
  circle_theorist:[
-  {q:'Write the vector equation of the line through (1,2,3) in direction (2,−1,1).',hint:'r=(1,2,3)+t(2,−1,1).',sample:'r=(1,2,3)+t(2,−1,1)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('(1,2,3)')&&c.includes('(2');}},
-  {q:'Find the Cartesian equation of the line through (2,1,0) and (5,3,2).',hint:'Direction (3,2,2). (x−2)/3=(y−1)/2=z/2.',sample:'(x−2)/3=(y−1)/2=z/2',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('x-2')||c.includes('x−2');}},
-  {q:'Find the point on r=(2,1,3)+t(1,0,−1) when t=3.',hint:'(2+3,1,3−3)=(5,1,0).',sample:'(5, 1, 0)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5,1,0');}}
+  {q:'Write the vector equation of the line through (1,2,3) in direction (2,−1,1).',hint:'r=a+tb.',sample:'r=(#,#,#)+t(#,#,#)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('(1,2,3)')&&c.includes('(2');}},
+  {q:'Find the Cartesian equation of the line through (2,1,0) and (5,3,2).',hint:'Find the direction vector by subtracting the points, then use the point-slope form.',sample:'(x-2)/3=(y-1)/2=z/2',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/−/g,'-');return c.includes('(x-2)/3')&&c.includes('(y-1)/2')&&c.includes('z/2');}},
+  {q:'Find the point on r=(2,1,3)+t(1,0,−1) when t=3.',hint:'Sub it in and solve.',sample:'(#,#,#)',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('5,1,0');}}
  ],
  pythagoras_ghost:[
-  {q:'Find the equation of the plane with normal (2,1,−1) through (3,0,1).',hint:'2(x−3)+y−(z−1)=0 → 2x+y−z=5.',sample:'2x+y−z=5',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('2x+y-z=5');}},
-  {q:'Write the vector equation of the plane through (1,0,0) with normal (0,1,2).',hint:'r·(0,1,2)=0.',sample:'r·(0,1,2)=0',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('0,1,2')&&c.includes('=0');}},
-  {q:'Find the equation of the sphere with centre (1,−2,3) and radius 5.',hint:'(x−1)²+(y+2)²+(z−3)²=25.',sample:'(x−1)²+(y+2)²+(z−3)²=25',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('x-1')&&c.includes('25');}}
+  {q:'Find the equation of the plane with normal (2,1,−1) through (3,0,1).',hint:'2(x−3)+y−(z−1)=0',sample:'#x+#y+#z=#',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('2x+y-z=5');}},
+  {q:'Write the vector equation of the plane through (1,0,0) with normal (0,1,2).',hint:"What's the forula?.",sample:'r.(#,#,#)=0',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('0,1,2')&&c.includes('=0');}},
+  {q:'Find the equation of the sphere with centre (1,−2,3) and radius 5.',hint:'What is the general formula of the circle.',sample:'(x−#)²+(y-#)²+(z−#)²=#',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('x-1')&&c.includes('25');}}
  ],
  arc_warden:[
   {q:'Find the sphere through (4,1,0) with centre (2,1,0).',hint:'r²=4. (x−2)²+(y−1)²+z²=4.',sample:'(x−2)²+(y−1)²+z²=4',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('x-2')&&c.includes('=4');}},
