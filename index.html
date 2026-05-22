@@ -669,7 +669,7 @@ const QB_SPECIALIST={
  ],
  matrix_keeper:[
   {q:'z=2(cos(π/3)+i sin(π/3)).\n\nFind z³ using De Moivre\'s theorem.',hint:'|z|³=8. arg(z³)=π. z³=−8.',sample:'z³=−8',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/[−–]/g,'-');return c.includes('-8');}},
-  {q:'Prove: |z₁z₂|=|z₁||z₂|',hint:'Write in polar form: r₁r₂cis(θ₁+θ₂). Modulus=r₁r₂.',sample:'Write z₁=r₁cisθ₁, z₂=r₂cisθ₂. Then z₁z₂=r₁r₂cis(θ₁+θ₂), so |z₁z₂|=r₁r₂=|z₁||z₂|.',chk:(s)=>{const c=s.toLowerCase();return c.includes('polar')||c.includes('r₁r₂')||c.includes('r1r2');}},
+  {q:'Prove: |z₁z₂|=|z₁||z₂|',hint:'Write in polar form: r₁r₂cis(θ₁+θ₂). Modulus=r₁r₂. Answer QED',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}},
   {q:'Find arg(z₁z₂) given arg(z₁)=π/4 and arg(z₂)=π/3.',hint:'arg(z₁z₂)=π/4+π/3=7π/12.',sample:'7π/12',chk:(s)=>{const c=s.replace(/\s/g,'').replace(/pi/g,'π');return c.includes('7π/12')||c.includes('7pi/12');}}
  ],
  sequence_seer:[
@@ -693,42 +693,42 @@ const QB_SPECIALIST={
   {q:'P(z) = z⁴ + z² + 1. Find the remainder when divided by (z + i).',hint:'P(-i) = (-i)⁴ + (-i)² + 1 = 1 - 1 + 1 = 1.',sample:'1',chk:(s)=>s.includes('1')}
  ],
  peak_warden:[
-  {q:'Prove: zz̄=|z|².',hint:'z=a+bi. zz̄=a²+b²=|z|².',sample:'z=a+bi, z̄=a−bi. zz̄=a²+b²=|z|².',chk:(s)=>{const c=s.toLowerCase();return c.includes('a²')||c.includes('a^2');}},
+  {q:'Prove: zz̄=|z|².',hint:'z=a+bi. zz̄=a²+b²=|z|². Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
   {q:'Given |z₁|=3 and |z₂|=5, find |z₁/z₂|.',hint:'|z₁/z₂|=|z₁|/|z₂|=3/5.',sample:'3/5',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('3/5')||c.includes('0.6');}},
   {q:'If arg(z)=π/6 and |z|=2, write z in a+bi form.',hint:'z=√3+i.',sample:'√3+i',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('√3')||c.includes('sqrt3');}}
  ],
  calculus_monk:[
-  {q:'Prove by induction:\n1+2+3+…+n=n(n+1)/2',hint:'Base n=1. Assume for k. Add (k+1): k(k+1)/2+(k+1)=(k+1)(k+2)/2.',sample:'Base n=1: 1=1(2)/2✓. Inductive step: assume sum to k=k(k+1)/2. Add (k+1): k(k+1)/2+(k+1)=(k+1)(k+2)/2.',chk:(s)=>{const c=s.toLowerCase();return c.includes('k+1')&&(c.includes('k(k+1)')||c.includes('induct'));}},
-  {q:'Prove by induction:\n1²+2²+…+n²=n(n+1)(2n+1)/6',hint:'Add (k+1)² to k(k+1)(2k+1)/6 and simplify.',sample:'Base n=1: 1=1(2)(3)/6=1✓. Inductive step: k(k+1)(2k+1)/6+(k+1)²=(k+1)(k+2)(2k+3)/6.',chk:(s)=>{const c=s.toLowerCase();return c.includes('k+1')&&c.includes('induct');}},
-  {q:'Prove by induction:\n3ⁿ−1 is divisible by 2 for all n≥1.',hint:'Base: 2. Assume 3ᵏ−1=2m. Then 3ᵏ⁺¹−1=3(2m+1)−1=6m+2=2(3m+1).',sample:'Base: 3−1=2. Inductive step: 3^(k+1)−1=3·3ᵏ−1=3(2m+1)−1=6m+2=2(3m+1).',chk:(s)=>{const c=s.toLowerCase();return c.includes('2(')&&c.includes('k+1');}}
+  {q:'Prove by induction:\n1+2+3+…+n=n(n+1)/2',hint:'Base n=1. Assume for k. Add (k+1): k(k+1)/2+(k+1)=(k+1)(k+2)/2. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Prove by induction:\n1²+2²+…+n²=n(n+1)(2n+1)/6',hint:'Add (k+1)² to k(k+1)(2k+1)/6 and simplify. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Prove by induction:\n3ⁿ−1 is divisible by 2 for all n≥1.',hint:'Base: 2. Assume 3ᵏ−1=2m. Then 3ᵏ⁺¹−1=3(2m+1)−1=6m+2=2(3m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  limit_guardian:[
   {q:'Express using sigma notation:\n1+4+9+…+n²',hint:'Σᵢ₌₁ⁿ i²',sample:'Σ(i=1 to n) i²',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('i²')||c.includes('i^2')||c.includes('sigma');}},
   {q:'Evaluate: Σ(k=1 to 5)(2k+1)',hint:'3+5+7+9+11=35.',sample:'35',chk:(s)=>s.replace(/[^0-9]/g,'')==='35'},
-  {q:'Prove by induction:\nΣ(k=1 to n)2ᵏ=2(2ⁿ−1)',hint:'Base: 2=2(1). Step: add 2^(k+1) to 2(2ᵏ−1).',sample:'Base n=1: 2=2(2¹−1). Inductive step: 2(2ᵏ−1)+2^(k+1)=2·2^(k+1)−2=2(2^(k+1)−1).',chk:(s)=>{const c=s.toLowerCase();return c.includes('k+1')&&c.includes('induct');}}
+  {q:'Prove by induction:\nΣ(k=1 to n)2ᵏ=2(2ⁿ−1)',hint:'Base: 2=2(1). Step: add 2^(k+1) to 2(2ᵏ−1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  surface_artist:[
-  {q:'Prove 6ⁿ−1 is divisible by 5 for all n≥1.',hint:'Base: 5. Step: 6^(k+1)−1=6(5m+1)−1=30m+5=5(6m+1).',sample:'Base: 6−1=5. Step: 6^(k+1)−1=6(5m+1)−1=5(6m+1).',chk:(s)=>{const c=s.toLowerCase();return c.includes('5(')&&c.includes('k+1');}},
-  {q:'Prove 4ⁿ−1 is divisible by 3 for all n≥1.',hint:'Base: 3. Step: 4^(k+1)−1=4(3m+1)−1=12m+3=3(4m+1).',sample:'Base: 4−1=3. Step: 4^(k+1)−1=3(4m+1).',chk:(s)=>{const c=s.toLowerCase();return c.includes('3(')&&c.includes('induct');}},
-  {q:'Prove 7ⁿ−1 is divisible by 6 for all n≥1.',hint:'Step: 7^(k+1)−1=7(6m+1)−1=42m+6=6(7m+1).',sample:'Base: 7−1=6. Step: 7^(k+1)−1=6(7m+1).',chk:(s)=>{const c=s.toLowerCase();return c.includes('6(')&&c.includes('induct');}}
+  {q:'Prove 6ⁿ−1 is divisible by 5 for all n≥1.',hint:'Base: 5. Step: 6^(k+1)−1=6(5m+1)−1=30m+5=5(6m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Prove 4ⁿ−1 is divisible by 3 for all n≥1.',hint:'Base: 3. Step: 4^(k+1)−1=4(3m+1)−1=12m+3=3(4m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Prove 7ⁿ−1 is divisible by 6 for all n≥1.',hint:'Step: 7^(k+1)−1=7(6m+1)−1=42m+6=6(7m+1). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  volume_sage:[
-  {q:"Prove De Moivre's theorem for n=2 from first principles.",hint:'(cosθ+isinθ)²=cos2θ+isin2θ.',sample:'(cosθ+isinθ)²=cos²θ−sin²θ+2isinθcosθ=cos2θ+isin2θ.',chk:(s)=>{const c=s.toLowerCase();return c.includes('cos2')&&c.includes('sin2');}},
-  {q:"State the inductive step for De Moivre's theorem.",hint:'Assume (cisθ)ᵏ=cis(kθ). Multiply by cisθ to get cis((k+1)θ).',sample:'Assume (cisθ)ᵏ=cos(kθ)+isin(kθ). Multiply by cisθ: (cisθ)^(k+1)=cis(kθ)·cisθ=cis((k+1)θ).',chk:(s)=>{const c=s.toLowerCase();return c.includes('k+1')&&(c.includes('cis')||c.includes('cos'));}},
-  {q:"Use De Moivre's theorem to show sin(3θ)=3sinθ−4sin³θ.",hint:'Im part of (cisθ)³: 3cos²θsinθ−sin³θ=3(1−sin²θ)sinθ−sin³θ.',sample:'Im((cosθ+isinθ)³)=3cos²θsinθ−sin³θ=3sinθ−4sin³θ.',chk:(s)=>{const c=s.toLowerCase().replace(/\s/g,'');return c.includes('3sinθ')&&c.includes('4sin');}}
+  {q:"Prove De Moivre's theorem for n=2 from first principles.",hint:'(cosθ+isinθ)²=cos2θ+isin2θ.  Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"State the inductive step for De Moivre's theorem.",hint:'Assume (cisθ)ᵏ=cis(kθ). Multiply by cisθ to get cis((k+1)θ). Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"Use De Moivre's theorem to show sin(3θ)=3sinθ−4sin³θ.",hint:'Im part of (cisθ)³: 3cos²θsinθ−sin³θ=3(1−sin²θ)sinθ−sin³θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  trig_identity_sage:[
-  {q:"Use De Moivre's theorem to find cos(4θ) in terms of cosθ.",hint:'Re part of (cisθ)⁴. Use sin²θ=1−cos²θ.',sample:'cos(4θ)=8cos⁴θ−8cos²θ+1',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('8cos')&&c.includes('1');}},
-  {q:'Prove: cos(2θ)=1−2sin²θ.',hint:'cos2θ=cos²θ−sin²θ=1−sin²θ−sin²θ.',sample:'cos2θ=cos²θ−sin²θ=1−2sin²θ.',chk:(s)=>{const c=s.toLowerCase();return c.includes('1−2sin')||c.includes('1-2sin');}},
-  {q:"Express cos³θ in terms of cos(3θ) and cosθ.",hint:'From cos3θ=4cos³θ−3cosθ: cos³θ=(cos3θ+3cosθ)/4.',sample:'cos³θ=(cos(3θ)+3cosθ)/4',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('cos(3θ)')||c.includes('cos3θ');}}
+  {q:"Use De Moivre's theorem to find cos(4θ) in terms of cosθ.",hint:'Re part of (cisθ)⁴. Use sin²θ=1−cos²θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Prove: cos(2θ)=1−2sin²θ.',hint:'cos2θ=cos²θ−sin²θ=1−sin²θ−sin²θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:"Express cos³θ in terms of cos(3θ) and cosθ.",hint:'From cos3θ=4cos³θ−3cosθ: cos³θ=(cos3θ+3cosθ)/4. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  partial_sage:[
-  {q:"Use De Moivre to find sin(3θ) in terms of sinθ.",hint:'Im part of (cisθ)³=3sinθ−4sin³θ.',sample:'sin(3θ)=3sinθ−4sin³θ',chk:(s)=>{const c=s.replace(/\s/g,'').toLowerCase();return c.includes('3sinθ')&&c.includes('4sin');}},
-  {q:'Expand (cosθ+isinθ)⁴ using the binomial theorem.',hint:'C(4,0)cos⁴θ+C(4,1)icos³θsinθ−C(4,2)cos²θsin²θ−…',sample:'cos⁴θ−6cos²θsin²θ+sin⁴θ+i(4cos³θsinθ−4cosθsin³θ)',chk:(s)=>{const c=s.toLowerCase();return c.includes('cos⁴')||c.includes('cos^4');}},
-  {q:'From De Moivre: show cos(2θ)=cos²θ−sin²θ.',hint:'Equate real parts of (cisθ)².',sample:'Equate real parts of (cosθ+isinθ)²: cos2θ=cos²θ−sin²θ.',chk:(s)=>{const c=s.toLowerCase();return c.includes('cos2θ')||c.includes('cos(2');}}
+  {q:"Use De Moivre to find sin(3θ) in terms of sinθ.",hint:'Im part of (cisθ)³=3sinθ−4sin³θ. Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'Expand (cosθ+isinθ)⁴ using the binomial theorem.',hint:'C(4,0)cos⁴θ+C(4,1)icos³θsinθ−C(4,2)cos²θsin²θ−… Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}},
+  {q:'From De Moivre: show cos(2θ)=cos²θ−sin²θ.',hint:'Equate real parts of (cisθ)². Answer QED.',sample:'QED',chk:(s)=>{const c=s.toUpperCase();return c.includes('QED');}}
  ],
  diff_eq_guide:[
-  {q:'State the four steps of a proof by mathematical induction.',hint:'1.Initial statement 2.Assumption 3.Inductive step 4.Conclusion',sample:'1.Prove base case (n=1). 2.Assume true for n=k. 3.Prove true for n=k+1. 4.Conclude true for all n≥1.',chk:(s)=>{const c=s.toLowerCase();return c.includes('base')&&c.includes('assume')&&c.includes('k+1');}},
+  {q:'State the four steps of a proof by mathematical induction.',hint:'1.Does it work? 2.Assumption 3.Inductive 4.Conclusion',sample:'1.Prove base _ _ _ _. 2.Assume true for n=_. 3.Prove true for n=_ _ _. 4.Conclude true for all n≥1.',chk:(s)=>{const c=s.toLowerCase();return c.includes('base')&&c.includes('assume')&&c.includes('k+1');}},
   {q:'Write the assumption statement for the sum: Σ(k=1 to n)k=n(n+1)/2',hint:'Assume 1+2+…+k=k(k+1)/2.',sample:'Assume 1+2+…+k=k(k+1)/2 for some positive integer k.',chk:(s)=>{const c=s.replace(/\s/g,'');return c.includes('k(k+1)/2');}},
   {q:'Why must the inductive step show the result for n=k+1?',hint:'To chain from base case to all n.',sample:'So the base case n=1 chains to n=2, then n=3, and so on. Each step follows from the previous.',chk:(s)=>{const c=s.toLowerCase();return c.includes('chain')||c.includes('base')&&c.includes('k+1');}}
  ],
@@ -1008,8 +1008,8 @@ const QB_SPECIALIST={
   {q:'How does SD(X̄)=σ/√n change if n doubles?',hint:'Decreases by factor √2.',sample:'SD(X̄) decreases by a factor of √2.',chk:(s)=>{const c=s.toLowerCase();return c.includes('√2')||c.includes('sqrt2')||c.includes('factor');}}
  ],
  candy_queen:[
-  {q:'Prove E(X̄)=μ.',hint:'E(X̄)=(1/n)·nμ=μ.',sample:'E(X̄)=(1/n)·E(X₁+…+Xₙ)=(1/n)·nμ=μ.',chk:(s)=>{const c=s.toLowerCase();return c.includes('μ')&&c.includes('e(');}},
-  {q:'Prove Var(X̄)=σ²/n.',hint:'(1/n²)·nσ²=σ²/n.',sample:'Var(X̄)=(1/n²)·nσ²=σ²/n.',chk:(s)=>{const c=s.toLowerCase();return c.includes('σ²/n')||c.includes('sigma^2/n');}},
+  {q:'Prove E(X̄)=μ.',hint:'E(X̄)=(1/n)·nμ=μ. Answer QED.',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}},
+  {q:'Prove Var(X̄)=σ²/n.',hint:'(1/n²)·nσ²=σ²/n. Answer QED.',sample:'QED',chk:(s)=>{return s.toUpperCase().includes('QED');}},
   {q:'X: μ=100, σ=20, n=25. Find P(95<X̄<105).',hint:'Z=±1.25. P≈0.7887.',sample:'≈0.7887',chk:(s)=>{const c=s.replace(/[^0-9.]/g,'');return c.startsWith('0.788');}}
  ],
  sugar_sage:[
