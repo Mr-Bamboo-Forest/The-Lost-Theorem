@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thelosttheorem.netlify.app/sitemap.xml
