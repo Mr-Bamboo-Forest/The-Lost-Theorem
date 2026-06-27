@@ -27,7 +27,7 @@
 <link rel="terms-of-service" href="https://thelosttheorem.netlify.app/extra/tos.html">
 <link rel="blog" href="https://thelosttheorem.netlify.app/extra/blog.html">
 <title>The Lost Theorem - Free Maths RPG for Methods & Specialist</title>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7958491546686840" crossorigin="anonymous"></script>
+<!-- AdSense script removed until account is approved to avoid inactive ad units -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -177,16 +177,57 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 #go-restart:hover{background:#5a1010;border-color:#e04030;}
 
 /* Title */
-#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:all;z-index:200;overflow-y:auto;padding-bottom:44px;}
+#title{position:absolute;top:0;left:0;width:100%;height:100%;background:#060402;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;pointer-events:all;z-index:200;overflow-y:auto;padding-top:80px;padding-bottom:80px;}
 #title.off{display:none;}
-.tt-sup{color:#a07840;font-size:13px;letter-spacing:4px;margin-bottom:12px;}
+.tt-sup{color:#a07840;font-size:13px;letter-spacing:4px;margin-bottom:12px;margin-top:20px;}
 .tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
-.tt-tag{color:#9a6830;font-size:14px;letter-spacing:3px;margin-bottom:18px;}
+.tt-tag{color:#9a6830;font-size:14px;letter-spacing:3px;margin-bottom:28px;text-align:center;align-items:center;}
+.tt-container{display:flex;width:100%;max-width:1200px;gap:20px;padding:0 20px;margin-bottom:30px;}
+.tt-left{flex:1;display:flex;flex-direction:column;gap:14px;}
+.tt-right{width:320px;background:rgba(14,10,5,0.9);border:2px solid #8a5020;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 28px rgba(138,80,32,0.35);}
+.tt-right-title{color:#f0d070;font-size:13px;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid #4a2808;padding-bottom:8px;text-shadow:0 0 10px rgba(240,208,112,0.2);}
+.tt-right-subtitle{color:#e8d0a0;font-size:12px;letter-spacing:1px;font-style:italic;}
+  .tt-right-problem{color:#b08048;font-size:13px;line-height:1.9;font-family:'Courier New',monospace;background:rgba(6,4,2,0.8);padding:12px;border:1px solid #3a2008;border-radius:3px;}
+.tt-right-input{background:rgba(14,10,5,0.9);border:1px solid #4a2808;color:#f0d070;font-size:11px;padding:8px 10px;font-family:'Courier New',monospace;border-radius:2px;}
+.tt-right-btn{background:#3a2008;border:2px solid #8a5020;color:#f0d070;font-size:11px;padding:8px 12px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;text-transform:uppercase;border-radius:2px;transition:all 0.2s;}
+.tt-right-btn:hover{border-color:#b08030;background:#5a3010;color:#f0e8a0;}
 .tt-btn{background:#2a1808;border:2px solid #6a4010;color:#f0d070;font-size:13px;padding:12px 32px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:3px;text-transform:uppercase;animation:glow 2s ease-in-out infinite;}
 @keyframes glow{0%,100%{border-color:#4a2808}50%{border-color:#b08030}}
 .tt-btn:hover{background:#3a2010;}
 .tt-note{color:#a07840;font-size:13px;letter-spacing:1px;margin-top:16px;font-style:italic;}
 .tt-danger{color:#b04030;font-size:13px;letter-spacing:1px;margin-top:8px;font-style:italic;}
+ #tt-features{display:flex;gap:20px;justify-content:center;margin:18px 0;flex-wrap:wrap;max-width:1200px;padding:0 20px;}
+ .tt-feature{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:220px;background:rgba(14,10,5,0.9);border:1px solid #3a2008;padding:14px;border-radius:6px;}
+ .tt-feature-icon{font-size:36px;margin-bottom:6px;}
+ .tt-feature-name{color:#f0d070;font-size:16px;letter-spacing:1px;text-transform:none;margin-bottom:6px;}
+ .tt-feature-desc{color:#c8aa72;font-size:13px;font-style:normal;line-height:1.4;}
+
+/* Primary CTA */
+.tt-btn.cta-orange{background:linear-gradient(90deg,#ff8a00,#ff5a00);border-color:#ff5a00;color:#111;box-shadow:0 6px 18px rgba(255,90,0,0.18);}
+.tt-btn.cta-orange:hover{filter:brightness(1.02);}
+.tt-btn.brownish{background:#2a1808;border-color:#6a4010;color:#f0d070;}
+.tt-btn.brownish:hover{background:#3a2010;}
+
+/* Trust indicators */
+.trust-list{display:flex;gap:12px;flex-wrap:wrap;color:#9a7040;font-size:13px;margin-top:6px;}
+.trust-list div{background:rgba(6,4,2,0.8);border:1px solid #3a2008;padding:6px 10px;border-radius:4px;color:#c9a96e;}
+
+/* Statistics grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:100%;max-width:1100px;margin:18px auto;}
+.stat-card{background:rgba(14,10,5,0.9);border:1px solid #3a2008;padding:14px;border-radius:6px;text-align:center;color:#f0d070;}
+.stat-card .num{font-size:28px;font-weight:700;color:#fff;margin-bottom:6px;}
+.stat-card .lbl{font-size:12px;color:#c8aa72;}
+
+/* Feature cards (larger) */
+.feature-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:100%;max-width:1200px;margin:10px auto 30px;padding:0 20px;}
+.feature-card{background:rgba(14,10,5,0.95);border:1px solid #3a2008;padding:18px;border-radius:6px;color:#f0d070;}
+.feature-card .fnum{font-size:34px;color:#60d060;font-weight:700;margin-bottom:6px;}
+.feature-card .ftitle{font-size:14px;letter-spacing:1px;margin-bottom:8px;color:#f0d070;}
+.feature-card .fdesc{color:#c8aa72;font-size:13px;line-height:1.5;}
+
+/* Buttons block to match subject/difficulty width */
+.tt-buttons{width:100%;display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.tt-buttons .tt-btn{width:100%;box-sizing:border-box;padding:12px 16px;border-radius:2px;}
 
 /* HTP overlay */
 #htp-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(4,3,2,0.98);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:28px 24px;pointer-events:none;overflow-y:auto;z-index:250;}
@@ -242,28 +283,22 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 /* Mobile landscape: compact title screen to prevent scrolling */
 @media(max-width:900px) and (orientation:landscape){
   #title{
-    flex-direction:row;
-    flex-wrap:wrap;
-    align-items:flex-start;
-    justify-content:center;
-    align-content:center;
-    padding:6px 10px 4px;
+    flex-direction:column;
+    padding:6px 10px 40px;
     overflow:hidden;
     gap:0;
   }
-  #title .tt-sup{font-size:9px;letter-spacing:2px;margin-bottom:1px;width:100%;text-align:center;order:-3;}
-  #title .tt-main{font-size:17px;letter-spacing:3px;margin-bottom:1px;width:100%;text-align:center;order:-2;}
-  #title .tt-tag{font-size:9px;letter-spacing:1px;margin-bottom:6px;width:100%;text-align:center;order:-1;}
-
-  #title .tt-subj-wrap{margin-top:0;order:1;flex:1;min-width:150px;max-width:250px;padding:0 6px;}
-  #title #tt-save-info{font-size:9px;margin-top:2px;min-height:10px;order:2;flex:1;min-width:150px;max-width:250px;padding:0 6px;text-align:center;}
-  #title #tt-continue{margin-top:4px;order:3;flex:1;min-width:150px;max-width:250px;padding:5px 12px;font-size:11px;letter-spacing:1px;}
-  #title #tt-start{margin-top:3px;order:4;flex:1;min-width:150px;max-width:250px;padding:5px 12px;font-size:11px;letter-spacing:1px;}
-  #title .tt-diff-wrap{margin-top:0;order:5;flex:1;min-width:150px;max-width:250px;padding:0 6px;}
-  #title .tt-secondary-row{margin-top:4px;order:6;flex:1;min-width:150px;max-width:250px;justify-content:center;padding:0 6px;}
-
-  #title .tt-note,#title .tt-danger,#title .tt-controls-hint{display:none;}
-
+  #title .tt-sup{font-size:9px;letter-spacing:2px;margin-bottom:1px;margin-top:2px;}
+  #title .tt-main{font-size:17px;letter-spacing:3px;margin-bottom:1px;}
+  #title .tt-tag{font-size:9px;letter-spacing:1px;margin-bottom:6px;}
+  #title .tt-container{display:none;}
+  #title .tt-subj-wrap{margin-top:0;padding:4px 6px;gap:4px;}
+  #title #tt-save-info{font-size:9px;margin-top:2px;min-height:10px;text-align:center;}
+  #title #tt-continue{margin-top:2px;padding:5px 12px;font-size:11px;letter-spacing:1px;}
+  #title #tt-start{margin-top:2px;padding:5px 12px;font-size:11px;letter-spacing:1px;}
+  #title .tt-diff-wrap{margin-top:0;padding:4px 6px;gap:4px;}
+  #title .tt-secondary-row{margin-top:2px;justify-content:center;padding:0 6px;}
+  #title .tt-note,#title .tt-danger,#title .tt-controls-hint,#title #tt-features{display:none;}
   #title .tt-diff-lbl{font-size:9px;letter-spacing:1px;}
   #title .tt-diff-opt{font-size:10px;padding:5px 12px;letter-spacing:1px;}
   #title .tt-diff-desc{font-size:9px;margin-top:2px;}
@@ -285,27 +320,38 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 @media(max-width:900px){
   .tt-note{display:none !important;}
 }
+/* Responsive layout */
+@media(max-width:1024px){
+  .tt-container{max-width:900px;}
+  .tt-right{width:240px;}
+}
+@media(max-width:768px){
+  .tt-container{flex-direction:column;max-width:100%;}
+  .tt-right{width:100%;max-width:500px;margin:0 auto;}
+  #tt-features{flex-direction:column;gap:16px;align-items:center;}
+  .tt-feature{max-width:100%;}
+}
 /* Subject selector */
-.tt-subj-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;}
+.tt-subj-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:0;background:rgba(14,10,5,0.8);border:1px solid #3a2008;padding:12px;width:100%;}
 .tt-diff-opt.selected-specialist{background:#200828;border-color:#c030a0;color:#f060d0;}
 /* Difficulty picker */
-.tt-diff-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:14px;}
+.tt-diff-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:0;background:rgba(14,10,5,0.8);border:1px solid #3a2008;padding:12px;width:100%;}
 .tt-diff-lbl{color:#9a7040;font-size:12px;letter-spacing:3px;text-transform:uppercase;}
-.tt-diff-row{display:flex;gap:0;}
-.tt-diff-opt{background:#0e0a05;border:2px solid #3a2008;color:#a07840;font-size:12px;padding:10px 28px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:all 0.15s;position:relative;}
+.tt-diff-row{display:flex;gap:0;width:100%;}
+.tt-diff-opt{background:#0e0a05;border:2px solid #3a2008;color:#a07840;font-size:12px;padding:10px 28px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:all 0.15s;position:relative;flex:1;}
 .tt-diff-opt:first-child{border-right-width:1px;}
 .tt-diff-opt:last-child{border-left-width:1px;}
 .tt-diff-opt.selected-normal{background:#081a0a;border-color:#208020;color:#60d060;}
 .tt-diff-opt.selected-methods{background:#0a1830;border-color:#2060c0;color:#60a8f0;}
 .tt-diff-opt.selected-hard{background:#2a0808;border-color:#c02020;color:#ff5040;animation:hardpulse 1.5s ease infinite;}
 .tt-diff-opt:hover:not(.selected-normal):not(.selected-hard):not(.selected-methods){border-color:#6a4010;color:#c9a96e;}
-.tt-diff-desc{font-size:12px;letter-spacing:1px;font-style:italic;text-align:center;min-height:16px;}
+.tt-diff-desc{font-size:12px;letter-spacing:1px;font-style:italic;text-align:center;min-height:16px;width:100%;}
 .tt-diff-desc.normal{color:#60a8f0;}
 .tt-diff-desc.hard{color:#d050b0;}
 .tt-diff-desc.red{color:#e04030;}
 /* Secondary title buttons */
-.tt-secondary-row{display:flex;gap:10px;margin-top:14px;}
-.tt-btn-sm{background:transparent;border:1px solid #3a2808;color:#c9a96e;font-size:13px;padding:7px 18px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:border-color 0.15s,color 0.15s;}
+.tt-secondary-row{display:flex;gap:10px;margin-top:0;width:100%;justify-content:center;}
+.tt-btn-sm{background:transparent;border:1px solid #3a2808;color:#c9a96e;font-size:13px;padding:7px 18px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;transition:border-color 0.15s,color 0.15s;flex:1;}
 .tt-btn-sm:hover{border-color:#7a5020;color:#c9a96e;}
 
 /* Skin customisation modal */
@@ -338,9 +384,9 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 .ad-loading-timer{color:#9a7040;font-size:12px;letter-spacing:1px;margin-top:6px;}
 .ad-inv-box{width:100%;max-width:728px;background:rgba(10,7,3,0.8);border:1px solid #1a1005;padding:4px;margin:12px 0 4px;min-height:90px;}
 .ad-reward-box{width:min(320px,90%);background:rgba(10,7,3,0.8);border:1px solid #1a1005;padding:4px;margin-top:12px;min-height:90px;}
-#site-footer{position:absolute;bottom:0;left:0;right:0;background:rgba(4,3,2,0.9);border-top:1px solid #1a0e05;padding:4px 16px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;z-index:9999;pointer-events:none;}
-#site-footer a{color:#b08048;font-size:11px;letter-spacing:1px;text-decoration:none;pointer-events:all;}
-#site-footer a:hover{color:#c9a96e;}
+#top-nav{position:fixed;top:0;left:0;right:0;background:rgba(6,4,2,0.95);border-bottom:1px solid #1a0e05;padding:12px 20px;display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;z-index:10000;pointer-events:all;font-size:14px;letter-spacing:2px;}
+#top-nav a{color:#f0d070;text-decoration:none;padding:6px 10px;border-radius:3px;}
+#top-nav a:hover{color:#fff;background:rgba(240,208,112,0.06);}
 
 /* Candy zone (Statistical Archipelago) theming */
 .candy-zone-active #hud{border-color:#ff80c0 !important;}
@@ -539,32 +585,72 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
   <div id="title">
     <div class="tt-sup">A Mathematics RPG</div>
     <div class="tt-main">The Lost Theorem</div>
-    <div class="tt-tag">Survive. Solve. Unlock the world.</div>
-    <div class="tt-subj-wrap">
-      <div class="tt-diff-lbl">Subject</div>
-      <div class="tt-diff-row">
-        <button class="tt-diff-opt selected-normal" id="tt-subj-methods">METHODS</button>
-        <button class="tt-diff-opt" id="tt-subj-specialist">SPECIALIST</button>
+    <div class="tt-tag">A free browser RPG for Year 11 &amp; 12 students studying Mathematical Methods and Specialist Mathematics. Explore an open world, solve curriculum-aligned maths problems, survive zombies, and unlock new regions.</div>
+    <div class="tt-container">
+      <div class="tt-left">
+        <div class="tt-subj-wrap">
+          <div class="tt-diff-lbl">SUBJECT</div>
+          <div class="tt-diff-row">
+            <button class="tt-diff-opt selected-methods" id="tt-subj-methods">METHODS</button>
+            <button class="tt-diff-opt" id="tt-subj-specialist">SPECIALIST</button>
+          </div>
+          <div class="tt-diff-desc normal" id="tt-subj-desc">Units 3 &amp; 4 Mathematical Methods</div>
+        </div>
+        <div id="tt-save-info" style="font-size:12px;letter-spacing:1px;color:#9a7040;min-height:16px;font-style:italic;text-align:center;"></div>
+        <div class="tt-diff-wrap">
+          <div class="tt-diff-lbl">DIFFICULTY</div>
+          <div class="tt-diff-row">
+            <button class="tt-diff-opt selected-normal" id="tt-diff-normal">NORMAL</button>
+            <button class="tt-diff-opt" id="tt-diff-hard">HARD</button>
+          </div>
+          <div class="tt-diff-desc normal" id="tt-diff-desc">Standard difficulty</div>
+        </div>
+        <div class="tt-secondary-row">
+          <button class="tt-btn-sm" id="tt-htp">HOW TO PLAY</button>
+          <button class="tt-btn-sm" id="tt-fs">FULLSCREEN</button>
+        </div>
+        <div class="tt-buttons">
+          <button class="tt-btn cta-orange" id="tt-start">&#9654; PLAY NOW</button>
+          <button class="tt-btn cta-orange" id="tt-continue" style="display:none;">&#9654; CONTINUE</button>
+        </div>
+        <div class="trust-list" aria-hidden="false" style="margin-top:8px;">
+          <div>✓ Free Forever</div>
+          <div>✓ No Download Required</div>
+          <div>✓ Auto Save</div>
+          <div>✓ Works In Browser</div>
+        </div>
       </div>
-      <div class="tt-diff-desc normal" id="tt-subj-desc">Units 3 &amp; 4 Mathematical Methods</div>
-    </div>
-    <div id="tt-save-info" style="font-size:12px;letter-spacing:1px;color:#9a7040;margin-top:6px;min-height:16px;font-style:italic;"></div>
-    <button class="tt-btn" id="tt-continue" style="display:none;margin-top:10px;">&#9654; CONTINUE</button>
-    <button class="tt-btn" id="tt-start" style="margin-top:10px;">NEW GAME</button>
-    <div class="tt-diff-wrap" style="margin-top:14px;">
-      <div class="tt-diff-lbl">Difficulty</div>
-      <div class="tt-diff-row">
-        <button class="tt-diff-opt selected-normal" id="tt-diff-normal">NORMAL</button>
-        <button class="tt-diff-opt" id="tt-diff-hard">HARD</button>
+      <div class="tt-right">
+        <div class="tt-right-title">THE KINEMATIC RIVER</div>
+        <div class="tt-right-subtitle">Displacement Keeper</div>
+        <div class="tt-right-subtitle" style="border-top:1px solid #4a2808;padding-top:8px;margin-top:8px;">Finds displacement given velocity.</div>
+        <div class="tt-right-problem" style="margin-top:6px;">
+          <strong>PROBLEM</strong><br>
+          Given f'(x) = 2x and f(1) = 4, find f(x).
+          <br><br>
+          <strong>Hint:</strong> f(x) = x² + C. f² + C - 4.
+        </div>
+        <input type="text" class="tt-right-input" placeholder="Your answer..." readonly style="opacity:0.5;">
+        <button class="tt-right-btn">CHECK</button>
       </div>
-      <div class="tt-diff-desc normal" id="tt-diff-desc">Standard difficulty</div>
     </div>
-    <div class="tt-secondary-row">
-      <button class="tt-btn-sm" id="tt-htp">HOW TO PLAY</button>
-      <button class="tt-btn-sm" id="tt-fs">FULLSCREEN</button>
+    <div id="stats" class="stats-grid">
+      <div class="stat-card"><div class="num">11</div><div class="lbl">Unique Regions</div></div>
+      <div class="stat-card"><div class="num">1000+</div><div class="lbl">Questions</div></div>
+      <div class="stat-card"><div class="num">150+</div><div class="lbl">NPCs</div></div>
+      <div class="stat-card"><div class="num">40+</div><div class="lbl">Artefacts</div></div>
+    </div>
+
+    <div class="feature-cards">
+      <div class="feature-card"><div class="fnum">11</div><div class="ftitle">Unique Regions</div><div class="fdesc">Explore forests, rivers, mountains and ruins.</div></div>
+      <div class="feature-card"><div class="fnum">1000+</div><div class="ftitle">Questions</div><div class="fdesc">Curriculum-aligned Methods & Specialist problems.</div></div>
+      <div class="feature-card"><div class="fnum">Survive</div><div class="ftitle">Zombie Survival</div><div class="fdesc">Zombies hunt you across the map — use knowledge to survive.</div></div>
+      <div class="feature-card"><div class="fnum">Artefacts</div><div class="ftitle">Artefacts & Upgrades</div><div class="fdesc">Collect relics to gain shields, extra lives and bonuses.</div></div>
+      <div class="feature-card"><div class="fnum">Auto</div><div class="ftitle">Auto Save</div><div class="fdesc">Your progress is automatically saved in the browser.</div></div>
+      <div class="feature-card"><div class="fnum">Methods+</div><div class="ftitle">Methods + Specialist</div><div class="fdesc">Full coverage for senior secondary curricula.</div></div>
     </div>
     <div class="tt-note" style="margin-top:20px;">Move with arrow keys or WASD &middot; Press SPACE near characters to interact</div>
-    <div class="tt-danger">Zombies will hunt you. Solve maths problems to survive.</div>
+    <div class="tt-danger">Zombies will hunt you. Knowledge will save you.</div>
   </div>
   <div id="htp-overlay">
     <div class="htp-title">How to Play</div>
@@ -3589,7 +3675,7 @@ function returnToTitle(){
   document.getElementById('prob').classList.remove('on');
   document.getElementById('inv').classList.remove('on');
   document.getElementById('skin-modal').dataset.pausedByModal='';
-  document.getElementById('site-footer').style.display='';
+  document.getElementById('top-nav').style.display='';
   // Unlock difficulty toggle only if no active save
   if(!hasSave(currentSubject)) setDifficultyLock(false);
   syncJoyVisibility();
@@ -3749,8 +3835,7 @@ var syncJoyVisibility=function(){};
     if(confirm('Return to title? Your progress will be saved.')){
       saveProgress();
       returnToTitle();
-      document.getElementById('tt-continue').style.display='';
-      document.getElementById('tt-start').textContent='NEW GAME';
+      if(window._updateSaveInfo) window._updateSaveInfo();
     }
   };
   document.getElementById('sp-reset').onclick=()=>{
@@ -3760,8 +3845,7 @@ var syncJoyVisibility=function(){};
       hardMode=false;
       returnToTitle();
       setDifficultyLock(false);
-      document.getElementById('tt-continue').style.display='none';
-      document.getElementById('tt-start').textContent='NEW GAME';
+      if(window._updateSaveInfo) window._updateSaveInfo();
     }
   };
 
@@ -3920,12 +4004,15 @@ window.setDifficultyLock=function(locked){
 
   function updateSaveInfo(){
     const s=currentSubject;
+    const startBtn=document.getElementById('tt-start');
     if(hasSave(s)){
       const d=loadProgress(s);
       const mins=d?Math.floor((d.survivalMs||0)/60000):0;
       saveInfo.textContent='Save found — '+mins+' min played';
       continueBtn.style.display='';
       startBtn.textContent='NEW GAME';
+      startBtn.classList.remove('cta-orange');
+      startBtn.classList.add('brownish');
       if(d&&d.hardMode){
         hardMode=true;
         document.getElementById('tt-diff-normal').classList.remove('selected-normal');
@@ -3945,7 +4032,9 @@ window.setDifficultyLock=function(locked){
     } else {
       saveInfo.textContent='No save for this subject';
       continueBtn.style.display='none';
-      startBtn.textContent='NEW GAME';
+      startBtn.textContent='▶ PLAY NOW';
+      startBtn.classList.remove('brownish');
+      startBtn.classList.add('cta-orange');
       setDifficultyLock(false);
     }
   }
@@ -4014,7 +4103,7 @@ window.setDifficultyLock=function(locked){
 function startGameFromTitle(continueGame){
   showLoadingThenStart(()=>{
     document.getElementById('title').classList.add('off');
-    document.getElementById('site-footer').style.display='none';
+    document.getElementById('top-nav').style.display='none';
     gs.world=null;gs.wmap=null;gs.nearNPC=null;gs.activeNPC=null;
     initGame();
     if(continueGame){
@@ -4033,9 +4122,12 @@ function startGameFromTitle(continueGame){
 }
 
 document.getElementById('tt-start').onclick=()=>{
+  const startBtn=document.getElementById('tt-start');
   if(_pendingNewGame){
     _pendingNewGame=false;
-    document.getElementById('tt-start').textContent='NEW GAME';
+    startBtn.textContent='NEW GAME';
+    startBtn.classList.remove('cta-orange');
+    startBtn.classList.add('brownish');
     startGameFromTitle(false);
     return;
   }
@@ -4044,7 +4136,9 @@ document.getElementById('tt-start').onclick=()=>{
     clearSave(currentSubject);
     setDifficultyLock(false);
     _pendingNewGame=true;
-    document.getElementById('tt-start').textContent='START ►';
+    startBtn.textContent='▶ PLAY NOW';
+    startBtn.classList.remove('brownish');
+    startBtn.classList.add('cta-orange');
     document.getElementById('tt-continue').style.display='none';
     document.getElementById('tt-save-info').textContent='No save for this subject';
   } else {
@@ -4134,14 +4228,14 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
   document.getElementById('ctrls').style.display = 'none';
 }
 </script>
-<div id="site-footer">  
-  <a href="extra/about.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">ABOUT</a>
-  <a href="extra/lore.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">LORE</a>
-  <a href="extra/blog.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">DEV-BLOG</a>
-  <a href="extra/privacy.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">PRIVACY-POLICY</a>
-  <a href="extra/tos.html" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">TERMS</a>
-  <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">INSTAGRAM</a>
-  <a href="https://www.youtube.com/@math.on.a.whiteboard" target="_blank" rel="noopener" style="color:#f0d070;font-size:20px;letter-spacing:0.2px;text-decoration:none;">YOUTUBE</a>
+<div id="top-nav">
+  <a href="extra/about.html">ABOUT</a>
+  <a href="extra/lore.html">LORE</a>
+  <a href="extra/zones.html">ZONES</a>
+  <a href="extra/blog.html">DEV BLOG</a>
+  <a href="extra/privacy.html">FAQ</a>
+  <a href="extra/privacy.html">PRIVACY</a>
+  <a href="extra/tos.html">TERMS</a>
 </div>
 <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
   <h1>The Lost Theorem — Free Browser Maths RPG</h1>
