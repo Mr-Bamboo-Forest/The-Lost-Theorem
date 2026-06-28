@@ -50,15 +50,15 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#060402;display:flex;align-items:center;justify-content:center;width:100vw;min-height:100vh;min-height:100dvh;font-family:'Courier New',monospace;overflow-y:auto;margin:0;padding:0;-webkit-overflow-scrolling:touch;}
-#container{position:relative;width:100vw;min-height:100vh;min-height:100dvh;overflow-y:auto;border:none;box-shadow:none;}
+body{background:#060402;display:flex;align-items:center;justify-content:center;width:100%;height:100vh;height:100dvh;font-family:'Courier New',monospace;overflow:hidden;margin:0;padding:0;-webkit-overflow-scrolling:touch;}
+#container{position:relative;width:100%;height:100%;overflow-y:auto;border:none;box-shadow:none;}
 #gameCanvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:auto;}
 :-webkit-full-screen #gameCanvas { touch-action: auto; }
 :-moz-full-screen #gameCanvas { touch-action: auto; }
 :fullscreen #gameCanvas { touch-action: auto; }
 @media(max-width:900px) and (orientation:landscape){
-  body{padding:0;width:100vw;height:100vh;}
-  #container{width:100vw;height:100vh;border:none;}
+  body{padding:0;width:100%;height:100vh;}
+  #container{width:100%;height:100vh;border:none;}
 }
 #rotate-prompt{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#060402;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 @media(max-width:900px) and (orientation:portrait){#rotate-prompt{display:flex;}}
@@ -184,13 +184,13 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 #title.off{display:none;}
 .tt-sup{color:#a07840;font-size:13px;letter-spacing:4px;margin-bottom:12px;margin-top:20px;}
 .tt-main{color:#f0d070;font-size:30px;letter-spacing:8px;text-transform:uppercase;margin-bottom:8px;text-shadow:0 0 30px rgba(180,130,40,0.2);}
-.tt-tag{color:#9a6830;font-size:14px;letter-spacing:3px;margin-bottom:28px;text-align:center;align-items:center;}
+.tt-tag{color:#9a6830;font-size:14px;letter-spacing:3px;margin-bottom:28px;text-align:center;align-items:center;width:100%;max-width:1200px;padding:0 20px;box-sizing:border-box;}
 .tt-container{display:flex;width:100%;max-width:1200px;gap:20px;padding:0 20px;margin-bottom:30px;}
 .tt-left{flex:1;display:flex;flex-direction:column;gap:14px;}
 .tt-right{width:320px;background:rgba(14,10,5,0.9);border:2px solid #8a5020;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 28px rgba(138,80,32,0.35);}
 .tt-right-title{color:#f0d070;font-size:13px;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid #4a2808;padding-bottom:8px;text-shadow:0 0 10px rgba(240,208,112,0.2);}
 .tt-right-subtitle{color:#e8d0a0;font-size:12px;letter-spacing:1px;font-style:italic;}
-  .tt-right-problem{color:#b08048;font-size:13px;line-height:1.9;font-family:'Courier New',monospace;background:rgba(6,4,2,0.8);padding:12px;border:1px solid #3a2008;border-radius:3px;}
+.tt-right-problem{color:#b08048;font-size:13px;line-height:1.9;font-family:'Courier New',monospace;background:rgba(6,4,2,0.8);padding:12px;border:1px solid #3a2008;border-radius:3px;}
 .tt-right-input{background:rgba(14,10,5,0.9);border:1px solid #4a2808;color:#f0d070;font-size:11px;padding:8px 10px;font-family:'Courier New',monospace;border-radius:2px;}
 .tt-right-btn{background:#3a2008;border:2px solid #8a5020;color:#f0d070;font-size:11px;padding:8px 12px;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:1px;text-transform:uppercase;border-radius:2px;transition:all 0.2s;}
 .tt-right-btn:hover{border-color:#b08030;background:#5a3010;color:#f0e8a0;}
@@ -199,12 +199,11 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 .tt-btn:hover{background:#3a2010;}
 .tt-note{color:#a07840;font-size:13px;letter-spacing:1px;margin-top:16px;font-style:italic;}
 .tt-danger{color:#b04030;font-size:13px;letter-spacing:1px;margin-top:8px;font-style:italic;}
- #tt-features{display:flex;gap:20px;justify-content:center;margin:18px 0;flex-wrap:wrap;max-width:1200px;padding:0 20px;}
- .tt-feature{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:220px;background:rgba(14,10,5,0.9);border:1px solid #3a2008;padding:14px;border-radius:6px;}
- .tt-feature-icon{font-size:36px;margin-bottom:6px;}
- .tt-feature-name{color:#f0d070;font-size:16px;letter-spacing:1px;text-transform:none;margin-bottom:6px;}
- .tt-feature-desc{color:#c8aa72;font-size:13px;font-style:normal;line-height:1.4;}
-
+#tt-features{display:flex;gap:20px;justify-content:center;margin:18px 0;flex-wrap:wrap;max-width:1200px;padding:0 20px;}
+.tt-feature{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:220px;background:rgba(14,10,5,0.9);border:1px solid #3a2008;padding:14px;border-radius:6px;}
+.tt-feature-icon{font-size:36px;margin-bottom:6px;}
+.tt-feature-name{color:#f0d070;font-size:16px;letter-spacing:1px;text-transform:none;margin-bottom:6px;}
+.tt-feature-desc{color:#c8aa72;font-size:13px;font-style:normal;line-height:1.4;}
 /* Primary CTA */
 .tt-btn.cta-orange{background:linear-gradient(90deg,#ff8a00,#ff5a00);border-color:#ff5a00;color:#111;box-shadow:0 6px 18px rgba(255,90,0,0.18);}
 .tt-btn.cta-orange:hover{filter:brightness(1.02);}
@@ -407,6 +406,20 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 @media(max-width:900px) and (orientation:landscape){
   #minimap{width:96px;height:72px;}
 }
+/* FAQ Container Styles */
+.faq-section {width: 100%;max-width: 900px;margin: 40px auto 10px;padding: 0 20px;display: flex;flex-direction: column;gap: 16px;}
+.faq-heading {color: #f0d070;font-size: 18px;letter-spacing: 4px;text-transform: uppercase;text-align: center;margin-bottom: 12px;text-shadow: 0 0 15px rgba(240,208,112,0.15);}
+.faq-item {background: rgba(14, 10, 5, 0.95);border: 1px solid #3a2008;border-radius: 4px;padding: 14px 18px;transition: border-color 0.15s ease;}
+.faq-item:hover {border-color: #6a4010;}
+.faq-question {color: #f0d070;font-size: 14px;letter-spacing: 1px;font-weight: bold;margin-bottom: 6px;}
+.faq-answer {color: #c8aa72;font-size: 13px;line-height: 1.6;}
+@media(max-width:900px) and (orientation:landscape) {
+  .faq-section {margin-top: 20px;gap: 10px;}
+  .faq-heading {font-size: 13px;letter-spacing: 2px;}
+  .faq-question {font-size: 11px;}
+  .faq-answer {font-size: 10px;}
+}
+
 </style>
 </head>
 <body>
@@ -631,6 +644,8 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
         <button class="tt-right-btn">CHECK</button>
       </div>
     </div>
+    <div class="tt-note" style="margin-top:20px;">Move with arrow keys or WASD &middot; Press SPACE near characters to interact</div>
+    <div class="tt-danger">Zombies will hunt you. Knowledge will save you.</div>
     <div id="stats" class="stats-grid">
       <div class="stat-card"><div class="num">11</div><div class="lbl">Unique Regions</div></div>
       <div class="stat-card"><div class="num">1000+</div><div class="lbl">Questions</div></div>
@@ -643,11 +658,32 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
       <div class="feature-card"><div class="fnum">1000+</div><div class="ftitle">Questions</div><div class="fdesc">Curriculum-aligned Methods & Specialist problems.</div></div>
       <div class="feature-card"><div class="fnum">Survive</div><div class="ftitle">Zombie Survival</div><div class="fdesc">Zombies hunt you across the map — use knowledge to survive.</div></div>
       <div class="feature-card"><div class="fnum">Artefacts</div><div class="ftitle">Artefacts & Upgrades</div><div class="fdesc">Collect relics to gain shields, extra lives and bonuses.</div></div>
-      <div class="feature-card"><div class="fnum">Auto</div><div class="ftitle">Auto Save</div><div class="fdesc">Your progress is automatically saved in the browser.</div></div>
-      <div class="feature-card"><div class="fnum">Methods+</div><div class="ftitle">Methods + Specialist</div><div class="fdesc">Full coverage for senior secondary curricula.</div></div>
+      <div class="feature-card"><div class="fnum">Saving</div><div class="ftitle">Auto Save</div><div class="fdesc">Your progress is automatically saved in the browser.</div></div>
+      <div class="feature-card"><div class="fnum">Mathematics</div><div class="ftitle">Methods + Specialist</div><div class="fdesc">Full coverage for senior secondary curricula.</div></div>
     </div>
-    <div class="tt-note" style="margin-top:20px;">Move with arrow keys or WASD &middot; Press SPACE near characters to interact</div>
-    <div class="tt-danger">Zombies will hunt you. Knowledge will save you.</div>
+    <div class="faq-section">
+      <h3 class="faq-heading">Frequently Asked Questions</h3>
+      
+      <div class="faq-item">
+        <div class="faq-question">Is this game actually free?</div>
+        <div class="faq-answer">Yes, entirely! The Lost Theorem is built purely as an educational project to help senior secondary students revise high-level mathematics without any paywalls.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">What curriculum does it cover?</div>
+        <div class="faq-answer">The problems are specifically aligned to Year 11 and 12 Mathematical Methods and Specialist Mathematics topics, ranging from basic algebra up to calculus, vectors, and probability distribution variables.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Can I save my progress?</div>
+        <div class="faq-answer">Yes. Your difficulty choices, character stats, and unlocked world regions automatically save to your browser's local storage so you can close the window and pick up right where you left off.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">Does it support touchscreens/mobile?</div>
+        <div class="faq-answer">Absolutely. If you play on a phone or tablet, turn it horizontally (landscape mode) and on-screen touch joysticks and context buttons will automatically generate for gameplay.</div>
+      </div>
+    </div>
   </div>
   <div id="htp-overlay">
     <div class="htp-title">How to Play</div>
@@ -4226,17 +4262,17 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
 }
 </script>
 <div id="top-nav">
-  <a href="extra/about.html">ABOUT</a>
-  <a href="extra/lore.html">LORE</a>
-  <a href="extra/zones.html">ZONES</a>
   <a href="extra/blog.html">DEV BLOG</a>
-  <a href="extra/privacy.html">FAQ</a>
+  <a href="extra/lore.html">LORE</a>
+  <a href="extra/about.html">ABOUT</a>
   <a href="extra/privacy.html">PRIVACY</a>
   <a href="extra/tos.html">TERMS</a>
+  <a href="https://www.instagram.com/math.on.a.whiteboard/" target="_blank" rel="noopener">INSTAGRAM</a>
+  <a href="https://www.youtube.com/@math.on.a.whiteboard" target="_blank" rel="noopener">YOUTUBE</a>
 </div>
 <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
   <h1>The Lost Theorem — Free Browser Maths RPG</h1>
-  <p>The Lost Theorem is a free browser-based mathematics RPG...</p>
+  <p>The Lost Theorem is a free browser-based mathematics RPG</p>
   <a href="/extra/privacy.html">Privacy Policy</a>
   <a href="/extra/about.html">About</a>
 </div>
