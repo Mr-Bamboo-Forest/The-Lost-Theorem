@@ -52,7 +52,10 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#060402;display:flex;align-items:center;justify-content:center;width:100vw;min-height:100vh;min-height:100dvh;font-family:'Courier New',monospace;overflow-y:auto;margin:0;padding:0;-webkit-overflow-scrolling:touch;}
 #container{position:relative;width:100vw;min-height:100vh;min-height:100dvh;overflow-y:auto;border:none;box-shadow:none;}
-#gameCanvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;position:fixed;top:0;left:0;z-index:1;}
+#gameCanvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:auto;}
+:-webkit-full-screen #gameCanvas { touch-action: auto; }
+:-moz-full-screen #gameCanvas { touch-action: auto; }
+:fullscreen #gameCanvas { touch-action: auto; }
 @media(max-width:900px) and (orientation:landscape){
   body{padding:0;width:100vw;height:100vh;}
   #container{width:100vw;height:100vh;border:none;}
@@ -282,16 +285,10 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 
 /* Mobile landscape: compact title screen to prevent scrolling */
 @media(max-width:900px) and (orientation:landscape){
-  #title{
-    flex-direction:column;
-    padding:6px 10px 40px;
-    overflow:hidden;
-    gap:0;
-  }
+  #title{flex-direction:column;padding:6px 10px 40px;overflow-y:auto;gap:0;}
   #title .tt-sup{font-size:9px;letter-spacing:2px;margin-bottom:1px;margin-top:2px;}
   #title .tt-main{font-size:17px;letter-spacing:3px;margin-bottom:1px;}
   #title .tt-tag{font-size:9px;letter-spacing:1px;margin-bottom:6px;}
-  #title .tt-container{display:none;}
   #title .tt-subj-wrap{margin-top:0;padding:4px 6px;gap:4px;}
   #title #tt-save-info{font-size:9px;margin-top:2px;min-height:10px;text-align:center;}
   #title #tt-continue{margin-top:2px;padding:5px 12px;font-size:11px;letter-spacing:1px;}
