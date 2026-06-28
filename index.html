@@ -278,6 +278,42 @@ body{background:#060402;display:flex;align-items:center;justify-content:center;w
 @media(max-width:900px) and (orientation:landscape){
   #settings-btn{font-size:14px;width:30px;height:30px;}
   .hud-box{font-size:11px;padding:4px 8px;}
+  #hud {
+    position: absolute;
+    top: env(safe-area-inset-top, 8px); /* Anchors to screen top */
+    left: max(16px, env(safe-area-inset-left, 16px)); /* Pushes it right to clear the Dynamic Island/Notch */
+    display: flex !important;
+    flex-direction: row !important; /* Forces items side-by-side */
+    flex-wrap: wrap; /* Allows wrapping if the screen is exceptionally narrow */
+    gap: 6px !important; /* Space between the boxes */
+    max-width: calc(100vw - 80px) !important; /* Ensures it doesn't collide with the settings button */
+  }
+
+  /* 2. Style adjustments for individual boxes so they look good in a row */
+  .hud-box, #hud-progress, #hud-lives, #hud-score, #hud-shield, #hud-kills {
+    margin: 0 !important;
+    padding: 2px 8px !important; /* Making them slightly more compact vertically */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Prevents text from breaking onto two lines inside a box */
+  }
+
+  /* 3. Tweak the progress bar inside the row so it fits nicely */
+  #hud-progress {
+    min-width: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #hud-progress-bar-bg {
+    width: 100%;
+    margin-top: 1px;
+  }
+  #hud-progress-label {
+    margin-top: 0 !important;
+    font-size: 9px;
+  }
 }
 @media(hover:none) and (pointer:coarse){
   #ctrls{display:none !important;}
